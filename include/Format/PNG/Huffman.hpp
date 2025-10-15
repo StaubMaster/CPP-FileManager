@@ -2,7 +2,7 @@
 #ifndef HUFFMAN_HPP
 # define HUFFMAN_HPP
 
-# include "../../Parsing/uint.hpp"
+# include "Parsing/uint.hpp"
 
 class BitStream;
 

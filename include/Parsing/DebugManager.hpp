@@ -1,6 +1,7 @@
 
 #ifndef DEBUGMANAGER_HPP
 # define DEBUGMANAGER_HPP
+
 # include <iostream>
 # include <sstream>
 # include <fstream>

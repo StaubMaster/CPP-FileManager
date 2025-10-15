@@ -6,7 +6,7 @@
 
 #include <iostream>
 
-#include "../FileContext.hpp"
+#include "FileContext.hpp"
 
 class LineCommand
 {

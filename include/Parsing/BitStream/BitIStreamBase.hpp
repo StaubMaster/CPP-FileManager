@@ -4,7 +4,7 @@
 
 # include "BitStreamBase.hpp"
 
-#include "../uint.hpp"
+#include "Parsing/uint.hpp"
 
 class BitIStreamBase : public BitStreamBase
 {

@@ -2,8 +2,8 @@
 #ifndef  PNG_HPP
 # define PNG_HPP
 
-# include "../../FileContext.hpp"
-# include "../Image.hpp"
+# include "FileContext.hpp"
+# include "Format/Image.hpp"
 
 class PNG
 {

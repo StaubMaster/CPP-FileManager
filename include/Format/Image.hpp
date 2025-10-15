@@ -2,7 +2,7 @@
 #ifndef  IMAGE_HPP
 # define IMAGE_HPP
 
-# include "../Parsing/uint.hpp"
+# include "Parsing/uint.hpp"
 
 class Image
 {

@@ -2,7 +2,7 @@
 #ifndef PNG_FILTER_HPP
 # define PNG_FILTER_HPP
 
-# include "../../Parsing/ByteStream.hpp"
+# include "Parsing/ByteStream.hpp"
 
 # include "PNG.hpp"
 
