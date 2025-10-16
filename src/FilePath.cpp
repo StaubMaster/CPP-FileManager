@@ -1,7 +1,7 @@
 #include "FilePath.hpp"
 
 #include <sstream>
-#include <vector>
+//#include <vector>
 #include <dirent.h>
 
 #include <iostream>
@@ -168,7 +168,6 @@ FilePath FilePath::Child(std::string name) const
 
 
 
-#include <sstream>
 std::ostream & operator << (std::ostream & s, const FilePath & obj)
 {
 	for (size_t i = 0; i < obj.Segments.size(); i++)

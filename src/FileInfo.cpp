@@ -30,7 +30,7 @@ FileInfo::FileInfo(std::string path) :
 
 
 FileInfo::FileInfo(const FileInfo & other) :
-	Valid(other.Valid),
+	Valid(stat_copy(other.Valid, &other.info, &info)),
 	Mode(info.st_mode),
 	info(other.info)
 { }
