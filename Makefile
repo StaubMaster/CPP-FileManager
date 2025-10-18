@@ -68,3 +68,18 @@ $(DIR_OBJ)%.o: $(DIR_SRC)%.cpp
 	$(COMPILER) $(FLAGS) -Iinclude -c $^ -o $@
 
 
+
+
+
+LIBRARYS := $(NAME)
+INCLUDES := include
+
+librarys:
+	@echo $(LIBRARYS)
+
+includes:
+	@echo $(INCLUDES)
+
+.PHONY: librarys includes
+
+
