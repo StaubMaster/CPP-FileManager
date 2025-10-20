@@ -1,14 +1,15 @@
 
 
 
+FANCY_NAME := FileManager
+COLOR_REPO := \e[38;2;127;127;127m
+COLOR_TYPE := \e[38;2;127;255;127m
+COLOR_FILE := \e[38;2;127;127;255m
+COLOR_NONE := \e[m
+
 NAME := FileManager.a
 COMPILER := c++ -std=c++11
 FLAGS := -Wall -Wextra -Werror
-
-
-
-DIR_SRC := src/
-DIR_OBJ := obj/
 
 
 
@@ -37,39 +38,61 @@ FILES_CPP := \
 
 FILES_OBJ := $(FILES_CPP:.cpp=.o)
 
+DIR_SRC := src/
+DIR_OBJ := obj/
+
+
+
 FILES_ABS_OBJ := $(addprefix $(DIR_OBJ), $(FILES_OBJ))
 
 
 
+
+
+################################################################
+
 $(NAME) : $(FILES_ABS_OBJ)
-	ar -rcs $(NAME) $(FILES_ABS_OBJ)
+#	@echo -e "$(COLOR_REPO)$(FANCY_NAME): $(COLOR_TYPE)Target: $(COLOR_FILE)$@$(COLOR_NONE)"
+	@echo -e "$(COLOR_REPO)$(FANCY_NAME): $(COLOR_TYPE)Compiling: $(COLOR_FILE)$@$(COLOR_NONE)"
+	@ar -rcs $(NAME) $(FILES_ABS_OBJ)
 
 all:
-	$(MAKE) $(FILES_ABS_OBJ)
-	$(MAKE) $(NAME)
+#	@echo -e "$(COLOR_REPO)$(FANCY_NAME): $(COLOR_TYPE)Target: $(COLOR_FILE)$@$(COLOR_NONE)"
+	@$(MAKE) $(FILES_ABS_OBJ) -s
+	@$(MAKE) $(NAME) -s
 
 clean:
-	rm -f $(FILES_ABS_OBJ)
+#	@echo -e "$(COLOR_REPO)$(FANCY_NAME): $(COLOR_TYPE)Target: $(COLOR_FILE)$@$(COLOR_NONE)"
+	@rm -f $(FILES_ABS_OBJ)
 
 fclean:
-	$(MAKE) clean
-	rm -f $(NAME)
+#	@echo -e "$(COLOR_REPO)$(FANCY_NAME): $(COLOR_TYPE)Target: $(COLOR_FILE)$@$(COLOR_NONE)"
+	@$(MAKE) clean -s
+	@rm -f $(NAME)
 
 re:
-	$(MAKE) fclean
-	$(MAKE) all
+#	@echo -e "$(COLOR_REPO)$(FANCY_NAME): $(COLOR_TYPE)Target: $(COLOR_FILE)$@$(COLOR_NONE)"
+	@$(MAKE) fclean -s
+	@$(MAKE) all -s
 
 .PHONY: all clean fclean re
+
+################################################################
+
+
 
 
 
 $(DIR_OBJ)%.o: $(DIR_SRC)%.cpp
+	@echo -e "$(COLOR_REPO)$(FANCY_NAME): $(COLOR_TYPE)Compiling: $(COLOR_FILE)$@$(COLOR_NONE)"
 	@mkdir -p $(dir $@)
-	$(COMPILER) $(FLAGS) -Iinclude -c $^ -o $@
+	@$(COMPILER) $(FLAGS) $(foreach include, $(INCLUDES), -I$(include)) -c $^ -o $@
 
 
 
 
+
+################################################################
 
 LIBRARYS := $(NAME)
 INCLUDES := include
@@ -81,5 +104,7 @@ includes:
 	@echo $(INCLUDES)
 
 .PHONY: librarys includes
+
+################################################################
 
 
