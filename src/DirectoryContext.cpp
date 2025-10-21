@@ -63,6 +63,27 @@ FileContext DirectoryContext::ToFile() const
 
 
 
+bool DirectoryContext::HasParent() const
+{
+	FileInfo info(Path.Parent());
+	return (info.Valid && info.Mode.IsDirectory());
+}
+bool DirectoryContext::HasChild(std::string name) const
+{
+	FileInfo info(Path.Child(name));
+	return (info.Valid && info.Mode.IsDirectory());
+}
+DirectoryContext DirectoryContext::Parent() const
+{
+	return DirectoryContext(Path.Parent());
+}
+DirectoryContext DirectoryContext::Child(std::string name) const
+{
+	return DirectoryContext(Path.Child(name));
+}
+
+
+
 std::vector<FilePath> DirectoryContext::Children() const
 {
 	DIR * dir = opendir(Path.ToString().c_str());
