@@ -65,21 +65,21 @@ FileContext DirectoryContext::ToFile() const
 
 bool DirectoryContext::HasParent() const
 {
-	FileInfo info(Path.Parent());
+	FileInfo info(Path.Parent().ToString());
 	return (info.Valid && info.Mode.IsDirectory());
 }
 bool DirectoryContext::HasChild(std::string name) const
 {
-	FileInfo info(Path.Child(name));
+	FileInfo info(Path.Child(name).ToString());
 	return (info.Valid && info.Mode.IsDirectory());
 }
 DirectoryContext DirectoryContext::Parent() const
 {
-	return DirectoryContext(Path.Parent());
+	return DirectoryContext(Path.Parent().ToString());
 }
 DirectoryContext DirectoryContext::Child(std::string name) const
 {
-	return DirectoryContext(Path.Child(name));
+	return DirectoryContext(Path.Child(name).ToString());
 }
 
 
