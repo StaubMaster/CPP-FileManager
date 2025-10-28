@@ -19,14 +19,14 @@ void	Image::setPixel(uint32 x, uint32 y, uint32 pxl)
 {
 	Data32[x + y * W] = pxl;
 }
-uint32	Image::getPixel(uint32 x, uint32 y)
+uint32	Image::getPixel(uint32 x, uint32 y) const
 {
 	return Data32[x + y * W];
 }
 
 
 
-Image * Image::Scale(uint32 w, uint32 h)
+Image * Image::Scale(uint32 w, uint32 h) const
 {
 	Image * img = new Image(w, h);
 

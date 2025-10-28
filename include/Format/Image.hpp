@@ -18,9 +18,9 @@ class Image
 
 	public:
 		void	setPixel(uint32 x, uint32 y, uint32 pxl);
-		uint32	getPixel(uint32 x, uint32 y);
+		uint32	getPixel(uint32 x, uint32 y) const;
 
-		Image * Scale(uint32 w, uint32 h);
+		Image * Scale(uint32 w, uint32 h) const;
 
 	public:
 		static Image * Missing();
