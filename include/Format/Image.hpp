@@ -15,6 +15,9 @@ class Image
 	public:
 		Image(uint32 w, uint32 h);
 		~Image();
+	private:
+		Image(const Image & other);
+		Image & operator =(const Image & other);
 
 	public:
 		void	setPixel(uint32 x, uint32 y, uint32 pxl);
