@@ -53,8 +53,9 @@ FILES_ABS_OBJ := $(addprefix $(DIR_OBJ), $(FILES_OBJ))
 
 $(NAME) : $(FILES_ABS_OBJ)
 #	@echo -e "$(COLOR_REPO)$(FANCY_NAME): $(COLOR_TYPE)Target: $(COLOR_FILE)$@$(COLOR_NONE)"
-	@echo -e "$(COLOR_REPO)$(FANCY_NAME): $(COLOR_TYPE)Compiling: $(COLOR_FILE)$@$(COLOR_NONE)"
+#	@echo -e "$(COLOR_REPO)$(FANCY_NAME): $(COLOR_TYPE)Compiling: $(COLOR_FILE)$@$(COLOR_NONE)"
 	@ar -rcs $(NAME) $(FILES_ABS_OBJ)
+#	$(COMPILER) $(FLAGS) $(foreach include, $(INCLUDES), -I$(include)) -o test.exe main.cpp $(FILES_ABS_OBJ)
 
 all:
 #	@echo -e "$(COLOR_REPO)$(FANCY_NAME): $(COLOR_TYPE)Target: $(COLOR_FILE)$@$(COLOR_NONE)"
