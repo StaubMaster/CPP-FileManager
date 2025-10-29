@@ -7,6 +7,7 @@
 #include <iostream>
 
 #include "FileContext.hpp"
+#include "Parsing/StringHelp.hpp"
 
 class LineCommand
 {
@@ -20,9 +21,6 @@ class LineCommand
 
 
 	public:
-		static size_t FindFirstOf(const std::string & str, size_t idx, unsigned int count, const char chars[]);
-		static std::string RemoveCharFromString(const std::string & str, unsigned int count, const char chars[]);
-	public:
 template <typename ObjectType>
 static void Split(const FileContext & file, ObjectType & object, void (ObjectType::*func)(const LineCommand &))
 {
@@ -30,7 +28,9 @@ static void Split(const FileContext & file, ObjectType & object, void (ObjectTyp
 	std::string segment;
 	while (std::getline(stream, segment, '\r'))
 	{
-		(object.*func)(LineCommand(RemoveCharFromString(segment, 2, "\n\r")));
+		segment = StringHelp::RemoveFromString(segment, StringHelp::CharPallet("\n\r"));
+		segment = StringHelp::RemoveFromString(segment, StringHelp::CharPallet("#"), StringHelp::CharPallet("\n"));
+		(object.*func)(LineCommand(segment));
 	}
 }
 

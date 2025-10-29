@@ -25,6 +25,7 @@ FILES_CPP := \
 	Parsing/ByteStream.cpp \
 	Parsing/LineCommand.cpp \
 	Parsing/DebugManager.cpp \
+	Parsing/StringHelp.cpp \
 \
 	Format/Image.cpp \
 \
@@ -55,7 +56,6 @@ $(NAME) : $(FILES_ABS_OBJ)
 #	@echo -e "$(COLOR_REPO)$(FANCY_NAME): $(COLOR_TYPE)Target: $(COLOR_FILE)$@$(COLOR_NONE)"
 #	@echo -e "$(COLOR_REPO)$(FANCY_NAME): $(COLOR_TYPE)Compiling: $(COLOR_FILE)$@$(COLOR_NONE)"
 	@ar -rcs $(NAME) $(FILES_ABS_OBJ)
-#	$(COMPILER) $(FLAGS) $(foreach include, $(INCLUDES), -I$(include)) -o test.exe main.cpp $(FILES_ABS_OBJ)
 
 all:
 #	@echo -e "$(COLOR_REPO)$(FANCY_NAME): $(COLOR_TYPE)Target: $(COLOR_FILE)$@$(COLOR_NONE)"
@@ -87,7 +87,7 @@ re:
 $(DIR_OBJ)%.o: $(DIR_SRC)%.cpp
 	@echo -e "$(COLOR_REPO)$(FANCY_NAME): $(COLOR_TYPE)Compiling: $(COLOR_FILE)$@$(COLOR_NONE)"
 	@mkdir -p $(dir $@)
-	@$(COMPILER) $(FLAGS) $(foreach include, $(INCLUDES), -I$(include)) -c $^ -o $@
+	@$(COMPILER) $(FLAGS) $(ARGS_INCLUDES) -c $^ -o $@
 
 
 
@@ -97,6 +97,9 @@ $(DIR_OBJ)%.o: $(DIR_SRC)%.cpp
 
 LIBRARYS := $(NAME)
 INCLUDES := include
+
+ARGS_LIBRARYS = $(foreach library, $(LIBRARYS), $(library))
+ARGS_INCLUDES = $(foreach include, $(INCLUDES), -I$(include))
 
 librarys:
 	@echo $(LIBRARYS)
@@ -109,3 +112,19 @@ includes:
 ################################################################
 
 
+
+
+
+################################################################
+
+EXE = test.exe
+
+test: $(FILES_ABS_OBJ)
+	$(COMPILER) $(FLAGS) $(ARGS_INCLUDES) -o $(EXE) main.cpp $(FILES_ABS_OBJ)
+
+test_clean:
+	rm -f $(EXE)
+
+.PHONY: test test_clean
+
+################################################################
