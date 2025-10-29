@@ -1,6 +1,7 @@
 #include "FileContext.hpp"
 #include "Parsing/LineCommand.hpp"
 #include "Parsing/StringHelp.hpp"
+#include "FilePath.hpp"
 
 struct Test
 {
@@ -68,8 +69,10 @@ void TestRemovePair()
 
 int main()
 {
-	TestLineCommands();
-	TestRemoveAll();
-	TestRemovePair();
+	//TestLineCommands();
+	//TestRemoveAll();
+	//TestRemovePair();
+	FilePath path("test/test\\test");
+	std::cout << path.Segments.size() << "\n";
 	return 0;
 }

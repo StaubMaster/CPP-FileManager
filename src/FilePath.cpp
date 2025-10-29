@@ -27,6 +27,12 @@ FilePath::FilePath()
 { }
 FilePath::FilePath(std::string path)
 {
+#if defined(_WIN32)
+	for (size_t i = 0; i < path.size(); i++)
+	{
+		if (path[i] == '/') { path[i] = SLASH; }
+	}
+#endif
 	std::stringstream ss(path);
 	std::string segment;
 	while (std::getline(ss, segment, SLASH))
