@@ -26,7 +26,7 @@ static void Split(const FileContext & file, ObjectType & object, void (ObjectTyp
 {
 	std::stringstream stream(file.LoadText());
 	std::string segment;
-	while (std::getline(stream, segment, '\r'))
+	while (std::getline(stream, segment, '\n'))
 	{
 		segment = StringHelp::RemoveFromString(segment, StringHelp::CharPallet("\n\r"));
 		segment = StringHelp::RemoveFromString(segment, StringHelp::CharPallet("#"), StringHelp::CharPallet("\n"));
@@ -39,7 +39,7 @@ static ObjectType * Split(const FileContext & file, ObjectType * object, ObjectT
 {
 	std::stringstream stream(file.LoadText());
 	std::string segment;
-	while (std::getline(stream, segment, '\r'))
+	while (std::getline(stream, segment, '\n'))
 	{
 		segment = StringHelp::RemoveFromString(segment, StringHelp::CharPallet("\n\r"));
 		segment = StringHelp::RemoveFromString(segment, StringHelp::CharPallet("#"), StringHelp::CharPallet("\n"));

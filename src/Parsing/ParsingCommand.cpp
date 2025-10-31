@@ -97,7 +97,7 @@ void ParsingCommand::SplitFileIntoCommands(EnvironmentData & data)
 {
 	std::stringstream ss(data.File.LoadText());
 	std::string seg;
-	while (std::getline(ss, seg, '\r'))
+	while (std::getline(ss, seg, '\n'))
 	{
 		seg = StringHelp::RemoveFromString(seg, StringHelp::CharPallet("\n\r"));
 		seg = StringHelp::RemoveFromString(seg, StringHelp::CharPallet("#"), StringHelp::CharPallet("\n"));
