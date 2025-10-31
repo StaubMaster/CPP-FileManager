@@ -2,6 +2,7 @@
 #include "Parsing/LineCommand.hpp"
 #include "Parsing/StringHelp.hpp"
 #include "FilePath.hpp"
+#include "Parsing/ParsingCommand.hpp"
 
 struct Test
 {
@@ -67,12 +68,44 @@ void TestRemovePair()
 	std::cout << "\n";
 }
 
+void TestParsingCommand()
+{
+	{
+		ParsingCommand cmd("test asd 123 321");
+		std::cout << "Name: " << cmd.Name() << "\n";
+		std::cout << "Count: " << cmd.Count() << "\n";
+		std::cout << "cmd: " << cmd << "\n";
+		std::cout << "Check: " << cmd.CheckCount(CountCheckEqual(3)) << "\n";
+		std::cout << "Check: " << cmd.CheckCount(CountCheckEqual(4)) << "\n";
+		std::cout << "Check: " << cmd.CheckCount(CountCheckRange(0, 1)) << "\n";
+		std::cout << "Check: " << cmd.CheckCount(CountCheckRange(0, 8)) << "\n";
+		std::cout << "Check: " << cmd.CheckCount(CountCheckRange(5, 8)) << "\n";
+		std::cout << "Check: " << cmd.CheckCount(CountCheckModulo(2, 1)) << "\n";
+
+		try { throw ParsingCommand::ExceptionUnknownName(cmd); }
+		catch (const std::exception & ex) { std::cerr << ':' << ex.what() << '\n'; }
+
+		try { throw ParsingCommand::ExceptionInvalidArg(cmd, 2); }
+		catch (const std::exception & ex) { std::cerr << ':' << ex.what() << '\n'; }
+		try { throw ParsingCommand::ExceptionInvalidArg(cmd, 3); }
+		catch (const std::exception & ex) { std::cerr << ':' << ex.what() << '\n'; }
+
+		try { throw ParsingCommand::ExceptionInvalidCount(cmd, CountCheckEqual(4)); }
+		catch (const std::exception & ex) { std::cerr << ':' << ex.what() << '\n'; }
+		try { throw ParsingCommand::ExceptionInvalidCount(cmd, CountCheckRange(2, 4)); }
+		catch (const std::exception & ex) { std::cerr << ':' << ex.what() << '\n'; }
+		try { throw ParsingCommand::ExceptionInvalidCount(cmd, CountCheckModulo(2, 1)); }
+		catch (const std::exception & ex) { std::cerr << ':' << ex.what() << '\n'; }
+	}
+}
+
 int main()
 {
 	//TestLineCommands();
 	//TestRemoveAll();
 	//TestRemovePair();
-	FilePath path("test/test\\test");
-	std::cout << path.Segments.size() << "\n";
+	//FilePath path("test/test\\test");
+	//std::cout << path.Segments.size() << "\n";
+	TestParsingCommand();
 	return 0;
 }

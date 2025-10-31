@@ -26,8 +26,9 @@ FILES_CPP := \
 	Parsing/LineCommand.cpp \
 	Parsing/DebugManager.cpp \
 	Parsing/StringHelp.cpp \
-\
-	Format/Image.cpp \
+	Parsing/ExceptionBase.cpp \
+	Parsing/CountCheck.cpp \
+	Parsing/ParsingCommand.cpp \
 \
 	Format/PNG/Chunk.cpp \
 	Format/PNG/ZLIB.cpp \
@@ -35,7 +36,9 @@ FILES_CPP := \
 	Format/PNG/DEFLATE.cpp \
 	Format/PNG/PNG_Filter.cpp \
 	Format/PNG/PNG_IHDR.cpp \
-	Format/PNG/PNG.cpp
+	Format/PNG/PNG.cpp \
+\
+	Format/Image.cpp
 
 FILES_OBJ := $(FILES_CPP:.cpp=.o)
 
