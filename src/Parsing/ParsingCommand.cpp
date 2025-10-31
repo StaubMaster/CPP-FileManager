@@ -45,6 +45,11 @@ unsigned int	ParsingCommand::ToUInt32(unsigned int idx) const
 	if (idx >= Segments.size() - 1) { return 0; }
 	return std::stoul(Segments[idx + 1]);
 }
+int				ParsingCommand::ToInt32(unsigned int idx) const
+{
+	if (idx >= Segments.size() - 1) { return 0; }
+	return std::stoi(Segments[idx + 1]);
+}
 
 
 

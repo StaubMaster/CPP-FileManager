@@ -32,6 +32,7 @@ class ParsingCommand
 		std::string		ToString(unsigned int idx) const;
 		float			ToFloat(unsigned int idx) const;
 		unsigned int	ToUInt32(unsigned int idx) const;
+		int				ToInt32(unsigned int idx) const;
 
 	public:
 		class ExceptionUnknownName : public ExceptionBase
