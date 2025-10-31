@@ -68,6 +68,16 @@ void TestRemovePair()
 	std::cout << "\n";
 }
 
+struct TestParsingCommandEnvironmentData : public ParsingCommand::EnvironmentData
+{
+	TestParsingCommandEnvironmentData(const FileContext & file) :
+		ParsingCommand::EnvironmentData(file)
+	{ }
+	void Parse(const ParsingCommand & cmd) override
+	{
+		std::cout << "Cmd: " << cmd << "\n";
+	}
+};
 void TestParsingCommand()
 {
 	{
@@ -96,6 +106,12 @@ void TestParsingCommand()
 		catch (const std::exception & ex) { std::cerr << ':' << ex.what() << '\n'; }
 		try { throw ParsingCommand::ExceptionInvalidCount(cmd, CountCheckModulo(2, 1)); }
 		catch (const std::exception & ex) { std::cerr << ':' << ex.what() << '\n'; }
+	}
+
+	{
+		FileContext file("test/ParsingCommand.test.txt");
+		TestParsingCommandEnvironmentData data(file);
+		ParsingCommand::SplitFileIntoCommands(data);
 	}
 }
 

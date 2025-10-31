@@ -83,3 +83,24 @@ std::ostream & operator <<(std::ostream & os, const ParsingCommand & obj)
 	}
 	return os;
 }
+
+
+
+
+
+#include "FileContext.hpp"
+
+ParsingCommand::EnvironmentData::EnvironmentData(const FileContext & file) :
+	File(file) { }
+
+void ParsingCommand::SplitFileIntoCommands(EnvironmentData & data)
+{
+	std::stringstream ss(data.File.LoadText());
+	std::string seg;
+	while (std::getline(ss, seg, '\r'))
+	{
+		seg = StringHelp::RemoveFromString(seg, StringHelp::CharPallet("\n\r"));
+		seg = StringHelp::RemoveFromString(seg, StringHelp::CharPallet("#"), StringHelp::CharPallet("\n"));
+		data.Parse(ParsingCommand(seg));
+	}
+}

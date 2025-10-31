@@ -13,6 +13,8 @@
 # include "Parsing/ExceptionBase.hpp"
 # include "Parsing/CountCheck.hpp"
 
+class FileContext;
+
 class ParsingCommand
 {
 	private:
@@ -48,7 +50,14 @@ class ParsingCommand
 				ExceptionInvalidArg(const ParsingCommand & cmd, unsigned int idx);
 		};
 
-	
+	public:
+		struct EnvironmentData
+		{
+			const FileContext & File;
+			EnvironmentData(const FileContext & file);
+			virtual void Parse(const ParsingCommand & cmd) = 0;
+		};
+		static void SplitFileIntoCommands(EnvironmentData & data);
 };
 
 std::ostream & operator <<(std::ostream & os, const ParsingCommand & obj);
