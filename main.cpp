@@ -113,6 +113,13 @@ void TestParsingCommand()
 		TestParsingCommandEnvironmentData data(file);
 		ParsingCommand::SplitFileIntoCommands(data);
 	}
+
+	{
+		ParsingCommand cmd("test 123 0,67 1.23");
+		std::cout << cmd.ToFloat(0) << "\n";
+		std::cout << cmd.ToFloat(1) << "\n";
+		std::cout << cmd.ToFloat(2) << "\n";
+	}
 }
 
 int main()

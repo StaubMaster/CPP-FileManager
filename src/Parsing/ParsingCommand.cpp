@@ -38,7 +38,12 @@ std::string		ParsingCommand::ToString(unsigned int idx) const
 float			ParsingCommand::ToFloat(unsigned int idx) const
 {
 	if (idx >= Segments.size() - 1) { return 0.0f; }
-	return std::stof(Segments[idx + 1]);
+	std::string str = Segments[idx + 1];
+	for (unsigned int i = 0; i < str.length(); i++)
+	{
+		if (str[i] == ',') { str[i] = '.'; }
+	}
+	return std::stof(str);
 }
 unsigned int	ParsingCommand::ToUInt32(unsigned int idx) const
 {
