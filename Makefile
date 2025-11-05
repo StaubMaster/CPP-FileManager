@@ -1,11 +1,41 @@
 
 
 
+################################################################
+#                           OS Stuff                           #
+################################################################
+
+ifeq ($(OS), Windows_NT)
+	CheckOS := Windows
+else
+	CheckOS := $(shell uname -s)
+endif
+
 FANCY_NAME := FileManager
+
+ifeq ($(CheckOS), Windows)
+
+FANCY_ECHO := echo -e
 COLOR_REPO := \e[38;2;127;127;127m
 COLOR_TYPE := \e[38;2;127;255;127m
 COLOR_FILE := \e[38;2;127;127;255m
 COLOR_NONE := \e[m
+
+endif
+
+ifeq ($(CheckOS), Darwin)
+
+FANCY_ECHO := echo
+COLOR_REPO := \033[38;2;127;127;127m
+COLOR_TYPE := \033[38;2;127;255;127m
+COLOR_FILE := \033[38;2;127;127;255m
+COLOR_NONE := \033[m
+
+endif
+
+################################################################
+
+
 
 NAME := FileManager.a
 COMPILER := c++ -std=c++11
@@ -56,26 +86,26 @@ FILES_ABS_OBJ := $(addprefix $(DIR_OBJ), $(FILES_OBJ))
 ################################################################
 
 $(NAME) : $(FILES_ABS_OBJ)
-#	@echo -e "$(COLOR_REPO)$(FANCY_NAME): $(COLOR_TYPE)Target: $(COLOR_FILE)$@$(COLOR_NONE)"
-#	@echo -e "$(COLOR_REPO)$(FANCY_NAME): $(COLOR_TYPE)Compiling: $(COLOR_FILE)$@$(COLOR_NONE)"
+#	@$(FANCY_ECHO) "$(COLOR_REPO)$(FANCY_NAME): $(COLOR_TYPE)Target: $(COLOR_FILE)$@$(COLOR_NONE)"
+#	@$(FANCY_ECHO) "$(COLOR_REPO)$(FANCY_NAME): $(COLOR_TYPE)Compiling: $(COLOR_FILE)$@$(COLOR_NONE)"
 	@ar -rcs $(NAME) $(FILES_ABS_OBJ)
 
 all:
-#	@echo -e "$(COLOR_REPO)$(FANCY_NAME): $(COLOR_TYPE)Target: $(COLOR_FILE)$@$(COLOR_NONE)"
+#	@$(FANCY_ECHO) "$(COLOR_REPO)$(FANCY_NAME): $(COLOR_TYPE)Target: $(COLOR_FILE)$@$(COLOR_NONE)"
 	@$(MAKE) $(FILES_ABS_OBJ) -s
 	@$(MAKE) $(NAME) -s
 
 clean:
-#	@echo -e "$(COLOR_REPO)$(FANCY_NAME): $(COLOR_TYPE)Target: $(COLOR_FILE)$@$(COLOR_NONE)"
+#	@$(FANCY_ECHO) "$(COLOR_REPO)$(FANCY_NAME): $(COLOR_TYPE)Target: $(COLOR_FILE)$@$(COLOR_NONE)"
 	@rm -f $(FILES_ABS_OBJ)
 
 fclean:
-#	@echo -e "$(COLOR_REPO)$(FANCY_NAME): $(COLOR_TYPE)Target: $(COLOR_FILE)$@$(COLOR_NONE)"
+#	@$(FANCY_ECHO) "$(COLOR_REPO)$(FANCY_NAME): $(COLOR_TYPE)Target: $(COLOR_FILE)$@$(COLOR_NONE)"
 	@$(MAKE) clean -s
 	@rm -f $(NAME)
 
 re:
-#	@echo -e "$(COLOR_REPO)$(FANCY_NAME): $(COLOR_TYPE)Target: $(COLOR_FILE)$@$(COLOR_NONE)"
+#	@$(FANCY_ECHO) "$(COLOR_REPO)$(FANCY_NAME): $(COLOR_TYPE)Target: $(COLOR_FILE)$@$(COLOR_NONE)"
 	@$(MAKE) fclean -s
 	@$(MAKE) all -s
 
@@ -88,7 +118,7 @@ re:
 
 
 $(DIR_OBJ)%.o: $(DIR_SRC)%.cpp
-	@echo -e "$(COLOR_REPO)$(FANCY_NAME): $(COLOR_TYPE)Compiling: $(COLOR_FILE)$@$(COLOR_NONE)"
+	@$(FANCY_ECHO) "$(COLOR_REPO)$(FANCY_NAME): $(COLOR_TYPE)Compiling: $(COLOR_FILE)$@$(COLOR_NONE)"
 	@mkdir -p $(dir $@)
 	@$(COMPILER) $(FLAGS) $(ARGS_INCLUDES) -c $^ -o $@
 
