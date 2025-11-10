@@ -130,9 +130,10 @@ $(DIR_OBJ)%.o: $(DIR_SRC)%.cpp
 
 LIBRARYS := $(NAME)
 INCLUDES := include
+ARGUMENTS := 
 
-ARGS_LIBRARYS = $(foreach library, $(LIBRARYS), $(library))
-ARGS_INCLUDES = $(foreach include, $(INCLUDES), -I$(include))
+ARGS_LIBRARYS = $(foreach library,$(LIBRARYS),$(library))
+ARGS_INCLUDES = $(foreach include, $(INCLUDES),-I$(include))
 
 librarys:
 	@echo $(LIBRARYS)
@@ -140,7 +141,10 @@ librarys:
 includes:
 	@echo $(INCLUDES)
 
-.PHONY: librarys includes
+arguments:
+	@echo $(ARGUMENTS)
+
+.PHONY: librarys includes arguments
 
 ################################################################
 
