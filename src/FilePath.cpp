@@ -1,8 +1,7 @@
 #include "FilePath.hpp"
 
-#include <sstream>
+//#include <sstream>
 #include <dirent.h>
-
 #include <iostream>
 
 
@@ -49,6 +48,11 @@ FilePath & FilePath::operator=(const FilePath & other)
 const char * FilePath::ToString() const
 {
 	return PathString;
+}
+const char * FilePath::Name() const
+{
+	if (Segments.Count == 0) { return nullptr; }
+	return Segments.Segments[Segments.Count - 1].String;
 }
 
 

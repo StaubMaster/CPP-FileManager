@@ -16,7 +16,7 @@ DirectoryContext::DirectoryContext() :
 	Path(""),
 	Info("")
 { }
-DirectoryContext::DirectoryContext(std::string path) :
+DirectoryContext::DirectoryContext(const char * path) :
 	Path(path),
 	Info(path)
 { }
@@ -24,8 +24,6 @@ DirectoryContext::DirectoryContext(FilePath path) :
 	Path(path),
 	Info(path.ToString())
 { }
-
-
 
 DirectoryContext::DirectoryContext(const DirectoryContext & other) :
 	Path(other.Path),
@@ -68,7 +66,7 @@ bool DirectoryContext::HasParent() const
 	FileInfo info(Path.Parent().ToString());
 	return (info.Valid && info.Mode.IsDirectory());
 }
-bool DirectoryContext::HasChild(std::string name) const
+bool DirectoryContext::HasChild(const char * name) const
 {
 	FileInfo info(Path.Child(name).ToString());
 	return (info.Valid && info.Mode.IsDirectory());
@@ -77,7 +75,7 @@ DirectoryContext DirectoryContext::Parent() const
 {
 	return DirectoryContext(Path.Parent().ToString());
 }
-DirectoryContext DirectoryContext::Child(std::string name) const
+DirectoryContext DirectoryContext::Child(const char * name) const
 {
 	return DirectoryContext(Path.Child(name).ToString());
 }
@@ -86,7 +84,7 @@ DirectoryContext DirectoryContext::Child(std::string name) const
 
 std::vector<FilePath> DirectoryContext::Children() const
 {
-	DIR * dir = opendir(Path.ToString().c_str());
+	DIR * dir = opendir(Path.ToString());
 	if (dir == NULL)
 	{
 		std::cout << "DirectoryContext: Error: opendir\n";
@@ -98,7 +96,7 @@ std::vector<FilePath> DirectoryContext::Children() const
 	ent = readdir(dir);
 	while (ent != NULL)
 	{
-		children.push_back(FilePath(std::string(ent -> d_name)));
+		children.push_back(FilePath(ent -> d_name));
 		ent = readdir(dir);
 	}
 
@@ -145,12 +143,12 @@ std::vector<DirectoryContext> DirectoryContext::Directorys() const
 
 
 
-bool DirectoryContext::HasFile(std::string name) const
+bool DirectoryContext::HasFile(const char * name) const
 {
 	FileInfo info(Path.Child(name).ToString());
 	return (info.Valid && info.Mode.IsFile());
 }
-FileContext DirectoryContext::File(std::string name) const
+FileContext DirectoryContext::File(const char * name) const
 {
 	return FileContext(Path.Child(name));
 }

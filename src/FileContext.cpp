@@ -15,7 +15,7 @@ FileContext::FileContext() :
 	Path(""),
 	Info("")
 { }
-FileContext::FileContext(std::string path) :
+FileContext::FileContext(const char * path) :
 	Path(path),
 	Info(path)
 { }
@@ -55,20 +55,28 @@ DirectoryContext FileContext::ToDirectory() const
 
 
 
-std::string FileContext::Directory() const
+DirectoryContext FileContext::Directory() const
 {
-	return Path.Parent().ToString();
+	//return Path.Parent().ToString();
+	return DirectoryContext(Path.Parent());
+}
+std::string FileContext::DirectoryString() const
+{
+	//return Path.Parent().ToString();
+	return std::string(Path.Parent().ToString());
 }
 std::string FileContext::Name() const
 {
-	return Path.Segments[Path.Segments.size() - 1];
+	//return Path.Segments[Path.Segments.size() - 1];
+	return std::string(Path.Name());
 }
 std::string FileContext::Extension() const
 {
-	const std::string & str = Path.Segments[Path.Segments.size() - 1];
+	//const std::string & str = Path.Segments[Path.Segments.size() - 1];
+	std::string str(Path.Name());
 	size_t idx = str.find_last_of('.');
 	if (idx != std::string::npos) { return str.substr(idx); }
-	return "";
+	return std::string();
 }
 
 

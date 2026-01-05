@@ -21,6 +21,7 @@ class FilePath
 
 	public:
 	const char * ToString() const;
+	const char * Name() const;
 
 	public:
 	static FilePath Here();
