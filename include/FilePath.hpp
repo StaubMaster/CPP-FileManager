@@ -1,50 +1,42 @@
-
 #ifndef  FILE_PATH_HPP
 # define FILE_PATH_HPP
 
-# include <string>
-# include <vector>
+# include "FilePathSegmentCollection.hpp"
 
 # include <iosfwd>
 
-/*
-	split single string into segments
-	string is split by / or \
-
-	does not check if Path points to a valid File
-*/
-
 class FilePath
 {
-	public:
-		std::vector<std::string> Segments;
+	private:
+	FilePathSegmentCollection	Segments;
+	char * PathString;
 
 	public:
-		FilePath();
-		FilePath(std::string path);
-		~FilePath();
+	FilePath();
+	FilePath(const char * path);
+	~FilePath();
 
-		FilePath(const FilePath & other);
-		void operator = (const FilePath & other);
-
-	public:
-		static FilePath Here();
-		FilePath Trim() const;
-
-		std::string ToString() const;
+	FilePath(const FilePath & other);
+	FilePath & operator=(const FilePath & other);
 
 	public:
-		bool IsAbsolute() const;
-		bool IsRelative() const;
-
-		FilePath ToAbsolute() const;
-		FilePath ToRelative(const FilePath & root) const;
+	const char * ToString() const;
 
 	public:
-		FilePath Parent() const;
-		FilePath Child(std::string name) const;
+	static FilePath Here();
+
+	bool IsAbsolute() const;
+	bool IsRelative() const;
+
+	FilePath ToAbsolute() const;
+	FilePath ToRelative(const FilePath & root) const;
+
+	public:
+	FilePath Parent() const;
+	FilePath Child(const char * path) const;
+	FilePath Child(const FilePath & path) const;
 };
 
-std::ostream & operator << (std::ostream & s, const FilePath & val);
+std::ostream & operator<<(std::ostream & o, const FilePath & val);
 
 #endif

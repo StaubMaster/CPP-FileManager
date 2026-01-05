@@ -1,7 +1,6 @@
 #include "FilePath.hpp"
 
 #include <sstream>
-//#include <vector>
 #include <dirent.h>
 
 #include <iostream>
@@ -18,40 +17,39 @@
 # define SLASH '/'
 #endif
 
-#define THIS_DIR "."
-#define META_DIR ".."
 
 
-
-FilePath::FilePath()
+FilePath::FilePath() :
+	Segments(),
+	PathString(0)
 { }
-FilePath::FilePath(std::string path)
-{
-#if defined(_WIN32)
-	for (size_t i = 0; i < path.size(); i++)
-	{
-		if (path[i] == '/') { path[i] = SLASH; }
-	}
-#endif
-	std::stringstream ss(path);
-	std::string segment;
-	while (std::getline(ss, segment, SLASH))
-	{
-		Segments.push_back(segment);
-	}
-}
+FilePath::FilePath(const char * path) :
+	Segments(FilePathSegmentCollection::Split(path)),
+	PathString(Segments.ToString())
+{ }
 FilePath::~FilePath()
-{ }
+{
+	delete[] PathString;
+}
 
 FilePath::FilePath(const FilePath & other) :
-	Segments(other.Segments)
+	Segments(other.Segments),
+	PathString(Segments.ToString())
 { }
-void FilePath::operator = (const FilePath & other)
+FilePath & FilePath::operator=(const FilePath & other)
 {
-	Segments = std::vector<std::string>(other.Segments);
+	delete[] PathString;
+	Segments = other.Segments;
+	PathString = Segments.ToString();
+	return *this;
 }
 
 
+
+const char * FilePath::ToString() const
+{
+	return PathString;
+}
 
 
 
@@ -64,7 +62,7 @@ FilePath FilePath::Here()
 	{
 		std::cout << "Error getting current Dir\n";
 	}
-	return FilePath(std::string((const char *)path));
+	return FilePath(path);
 #endif
 
 #if defined(__APPLE__)
@@ -73,26 +71,11 @@ FilePath FilePath::Here()
 	{
 		std::cout << "Error getting current Dir\n";
 	}
-	return FilePath(std::string(path));
+	return FilePath(path);
 #endif
 }
 
-
-
-std::string FilePath::ToString() const
-{
-	std::string path;
-	for (size_t i = 0; i < Segments.size(); i++)
-	{
-		if (i != 0) { path += SLASH; }
-		path += Segments[i];
-	}
-	return path;
-}
-
-
-
-bool FilePath::IsAbsolute() const
+/*bool FilePath::IsAbsolute() const
 {
 	const std::string & seg = Segments[0];
 #if defined(_WIN32)
@@ -104,18 +87,18 @@ bool FilePath::IsAbsolute() const
 	if (!seg.empty()) { return false; }
 #endif
 	return true;
-}
-bool FilePath::IsRelative() const
+}*/
+/*bool FilePath::IsRelative() const
 {
 	return !IsAbsolute();
-}
+}*/
 
-FilePath FilePath::ToAbsolute() const
+/*FilePath FilePath::ToAbsolute() const
 {
 	if (IsAbsolute()) { return FilePath(ToString()); }
 	return FilePath(Here().ToString() + SLASH + ToString());
-}
-FilePath FilePath::ToRelative(const FilePath & root) const
+}*/
+/*FilePath FilePath::ToRelative(const FilePath & root) const
 {
 	size_t i0 = 0;
 	size_t i1 = 0;
@@ -146,41 +129,38 @@ FilePath FilePath::ToRelative(const FilePath & root) const
 	}
 
 	return FilePath(path);
-}
+}*/
 
 
 
 FilePath FilePath::Parent() const
 {
-	FilePath path;
-	for (unsigned int i = 0; i < Segments.size() - 1; i++)
-	{
-		path.Segments.push_back(Segments[i]);
-	}
-	return path;
+	FilePath filepath;
+	filepath.Segments = Segments.RemoveLast();
+	filepath.PathString = filepath.Segments.ToString();
+	return filepath;
 }
-FilePath FilePath::Child(std::string name) const
+FilePath FilePath::Child(const char * path) const
 {
-	FilePath path;
-	for (unsigned int i = 0; i < Segments.size(); i++)
-	{
-		path.Segments.push_back(Segments[i]);
-	}
-	path.Segments.push_back(name);
-	return path;
+	FilePath filepath;
+	filepath.Segments = Segments.Append(FilePathSegmentCollection::Split(path));
+	filepath.PathString = filepath.Segments.ToString();
+	return filepath;
 }
-
-
-
-
-
-std::ostream & operator << (std::ostream & s, const FilePath & obj)
+FilePath FilePath::Child(const FilePath & path) const
 {
-	for (size_t i = 0; i < obj.Segments.size(); i++)
-	{
-		if (i != 0) { s << SLASH; }
-		s << obj.Segments[i];
-	}
-	return s;
+	FilePath filepath;
+	filepath.Segments = Segments.Append(path.Segments);
+	filepath.PathString = filepath.Segments.ToString();
+	return filepath;
 }
 
+
+
+
+
+std::ostream & operator<<(std::ostream & o, const FilePath & obj)
+{
+	o << obj.ToString();
+	return o;
+}

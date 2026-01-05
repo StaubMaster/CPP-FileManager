@@ -38,13 +38,16 @@ endif
 
 
 NAME := FileManager.a
-COMPILER := c++ -std=c++11
+#COMPILER := c++ -std=c++11
+COMPILER := g++ -g -std=c++11
 FLAGS := -Wall -Wextra -Werror
 
 
 
 FILES_CPP := \
 	FilePath.cpp \
+	FilePathSegment.cpp \
+	FilePathSegmentCollection.cpp \
 	FileInfo.cpp \
 	FileMode.cpp \
 	FileContext.cpp \
@@ -156,9 +159,15 @@ arguments:
 
 EXE = test.exe
 
-test: $(FILES_ABS_OBJ)
-	$(COMPILER) $(FLAGS) $(ARGS_INCLUDES) -o $(EXE) main.cpp $(FILES_ABS_OBJ)
-
+#test: $(FILES_ABS_OBJ)
+#	$(COMPILER) $(FLAGS) $(ARGS_INCLUDES) -o $(EXE) main.cpp $(FILES_ABS_OBJ)
+test:
+	$(COMPILER) $(FLAGS) $(ARGS_INCLUDES) -o $(EXE) \
+	src/FilePath.cpp \
+	src/FilePathSegment.cpp \
+	src/FilePathSegmentCollection.cpp \
+	mainPath1.cpp
+ 
 test_clean:
 	rm -f $(EXE)
 
