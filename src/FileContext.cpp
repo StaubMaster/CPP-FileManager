@@ -1,7 +1,7 @@
-
 #include "FileContext.hpp"
 #include "FileMode.hpp"
 #include "DirectoryContext.hpp"
+#include "FileException.hpp"
 
 #include "Format/Image.hpp"
 #include "Format/PNG/PNG.hpp"
@@ -11,68 +11,38 @@
 
 
 
-FileContext::FileContext() : 
-	Path(""),
-	Info("")
+FileContext::FileContext() :
+	FileSystemInfo()
 { }
-FileContext::FileContext(const char * path) :
-	Path(path),
-	Info(path)
+FileContext::~FileContext()
 { }
-FileContext::FileContext(FilePath path) :
-	Path(path),
-	Info(path.ToString())
-{ }
-
-
-
 FileContext::FileContext(const FileContext & other) :
-	Path(other.Path),
-	Info(Path.ToString())
+	FileSystemInfo(other)
 { }
-FileContext & FileContext::operator =(const FileContext & other)
+FileContext & FileContext::operator=(const FileContext & other)
 {
-	Path = other.Path;
-	Info = FileInfo(Path.ToString());
+	FileSystemInfo::operator=(other);
 	return *this;
 }
 
+FileContext::FileContext(const char * path) :
+	FileSystemInfo(path)
+{ }
+FileContext::FileContext(const std::string & path) :
+	FileSystemInfo(path)
+{ }
+FileContext::FileContext(const FilePath & path) :
+	FileSystemInfo(path)
+{ }
 
-
-bool FileContext::Exists() const
-{
-	return (Info.Valid && Info.Mode.IsFile());
-}
-
-bool FileContext::IsDirectory() const
-{
-	return (Info.Valid && Info.Mode.IsDirectory());
-}
-DirectoryContext FileContext::ToDirectory() const
-{
-	return DirectoryContext(Path);
-}
+DirectoryContext FileContext::ToDirectory() const { return DirectoryContext(OriginalPath()); }
 
 
 
-DirectoryContext FileContext::Directory() const
-{
-	//return Path.Parent().ToString();
-	return DirectoryContext(Path.Parent());
-}
-std::string FileContext::DirectoryString() const
-{
-	//return Path.Parent().ToString();
-	return std::string(Path.Parent().ToString());
-}
-std::string FileContext::Name() const
-{
-	//return Path.Segments[Path.Segments.size() - 1];
-	return std::string(Path.Name());
-}
+DirectoryContext FileContext::Directory() const { return DirectoryContext(Path.Parent()); }
+std::string FileContext::DirectoryString() const { return std::string(Path.Parent().ToString()); }
 std::string FileContext::Extension() const
 {
-	//const std::string & str = Path.Segments[Path.Segments.size() - 1];
 	std::string str(Path.Name());
 	size_t idx = str.find_last_of('.');
 	if (idx != std::string::npos) { return str.substr(idx); }
@@ -83,15 +53,15 @@ std::string FileContext::Extension() const
 
 std::string FileContext::LoadText() const
 {
-	if (!Exists())
+	if (!Exists() || !Mode.IsFile())
 	{
-		throw Exception_FileNotFound(Path.ToString());
+		throw FileException::FileNotFound(Path.ToString());
 	}
 
 	std::ifstream stream(Path.ToString(), std::ios::binary);
 	if (!stream.is_open())
 	{
-		throw Exception_FileProblem(Path.ToString());
+		throw FileException::FileProblem(Path.ToString());
 	}
 
 	std::string text;
@@ -107,38 +77,17 @@ std::string FileContext::LoadText() const
 
 	return (text);
 }
-void FileContext::SaveText(std::string text) const
+/*void FileContext::SaveText(std::string text) const
 {
 	(void)text;
-}
+}*/
 
 
 
-Image * FileContext::LoadImagePNG() const
+Image * FileContext::LoadImage() const
 {
-	return PNG::Load(*this, true);
-}
-
-
-
-
-
-FileContext::Exception_FileProblem::Exception_FileProblem(const std::string & file_path)
-{
-	Text = "FileContext: Problem with File '" + file_path + "'.";
-}
-const char * FileContext::Exception_FileProblem::what() const noexcept
-{
-	return Text.c_str();
-}
-
-
-
-FileContext::Exception_FileNotFound::Exception_FileNotFound(const std::string & file_path)
-{
-	Text = "FileContext: File '" + file_path + "' not found.";
-}
-const char * FileContext::Exception_FileNotFound::what() const noexcept
-{
-	return Text.c_str();
+	std::string extension = Extension();
+	if (extension == ".png") { return PNG::Load(*this, true); }
+	if (extension == ".PNG") { return PNG::Load(*this, true); }
+	throw FileException::InvalidExtension(extension);
 }

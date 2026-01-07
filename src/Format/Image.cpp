@@ -2,26 +2,98 @@
 
 
 
-Image::Image(uint32 w, uint32 h) :
-	W(w), H(h)
+uint32	Image::W() const { return _W; }
+uint32	Image::H() const { return _H; }
+const void *	Image::Data() const { return _Data; }
+
+
+
+ColorU4 & Image::Pixel(uint32 x, uint32 y)
 {
-	Data32 = new uint32[W * H];
-	Data8 = (uint8*)Data32;
+	return _Data[x + y * _W];
 }
+const ColorU4 & Image::Pixel(uint32 x, uint32 y) const
+{
+	return _Data[x + y * _W];
+}
+uint8 & Image::Pixel(uint32 x, uint32 y, uint8 col)
+{
+	uint8 * data = (uint8*)&_Data[x + y * _W];
+	return data[col];
+}
+const uint8 & Image::Pixel(uint32 x, uint32 y, uint8 col) const
+{
+	const uint8 * data = (const uint8*)&_Data[x + y * _W];
+	return data[col];
+}
+
+
+
+Image::Image() :
+	_W(0),
+	_H(0),
+	_Data(nullptr)
+{ }
+Image::Image(uint32 w, uint32 h) :
+	_W(w),
+	_H(h),
+	_Data(new ColorU4[_W * _H])
+{ }
 Image::~Image()
 {
-	delete [] Data32;
+	//delete [] _Data;
+}
+
+Image::Image(const Image & other) :
+	_W(other._W),
+	_H(other._H),
+	_Data(other._Data)
+{ }
+Image & Image::operator=(const Image & other)
+{
+	this -> Bind(other);
+	return *this;
 }
 
 
 
-void	Image::setPixel(uint32 x, uint32 y, uint32 pxl)
+void Image::Dispose()
 {
-	Data32[x + y * W] = pxl;
+	delete[] _Data;
 }
-uint32	Image::getPixel(uint32 x, uint32 y) const
+
+
+
+void Image::Bind(const Image & other)
 {
-	return Data32[x + y * W];
+	delete[] _Data;
+	_W = other._W;
+	_H = other._H;
+	_Data = other._Data;
+}
+void Image::Copy(const Image & other)
+{
+	delete[] _Data;
+	_W = other._W;
+	_H = other._H;
+	_Data = new ColorU4[_W * _H];
+	unsigned int size = _W * _H;
+	for (unsigned int i = 0; i < size; i++)
+	{
+		_Data[i] = other._Data[i];
+	}
+}
+Image Image::Bind()
+{
+	Image img;
+	img.Bind(*this);
+	return img;
+}
+Image Image::Copy()
+{
+	Image img;
+	img.Copy(*this);
+	return img;
 }
 
 
@@ -36,16 +108,16 @@ Image * Image::Scale(uint32 w, uint32 h) const
 	uint32	idx_new;
 	for (uint32 y = 0; y < h; y++)
 	{
-		scale_y = (((float)y) / ((float)h)) * ((float)H);
+		scale_y = (((float)y) / ((float)h)) * ((float)_H);
 
 		for (uint32 x = 0; x < w; x++)
 		{
-			scale_x = (((float)x) / ((float)w)) * ((float)W);
+			scale_x = (((float)x) / ((float)w)) * ((float)_W);
 
-			idx_old = (scale_x + scale_y * W);
+			idx_old = (scale_x + scale_y * _W);
 			idx_new = (x + y * w);
 
-			img -> Data32[idx_new] = Data32[idx_old];
+			img -> _Data[idx_new] = _Data[idx_old];
 			//img -> Data8[idx_new + 0] = Data8[idx_old + 0];
 			//img -> Data8[idx_new + 1] = Data8[idx_old + 1];
 			//img -> Data8[idx_new + 2] = Data8[idx_old + 2];
@@ -55,8 +127,6 @@ Image * Image::Scale(uint32 w, uint32 h) const
 
 	return img;
 }
-
-
 
 
 
@@ -73,7 +143,7 @@ Image * Image::Missing()
 				pxl = 0x000000FF;
 			else
 				pxl = 0xFF00FFFF;
-			img -> setPixel(x, y, pxl);
+			img -> Pixel(x, y) = pxl;
 			//img -> setPixelRGBA(x, y, pxl);
 		}
 	}

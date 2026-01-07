@@ -3,39 +3,6 @@
 
 
 
-Image
-	change to be like Buffers
-	so they get used without Pointers
-	normally only the Pointer to the Data gets passed arount
-	the Data only gets deleted when Dispose() is called
-Image()			NULL Image
-Image(w, h)		allocates Image
-Image(other)	copys Members
-~Image()		does nothing ?
-
-
-
-
-
-Dispose()
-	am I even using that word correctly ?
-	"Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources."
-	is probably correct
-
-
-
-
-
-Generic Parse:
-to load a PNG you need to call "LoadImagePNG()"
-make a generic "LoadImage()" that internally checks the Image type
-so if extension is ".png" or ".PNG" then use "LoadImagePNG"
-if extension is unknown then return NULL ?
-
-
-
-
-
 LineCommand Parser
 "inside"	LineCommand functions
 "outside"	where the LineCommand stuff is used
@@ -79,32 +46,9 @@ that returns Type and Foramt
 
 
 
-
-
-FileContext
-Directory()
-	currently return a string
-	should return a DirectoryContext
-DirectoryString()
-	should return the string
-
-
-
-FileContext and DirectoryContext
-	should be able to create subDirectorys needed for the current
-
-
-
 DirectoryContext Collection
 	have a collection of Directorys
 	then getting a File, look through all the Directorys
 	usually User specified stuff should be checked first
 	have 2 Lists, User and Auto
 	have a way to specify Priority ?
-
-
-
-Path:
-	right now it stores a vector of string
-	maybe just store 1 char *
-	and an array of the sections between the '/'

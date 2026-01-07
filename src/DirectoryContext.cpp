@@ -1,4 +1,3 @@
-
 #include "DirectoryContext.hpp"
 #include "FileContext.hpp"
 
@@ -13,63 +12,64 @@
 
 
 DirectoryContext::DirectoryContext() :
-	Path(""),
-	Info("")
+	FileSystemInfo()
 { }
-DirectoryContext::DirectoryContext(const char * path) :
-	Path(path),
-	Info(path)
+DirectoryContext::~DirectoryContext()
 { }
-DirectoryContext::DirectoryContext(FilePath path) :
-	Path(path),
-	Info(path.ToString())
-{ }
-
 DirectoryContext::DirectoryContext(const DirectoryContext & other) :
-	Path(other.Path),
-	Info(Path.ToString())
+	FileSystemInfo(other)
 { }
-DirectoryContext & DirectoryContext::operator =(const DirectoryContext & other)
+DirectoryContext & DirectoryContext::operator=(const DirectoryContext & other)
 {
-	Path = other.Path;
-	Info = FileInfo(Path.ToString());
+	FileSystemInfo::operator=(other);
 	return *this;
 }
 
+DirectoryContext::DirectoryContext(const char * path) :
+	FileSystemInfo(path)
+{ }
+DirectoryContext::DirectoryContext(const std::string & path) :
+	FileSystemInfo(path)
+{ }
+DirectoryContext::DirectoryContext(const FilePath & path) :
+	FileSystemInfo(path)
+{ }
+
+FileContext DirectoryContext::ToFile() const { return FileContext(OriginalPath()); }
 
 
-DirectoryContext DirectoryContext::Here()
+
+DirectoryContext DirectoryContext::Here() { return DirectoryContext(FilePath::Here()); }
+
+
+
+void DirectoryContext::Create()
 {
-	return DirectoryContext(FilePath::Here());
+	FileSystemInfo info;
+	info.Mode.AllR(true);
+	info.Mode.AllW(true);
+	info.Log();
+	int ret = mkdir(Path.ToString());
+	std::cout << "ret " << ret << '\n';
 }
-
-
-
-bool DirectoryContext::Exists() const
+void DirectoryContext::Delete()
 {
-	return (Info.Valid && Info.Mode.IsDirectory());
-}
-
-bool DirectoryContext::IsFile() const
-{
-	return (Info.Valid && Info.Mode.IsFile());
-}
-FileContext DirectoryContext::ToFile() const
-{
-	return FileContext(Path);
+	FileSystemInfo::Log();
+	int ret = rmdir(Path.ToString());
+	std::cout << "ret " << ret << '\n';
 }
 
 
 
 bool DirectoryContext::HasParent() const
 {
-	FileInfo info(Path.Parent().ToString());
-	return (info.Valid && info.Mode.IsDirectory());
+	FileSystemInfo info(Path.Parent().ToString());
+	return (info.Exists() && info.Mode.IsDirectory());
 }
 bool DirectoryContext::HasChild(const char * name) const
 {
-	FileInfo info(Path.Child(name).ToString());
-	return (info.Valid && info.Mode.IsDirectory());
+	FileSystemInfo info(Path.Child(name).ToString());
+	return (info.Exists() && info.Mode.IsDirectory());
 }
 DirectoryContext DirectoryContext::Parent() const
 {
@@ -114,7 +114,7 @@ std::vector<FileContext> DirectoryContext::Files() const
 
 	for (size_t i = 0; i < paths.size(); i++)
 	{
-		FileInfo info(paths[i].ToString());
+		FileSystemInfo info(paths[i].ToString());
 		if (info.Mode.IsFile())
 		{
 			files.push_back(FileContext(paths[i]));
@@ -131,8 +131,8 @@ std::vector<DirectoryContext> DirectoryContext::Directorys() const
 
 	for (size_t i = 0; i < paths.size(); i++)
 	{
-		FileInfo info(paths[i].ToString());
-		if (info.Mode.IsDirectory())
+		FileSystemInfo info(paths[i].ToString());
+		if (Mode.IsDirectory())
 		{
 			dirs.push_back(DirectoryContext(paths[i]));
 		}
@@ -145,8 +145,8 @@ std::vector<DirectoryContext> DirectoryContext::Directorys() const
 
 bool DirectoryContext::HasFile(const char * name) const
 {
-	FileInfo info(Path.Child(name).ToString());
-	return (info.Valid && info.Mode.IsFile());
+	FileSystemInfo info(Path.Child(name));
+	return (info.Exists() && info.Mode.IsFile());
 }
 FileContext DirectoryContext::File(const char * name) const
 {

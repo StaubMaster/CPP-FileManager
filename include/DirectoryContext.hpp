@@ -1,9 +1,7 @@
-
 #ifndef  DIRECTORY_CONTEXT_HPP
 # define DIRECTORY_CONTEXT_HPP
 
-# include "FilePath.hpp"
-# include "FileInfo.hpp"
+# include "FileSystemInfo.hpp"
 
 # include <string>
 # include <exception>
@@ -11,27 +9,26 @@
 
 class FileContext;
 
-class DirectoryContext
+class DirectoryContext : public FileSystemInfo
 {
 	public:
-	FilePath Path;
-	FileInfo Info;
+	DirectoryContext();
+	~DirectoryContext();
+	DirectoryContext(const DirectoryContext & other);
+	DirectoryContext & operator=(const DirectoryContext & other);
 
 	public:
-	DirectoryContext();
 	DirectoryContext(const char * path);
-	DirectoryContext(FilePath path);
-
-	DirectoryContext(const DirectoryContext & other);
-	DirectoryContext & operator =(const DirectoryContext & other);
+	DirectoryContext(const std::string & path);
+	DirectoryContext(const FilePath & path);
+	FileContext ToFile() const;
 
 	static DirectoryContext Here();
 
 	public:
-	bool Exists() const;
-
-	bool IsFile() const;
-	FileContext ToFile() const;
+	//bool IsEmpty() const;
+	void Create();
+	void Delete();
 
 	public:
 	bool HasParent() const;
@@ -47,6 +44,7 @@ class DirectoryContext
 	bool HasFile(const char * name) const;
 	FileContext File(const char * name) const;
 
+	//	move Exceptions into FileExceptions
 	private:
 	class Exception_DirectoryProblem : public std::exception
 	{

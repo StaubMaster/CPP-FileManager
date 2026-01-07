@@ -48,10 +48,12 @@ FILES_CPP := \
 	FilePath.cpp \
 	FilePathSegment.cpp \
 	FilePathSegmentCollection.cpp \
-	FileInfo.cpp \
 	FileMode.cpp \
+	FileSystemStat.cpp \
+	FileSystemInfo.cpp \
 	FileContext.cpp \
 	DirectoryContext.cpp \
+	FileException.cpp \
 \
 	Parsing/uint.cpp \
 	Parsing/BitStream.cpp \
@@ -71,6 +73,7 @@ FILES_CPP := \
 	Format/PNG/PNG_IHDR.cpp \
 	Format/PNG/PNG.cpp \
 \
+	Format/ColorU4.cpp \
 	Format/Image.cpp
 
 FILES_OBJ := $(FILES_CPP:.cpp=.o)
@@ -87,11 +90,6 @@ FILES_ABS_OBJ := $(addprefix $(DIR_OBJ), $(FILES_OBJ))
 
 
 ################################################################
-
-$(NAME) : $(FILES_ABS_OBJ)
-#	@$(FANCY_ECHO) "$(COLOR_REPO)$(FANCY_NAME): $(COLOR_TYPE)Target: $(COLOR_FILE)$@$(COLOR_NONE)"
-#	@$(FANCY_ECHO) "$(COLOR_REPO)$(FANCY_NAME): $(COLOR_TYPE)Compiling: $(COLOR_FILE)$@$(COLOR_NONE)"
-	@ar -rcs $(NAME) $(FILES_ABS_OBJ)
 
 all:
 #	@$(FANCY_ECHO) "$(COLOR_REPO)$(FANCY_NAME): $(COLOR_TYPE)Target: $(COLOR_FILE)$@$(COLOR_NONE)"
@@ -113,6 +111,11 @@ re:
 	@$(MAKE) all -s
 
 .PHONY: all clean fclean re
+
+$(NAME) : $(FILES_ABS_OBJ)
+#	@$(FANCY_ECHO) "$(COLOR_REPO)$(FANCY_NAME): $(COLOR_TYPE)Target: $(COLOR_FILE)$@$(COLOR_NONE)"
+#	@$(FANCY_ECHO) "$(COLOR_REPO)$(FANCY_NAME): $(COLOR_TYPE)Compiling: $(COLOR_FILE)$@$(COLOR_NONE)"
+	@ar -rcs $(NAME) $(FILES_ABS_OBJ)
 
 ################################################################
 
@@ -159,15 +162,9 @@ arguments:
 
 EXE = test.exe
 
-#test: $(FILES_ABS_OBJ)
-#	$(COMPILER) $(FLAGS) $(ARGS_INCLUDES) -o $(EXE) main.cpp $(FILES_ABS_OBJ)
-test:
-	$(COMPILER) $(FLAGS) $(ARGS_INCLUDES) -o $(EXE) \
-	src/FilePath.cpp \
-	src/FilePathSegment.cpp \
-	src/FilePathSegmentCollection.cpp \
-	mainPath1.cpp
- 
+test: $(FILES_ABS_OBJ)
+	$(COMPILER) $(FLAGS) $(ARGS_INCLUDES) -o $(EXE) mainDir0.cpp $(FILES_ABS_OBJ)
+
 test_clean:
 	rm -f $(EXE)
 

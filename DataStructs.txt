@@ -1,0 +1,14 @@
+
+there are some Data structs in the Engine that would be usefull here
+
+Undex2D & related stuff
+	Size of Image
+
+ColorU4
+	is currently in here
+	but should maybe also be a part of Engine
+
+uint
+	should also be a part of Engine ?
+
+
