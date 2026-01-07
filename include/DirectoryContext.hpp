@@ -27,8 +27,8 @@ class DirectoryContext : public FileSystemInfo
 
 	public:
 	bool IsEmpty() const;
-	void Create();
 	void Delete();
+	void Create();
 
 	public:
 	bool HasParent() const;

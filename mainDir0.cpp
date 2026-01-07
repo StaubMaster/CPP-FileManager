@@ -1,4 +1,6 @@
 #include "DirectoryContext.hpp"
+#include "FileContext.hpp"
+#include "FileSystemStat.hpp"
 #include <iostream>
 
 
@@ -7,17 +9,23 @@ int main()
 {
 	std::cout << '\n';
 	{
-		DirectoryContext dir;
-		dir = DirectoryContext::Here().Child("test0/test1/test2/test3");
-		if (dir.Exists())
+		DirectoryContext dir("test0");
+		FileContext file("test0/test1/test2/test3");
+		//if (dir.Exists())
+		//{
+		//	std::cout << "Delete\n";
+		//	dir.Delete();
+		//}
+		//else
 		{
-			dir = DirectoryContext::Here().Child("test0");
-			dir.Delete();
+			std::cout << "Create\n";
+			file.Create();
 		}
-		else
-		{
-			dir.Create();
-		}
+	}
+	std::cout << '\n';
+	{
+		FileSystemStat stat;
+		std::cout << stat << '\n';
 	}
 	std::cout << '\n';
 

@@ -26,6 +26,7 @@ class FilePath
 	public:
 	static FilePath Here();
 
+	bool IsNone() const;
 	bool IsAbsolute() const;
 	bool IsRelative() const;
 

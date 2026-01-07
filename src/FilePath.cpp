@@ -79,6 +79,12 @@ FilePath FilePath::Here()
 #endif
 }
 
+
+
+bool FilePath::IsNone() const
+{
+	return (Segments.Count == 0);
+}
 /*bool FilePath::IsAbsolute() const
 {
 	const std::string & seg = Segments[0];

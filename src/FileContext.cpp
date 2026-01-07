@@ -9,6 +9,8 @@
 #include <fstream>
 #include <unistd.h>
 
+#include <iostream>
+
 
 
 FileContext::FileContext() :
@@ -39,18 +41,43 @@ DirectoryContext FileContext::ToDirectory() const { return DirectoryContext(Orig
 
 
 
+
+
 void FileContext::Delete()
 {
 	if (!Exists()) { throw FileNotFound(Path.ToString()); }
 	if (!Mode.IsFile()) { throw FileIsNotFile(Path.ToString()); }
 
-	FileSystemInfo::Log();
-
+	std::cout << "Delete File " << Path.ToString() << '\n';
 	if (unlink(Path.ToString()) != 0)
 	{
 		throw FileProblem(Path.ToString());
 	}
 }
+void FileContext::Create()
+{
+	if (Exists() && !Mode.IsFile()) { throw FileIsNotFile(Path.ToString()); }
+
+	DirectoryContext parent = DirectoryContext(Path.Parent());
+	if (!parent.Exists() && !parent.Path.IsNone())
+	{
+		std::cout << "needs Parent '" << parent.Path.ToString() << "'\n";
+		parent.Create();
+	}
+
+	std::cout << "Create File " << Path.ToString() << '\n';
+	int fd = creat(Path.ToString(), 0);
+	if (fd == -1)
+	{
+		throw FileProblem(Path.ToString());
+	}
+	close(fd);
+
+	Refresh();
+	std::cout << "File Info\n" << *((FileSystemStat*)this);
+}
+
+
 
 
 

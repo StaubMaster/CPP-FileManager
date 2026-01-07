@@ -80,22 +80,6 @@ bool DirectoryContext::IsEmpty() const
 	}
 	return empty;
 }
-void DirectoryContext::Create()
-{
-	if (Exists() && !Mode.IsDirectory()) { throw DirectoryIsNotDirectory(Path.ToString()); }
-
-	DirectoryContext parent = Parent();
-	if (!parent.Exists())
-	{
-		parent.Create();
-	}
-
-	//std::cout << "Create " << Path.ToString() << '\n';
-	if (mkdir(Path.ToString()) != 0)
-	{
-		throw DirectoryProblem(Path.ToString());
-	}
-}
 void DirectoryContext::Delete()
 {
 	if (!Exists()) { throw DirectoryNotFound(Path.ToString()); }
@@ -135,12 +119,38 @@ void DirectoryContext::Delete()
 		throw DirectoryProblem(Path.ToString());
 	}
 
-	//std::cout << "Delete " << Path.ToString() << '\n';
+	//std::cout << "Delete Directory " << Path.ToString() << '\n';
 	if (rmdir(Path.ToString()) != 0)
 	{
 		throw DirectoryProblem(Path.ToString());
 	}
 }
+void DirectoryContext::Create()
+{
+	if (Exists() && !Mode.IsDirectory()) { throw DirectoryIsNotDirectory(Path.ToString()); }
+
+	if (Path.ToString()[0] == '\0')
+	{
+		throw DirectoryProblem(Path.ToString());
+	}
+
+	DirectoryContext parent = Parent();
+	if (!parent.Exists() && !parent.Path.IsNone())
+	{
+		std::cout << "needs Parent '" << parent.Path.ToString() << "'\n";
+		parent.Create();
+	}
+
+	std::cout << "Create Directory " << Path.ToString() << '\n';
+	if (mkdir(Path.ToString()) != 0)
+	{
+		throw DirectoryProblem(Path.ToString());
+	}
+	Refresh();
+	std::cout << "Directory Info\n" << *((FileSystemStat*)this);
+}
+
+
 
 
 

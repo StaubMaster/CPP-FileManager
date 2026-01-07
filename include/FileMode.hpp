@@ -1,6 +1,7 @@
 #ifndef  FILE_MODE_HPP
 # define FILE_MODE_HPP
 
+//	Make this not a referance anymore
 class FileMode
 {
 	private:

@@ -24,8 +24,8 @@ class FileContext : public FileSystemInfo
 	DirectoryContext ToDirectory() const;
 
 	public:
-	void Create();
 	void Delete();
+	void Create();
 
 	public:
 	DirectoryContext Directory() const;
