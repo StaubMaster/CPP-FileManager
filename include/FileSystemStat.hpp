@@ -17,6 +17,8 @@ class FileSystemStat
 	FileSystemStat(const FileSystemStat & other);
 	FileSystemStat & operator=(const FileSystemStat & other);
 
+	public:
+	FileSystemStat(const char * path);
 	protected:
 	void Refresh(const char * path);
 
@@ -55,5 +57,7 @@ class FileSystemStat
 
 	long Size() const;
 };
+
+std::ostream & operator<<(std::ostream & o, const FileSystemStat & obj);
 
 #endif

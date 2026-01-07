@@ -26,7 +26,7 @@ class DirectoryContext : public FileSystemInfo
 	static DirectoryContext Here();
 
 	public:
-	//bool IsEmpty() const;
+	bool IsEmpty() const;
 	void Create();
 	void Delete();
 
@@ -37,28 +37,12 @@ class DirectoryContext : public FileSystemInfo
 	DirectoryContext Child(const char * name) const;
 
 	std::vector<FilePath> Children() const;
-	std::vector<FileContext> Files() const;				//	all Files in this Directory
-	std::vector<DirectoryContext> Directorys() const;	//	all Directorys in this Directory
+	std::vector<FileContext> Files() const;
+	std::vector<DirectoryContext> Directorys() const;
 
 	public:
 	bool HasFile(const char * name) const;
 	FileContext File(const char * name) const;
-
-	//	move Exceptions into FileExceptions
-	private:
-	class Exception_DirectoryProblem : public std::exception
-	{
-		private: std::string Text;
-		public: Exception_DirectoryProblem(const std::string & dir_path);
-		public: const char * what() const noexcept;
-	};
-	class Exception_DirectoryNotFound : public std::exception
-	{
-		private: std::string Text;
-		public: Exception_DirectoryNotFound(const std::string & dir_path);
-		public: const char * what() const noexcept;
-	};
-
 };
 
 #endif

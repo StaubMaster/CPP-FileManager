@@ -1,4 +1,5 @@
 #include "DirectoryContext.hpp"
+#include "FileExceptions.hpp"
 #include "FileContext.hpp"
 
 #include <sys/stat.h>
@@ -43,20 +44,102 @@ DirectoryContext DirectoryContext::Here() { return DirectoryContext(FilePath::He
 
 
 
+
+
+bool DirectoryContext::IsEmpty() const
+{
+	if (!Exists() || !Mode.IsDirectory())
+	{
+		throw DirectoryNotFound(Path.ToString());
+	}
+
+	DIR * dir = opendir(Path.ToString());
+	if (dir == NULL)
+	{
+		throw DirectoryProblem(Path.ToString());
+	}
+
+	bool empty = true;
+
+	struct dirent * ent;
+	ent = readdir(dir);
+	while (ent != NULL)
+	{
+		std::string name = ent -> d_name;
+		if (name != "." && name != "..")
+		{
+			empty = false;
+			break;
+		}
+		ent = readdir(dir);
+	}
+
+	if (closedir(dir) != 0)
+	{
+		throw DirectoryProblem(Path.ToString());
+	}
+	return empty;
+}
 void DirectoryContext::Create()
 {
-	FileSystemInfo info;
-	info.Mode.AllR(true);
-	info.Mode.AllW(true);
-	info.Log();
-	int ret = mkdir(Path.ToString());
-	std::cout << "ret " << ret << '\n';
+	if (Exists() && !Mode.IsDirectory()) { throw DirectoryIsNotDirectory(Path.ToString()); }
+
+	DirectoryContext parent = Parent();
+	if (!parent.Exists())
+	{
+		parent.Create();
+	}
+
+	//std::cout << "Create " << Path.ToString() << '\n';
+	if (mkdir(Path.ToString()) != 0)
+	{
+		throw DirectoryProblem(Path.ToString());
+	}
 }
 void DirectoryContext::Delete()
 {
-	FileSystemInfo::Log();
-	int ret = rmdir(Path.ToString());
-	std::cout << "ret " << ret << '\n';
+	if (!Exists()) { throw DirectoryNotFound(Path.ToString()); }
+	if (!Mode.IsDirectory()) { throw DirectoryIsNotDirectory(Path.ToString()); }
+
+	DIR * dir = opendir(Path.ToString());
+	if (dir == NULL)
+	{
+		throw DirectoryProblem(Path.ToString());
+	}
+
+	struct dirent * ent;
+	ent = readdir(dir);
+	while (ent != NULL)
+	{
+		std::string name = ent -> d_name;
+		if (name != "." && name != "..")
+		{
+			FilePath path = Path.Child(ent -> d_name);
+			FileSystemStat stat(path.ToString());
+			if (stat.Mode.IsFile())
+			{
+				FileContext file(path);
+				file.Delete();
+			}
+			if (stat.Mode.IsDirectory())
+			{
+				DirectoryContext directory(path);
+				directory.Delete();
+			}
+		}
+		ent = readdir(dir);
+	}
+
+	if (closedir(dir) != 0)
+	{
+		throw DirectoryProblem(Path.ToString());
+	}
+
+	//std::cout << "Delete " << Path.ToString() << '\n';
+	if (rmdir(Path.ToString()) != 0)
+	{
+		throw DirectoryProblem(Path.ToString());
+	}
 }
 
 
@@ -84,10 +167,13 @@ DirectoryContext DirectoryContext::Child(const char * name) const
 
 std::vector<FilePath> DirectoryContext::Children() const
 {
+	if (!Exists()) { throw DirectoryNotFound(Path.ToString()); }
+	if (!Mode.IsDirectory()) { throw DirectoryIsNotDirectory(Path.ToString()); }
+
 	DIR * dir = opendir(Path.ToString());
 	if (dir == NULL)
 	{
-		std::cout << "DirectoryContext: Error: opendir\n";
+		throw DirectoryProblem(Path.ToString());
 	}
 
 	std::vector<FilePath> children;
@@ -102,7 +188,7 @@ std::vector<FilePath> DirectoryContext::Children() const
 
 	if (closedir(dir) != 0)
 	{
-		std::cout << "DirectoryContext: Error: closedir\n";
+		throw DirectoryProblem(Path.ToString());
 	}
 	return children;
 }
@@ -151,28 +237,4 @@ bool DirectoryContext::HasFile(const char * name) const
 FileContext DirectoryContext::File(const char * name) const
 {
 	return FileContext(Path.Child(name));
-}
-
-
-
-
-
-DirectoryContext::Exception_DirectoryProblem::Exception_DirectoryProblem(const std::string & dir_path)
-{
-	Text = "DirectoryContext: Problem with Directory '" + dir_path + "'.";
-}
-const char * DirectoryContext::Exception_DirectoryProblem::what() const noexcept
-{
-	return Text.c_str();
-}
-
-
-
-DirectoryContext::Exception_DirectoryNotFound::Exception_DirectoryNotFound(const std::string & dir_path)
-{
-	Text = "DirectoryContext: Directory '" + dir_path + "' not found.";
-}
-const char * DirectoryContext::Exception_DirectoryNotFound::what() const noexcept
-{
-	return Text.c_str();
 }

@@ -33,6 +33,6 @@ class FileSystemInfo : public FileSystemStat
 	void Log() const;
 };
 
-std::ostream & operator<<(std::ostream & o, const FileSystemInfo & obj);
+//std::ostream & operator<<(std::ostream & o, const FileSystemInfo & obj);
 
 #endif

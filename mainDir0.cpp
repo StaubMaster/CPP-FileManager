@@ -7,13 +7,17 @@ int main()
 {
 	std::cout << '\n';
 	{
-		DirectoryContext dir = DirectoryContext::Here();
-		dir = dir.Child("test0");
-		std::cout << dir.Path << '\n';
+		DirectoryContext dir;
+		dir = DirectoryContext::Here().Child("test0/test1/test2/test3");
 		if (dir.Exists())
-		{ dir.Delete(); }
+		{
+			dir = DirectoryContext::Here().Child("test0");
+			dir.Delete();
+		}
 		else
-		{ dir.Create(); }
+		{
+			dir.Create();
+		}
 	}
 	std::cout << '\n';
 

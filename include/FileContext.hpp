@@ -24,6 +24,10 @@ class FileContext : public FileSystemInfo
 	DirectoryContext ToDirectory() const;
 
 	public:
+	void Create();
+	void Delete();
+
+	public:
 	DirectoryContext Directory() const;
 	std::string DirectoryString() const;
 	std::string Extension() const;

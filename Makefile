@@ -53,7 +53,7 @@ FILES_CPP := \
 	FileSystemInfo.cpp \
 	FileContext.cpp \
 	DirectoryContext.cpp \
-	FileException.cpp \
+	FileExceptions.cpp \
 \
 	Parsing/uint.cpp \
 	Parsing/BitStream.cpp \
