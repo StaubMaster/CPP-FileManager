@@ -45,36 +45,53 @@ DirectoryContext FileContext::ToDirectory() const { return DirectoryContext(Orig
 
 void FileContext::Delete()
 {
-	if (!Exists()) { throw FileNotFound(Path.ToString()); }
-	if (!Mode.IsFile()) { throw FileIsNotFile(Path.ToString()); }
+	if (!Exists()) { throw FileNotFound(Path); }
+	if (!Mode.IsFile()) { throw FileIsNotFile(Path); }
 
-	std::cout << "Delete File " << Path.ToString() << '\n';
+	//FilePath path = Path.ToAbsolute();
+	//std::cout << "Delete File: " << Mode << ' ' << Path << '\n';
 	if (unlink(Path.ToString()) != 0)
 	{
-		throw FileProblem(Path.ToString());
+		throw FileProblem(Path, "unlink");
 	}
+
+	Refresh();
+	//std::cout << "File: " << Mode << ' ' << Path << '\n';
+	//std::cout << "File Info\n" << *this << '\n';
 }
 void FileContext::Create()
 {
-	if (Exists() && !Mode.IsFile()) { throw FileIsNotFile(Path.ToString()); }
+	if (Exists() && !Mode.IsFile()) { throw FileIsNotFile(Path); }
 
 	DirectoryContext parent = DirectoryContext(Path.Parent());
 	if (!parent.Exists() && !parent.Path.IsNone())
 	{
-		std::cout << "needs Parent '" << parent.Path.ToString() << "'\n";
+		//std::cout << "needs Parent '" << parent.Path << "'\n";
 		parent.Create();
 	}
 
-	std::cout << "Create File " << Path.ToString() << '\n';
-	int fd = creat(Path.ToString(), 0);
-	if (fd == -1)
+	FileMode mode;
+	//FilePath path = Path.ToAbsolute();
+	//std::cout << "Create File: " << mode << ' ' << Path << '\n';
+	int fd = creat(Path.ToString(), mode.Data);
+	if (fd <= -1)
 	{
-		throw FileProblem(Path.ToString());
+		throw FileProblem(Path, "creat");
 	}
-	close(fd);
+	if (close(fd) != 0)
+	{
+		throw FileProblem(Path, "close");
+	}
+
+	mode.AllAll(true);
+	if (chmod(Path.ToString(), mode.Data) != 0)
+	{
+		throw FileProblem(Path, "chmod");
+	}
 
 	Refresh();
-	std::cout << "File Info\n" << *((FileSystemStat*)this);
+	//std::cout << "File: " << Mode << ' ' << Path << '\n';
+	//std::cout << "File Info\n" << *this << '\n';
 }
 
 
@@ -95,13 +112,13 @@ std::string FileContext::Extension() const
 
 std::string FileContext::LoadText() const
 {
-	if (!Exists()) { throw FileNotFound(Path.ToString()); }
-	if (!Mode.IsFile()) { throw FileIsNotFile(Path.ToString()); }
+	if (!Exists()) { throw FileNotFound(Path); }
+	if (!Mode.IsFile()) { throw FileIsNotFile(Path); }
 
 	std::ifstream stream(Path.ToString(), std::ios::binary);
 	if (!stream.is_open())
 	{
-		throw FileProblem(Path.ToString());
+		throw FileProblem(Path);
 	}
 
 	std::string text;

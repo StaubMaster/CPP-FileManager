@@ -14,32 +14,46 @@ static void ChangeBit(unsigned short & data, unsigned short bits, bool val)
 
 
 
-FileMode::FileMode(unsigned short & mode) :
-	Mode(mode)
+FileMode::FileMode() :
+	Data(0)
+{ }
+FileMode::~FileMode()
+{ }
+FileMode::FileMode(const FileMode & other) :
+	Data(other.Data)
+{ }
+FileMode & FileMode::operator=(const FileMode & other)
+{
+	Data = other.Data;
+	return *this;
+}
+
+FileMode::FileMode(unsigned short data) :
+	Data(data)
 { }
 
 
 
-bool	FileMode::IsFile() const		{ return ((Mode & S_IFMT) == S_IFREG); }
-bool	FileMode::IsDirectory() const	{ return ((Mode & S_IFMT) == S_IFDIR); }
+bool	FileMode::IsFile() const		{ return ((Data & S_IFMT) == S_IFREG); }
+bool	FileMode::IsDirectory() const	{ return ((Data & S_IFMT) == S_IFDIR); }
 
 
 
 
 
-bool FileMode::UserR() const { return ((Mode & S_IRUSR) != 0); }
-bool FileMode::UserW() const { return ((Mode & S_IWUSR) != 0); }
-bool FileMode::UserX() const { return ((Mode & S_IXUSR) != 0); }
+bool FileMode::UserR() const { return ((Data & S_IRUSR) != 0); }
+bool FileMode::UserW() const { return ((Data & S_IWUSR) != 0); }
+bool FileMode::UserX() const { return ((Data & S_IXUSR) != 0); }
 bool FileMode::UserAll() const { return (UserR() && UserW() && UserX()); }
 
-bool FileMode::GroupR() const { return ((Mode & S_IRGRP) != 0); }
-bool FileMode::GroupW() const { return ((Mode & S_IWGRP) != 0); }
-bool FileMode::GroupX() const { return ((Mode & S_IXGRP) != 0); }
+bool FileMode::GroupR() const { return ((Data & S_IRGRP) != 0); }
+bool FileMode::GroupW() const { return ((Data & S_IWGRP) != 0); }
+bool FileMode::GroupX() const { return ((Data & S_IXGRP) != 0); }
 bool FileMode::GroupAll() const { return (GroupR() && GroupW() && GroupX()); }
 
-bool FileMode::OtherR() const { return ((Mode & S_IROTH) != 0); }
-bool FileMode::OtherW() const { return ((Mode & S_IWOTH) != 0); }
-bool FileMode::OtherX() const { return ((Mode & S_IXOTH) != 0); }
+bool FileMode::OtherR() const { return ((Data & S_IROTH) != 0); }
+bool FileMode::OtherW() const { return ((Data & S_IWOTH) != 0); }
+bool FileMode::OtherX() const { return ((Data & S_IXOTH) != 0); }
 bool FileMode::OtherAll() const { return (OtherR() && OtherW() && OtherX()); }
 
 bool FileMode::AllR() const { return (UserR() && GroupR() && OtherR()); }
@@ -49,19 +63,19 @@ bool FileMode::AllAll() const { return (UserAll() && GroupAll() && OtherAll()); 
 
 
 
-void FileMode::UserR(bool val) { ChangeBit(Mode, S_IRUSR, val); }
-void FileMode::UserW(bool val) { ChangeBit(Mode, S_IWUSR, val); }
-void FileMode::UserX(bool val) { ChangeBit(Mode, S_IXUSR, val); }
+void FileMode::UserR(bool val) { ChangeBit(Data, S_IRUSR, val); }
+void FileMode::UserW(bool val) { ChangeBit(Data, S_IWUSR, val); }
+void FileMode::UserX(bool val) { ChangeBit(Data, S_IXUSR, val); }
 void FileMode::UserAll(bool val) { UserR(val); UserW(val); UserX(val); }
 
-void FileMode::GroupR(bool val) { ChangeBit(Mode, S_IRGRP, val); }
-void FileMode::GroupW(bool val) { ChangeBit(Mode, S_IWGRP, val); }
-void FileMode::GroupX(bool val) { ChangeBit(Mode, S_IXGRP, val); }
+void FileMode::GroupR(bool val) { ChangeBit(Data, S_IRGRP, val); }
+void FileMode::GroupW(bool val) { ChangeBit(Data, S_IWGRP, val); }
+void FileMode::GroupX(bool val) { ChangeBit(Data, S_IXGRP, val); }
 void FileMode::GroupAll(bool val) { GroupR(val); GroupW(val); GroupX(val); }
 
-void FileMode::OtherR(bool val) { ChangeBit(Mode, S_IROTH, val); }
-void FileMode::OtherW(bool val) { ChangeBit(Mode, S_IWOTH, val); }
-void FileMode::OtherX(bool val) { ChangeBit(Mode, S_IXOTH, val); }
+void FileMode::OtherR(bool val) { ChangeBit(Data, S_IROTH, val); }
+void FileMode::OtherW(bool val) { ChangeBit(Data, S_IWOTH, val); }
+void FileMode::OtherX(bool val) { ChangeBit(Data, S_IXOTH, val); }
 void FileMode::OtherAll(bool val) { OtherR(val); OtherW(val); OtherX(val); }
 
 void FileMode::AllR(bool val) { UserR(val); GroupR(val); OtherR(val); }

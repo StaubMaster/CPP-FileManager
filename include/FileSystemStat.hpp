@@ -5,27 +5,7 @@
 
 #include <sys/stat.h>
 
-class FileSystemStat
-{
-	//	make this store the individual values
-	//	only use struct stat for getting the data
-
-	private:	struct stat sys_stat;
-	public:		FileMode Mode;
-	public:		bool Valid;
-
-	public:
-	FileSystemStat();
-	~FileSystemStat();
-	FileSystemStat(const FileSystemStat & other);
-	FileSystemStat & operator=(const FileSystemStat & other);
-
-	public:
-	FileSystemStat(const char * path);
-	protected:
-	void Refresh(const char * path);
-
-/*F:\msys64\ucrt64\include\_mingw_stat64.h
+/*msys64\ucrt64\include\_mingw_stat64.h
   struct stat {
     _dev_t st_dev;
     _ino_t st_ino;
@@ -40,21 +20,36 @@ class FileSystemStat
     time_t st_ctime;
   };
 */
+class FileSystemStat
+{
+	//	make this store the individual values
+	//	only use struct stat for getting the data
 	public:
-	_ino_t Idone() const;
-	short LinkCount() const;
+	bool Valid;
 
-	short UserID() const;
-	short GroupID() const;
+	FileMode Mode;		//unsigned short st_mode;
+	_ino_t Idone;		//_ino_t st_ino;
+	short UserID;		//short st_uid;
+	short GroupID;		//short st_gid;
+	_dev_t DeviceID;	//_dev_t st_dev;
+	_dev_t SpecialID;	//_dev_t st_rdev;
+	short LinkCount;	//short st_nlink;
+	time_t CreateTime;	//time_t st_ctime;
+	time_t ModifyTime;	//time_t st_mtime;
+	time_t AccessTime;	//time_t st_atime;
+	_off_t Size;		//_off_t st_size;
+	//struct stat sys_stat;
 
-	_dev_t DeviceID() const;
-	_dev_t SpecialID() const;
+	public:
+	FileSystemStat();
+	~FileSystemStat();
+	FileSystemStat(const FileSystemStat & other);
+	FileSystemStat & operator=(const FileSystemStat & other);
 
-	time_t CreateTime() const;
-	time_t ModifyTime() const;
-	time_t AccessTime() const;
-
-	_off_t Size() const;
+	public:
+	FileSystemStat(const char * path);
+	protected:
+	void Refresh(const char * path);
 };
 
 std::ostream & operator<<(std::ostream & o, const FileSystemStat & obj);

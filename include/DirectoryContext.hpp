@@ -42,7 +42,9 @@ class DirectoryContext : public FileSystemInfo
 
 	public:
 	bool HasFile(const char * name) const;
+	bool HasDirectory(const char * name) const;
 	FileContext File(const char * name) const;
+	DirectoryContext Directory(const char * name) const;
 };
 
 #endif

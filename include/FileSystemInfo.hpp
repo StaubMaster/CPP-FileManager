@@ -27,12 +27,9 @@ class FileSystemInfo : public FileSystemStat
 	bool Exists() const;
 	std::string OriginalPath() const;
 	std::string Name() const;
-
-	# include <iosfwd>
-	public:
-	void Log() const;
 };
 
-//std::ostream & operator<<(std::ostream & o, const FileSystemInfo & obj);
+# include <iosfwd>
+std::ostream & operator<<(std::ostream & o, const FileSystemInfo & obj);
 
 #endif

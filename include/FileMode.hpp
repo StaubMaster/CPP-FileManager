@@ -2,13 +2,21 @@
 # define FILE_MODE_HPP
 
 //	Make this not a referance anymore
+//	renname to UnixMode
+//	make a UnixTime thing ?
 class FileMode
 {
-	private:
-	unsigned short & Mode;
+	public:
+	unsigned short Data;
 
 	public:
-	FileMode(unsigned short & mode);
+	FileMode();
+	~FileMode();
+	FileMode(const FileMode & other);
+	FileMode & operator=(const FileMode & other);
+
+	public:
+	FileMode(unsigned short data);
 
 	public:
 	bool	IsFile() const;
@@ -58,6 +66,6 @@ class FileMode
 };
 
 # include <iosfwd>
-std::ostream & operator<<(std::ostream & s, const FileMode & val);
+std::ostream & operator<<(std::ostream & o, const FileMode & val);
 
 #endif

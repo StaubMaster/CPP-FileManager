@@ -103,11 +103,15 @@ bool FilePath::IsNone() const
 	return !IsAbsolute();
 }*/
 
-/*FilePath FilePath::ToAbsolute() const
+FilePath FilePath::ToAbsolute() const
 {
-	if (IsAbsolute()) { return FilePath(ToString()); }
-	return FilePath(Here().ToString() + SLASH + ToString());
-}*/
+	//if (IsAbsolute()) { return FilePath(ToString()); }
+	//return FilePath(Here().ToString() + SLASH + ToString());
+	FilePath filepath;
+	filepath.Segments = Here().Segments.Append(Segments);
+	filepath.PathString = filepath.Segments.ToString();
+	return filepath;
+}
 /*FilePath FilePath::ToRelative(const FilePath & root) const
 {
 	size_t i0 = 0;

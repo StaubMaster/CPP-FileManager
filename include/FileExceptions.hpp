@@ -4,6 +4,12 @@
 # include <exception>
 # include <string>
 
+
+
+class FilePath;
+
+
+
 class TextExceptionBase : public std::exception
 {
 	protected: std::string Text;
@@ -15,7 +21,7 @@ class TextExceptionBase : public std::exception
 
 class InvalidPath : public TextExceptionBase
 {
-	public: InvalidPath(const std::string & path);
+	public: InvalidPath(const FilePath & path);
 };
 class InvalidExtension : public TextExceptionBase
 {
@@ -26,30 +32,32 @@ class InvalidExtension : public TextExceptionBase
 
 class FileProblem : public TextExceptionBase
 {
-	public: FileProblem(const std::string & path);
+	public: FileProblem(const FilePath & path);
+	public: FileProblem(const FilePath & path, const char * func);
 };
 class FileNotFound : public TextExceptionBase
 {
-	public: FileNotFound(const std::string & path);
+	public: FileNotFound(const FilePath & path);
 };
 class FileIsNotFile : public TextExceptionBase
 {
-	public: FileIsNotFile(const std::string & path);
+	public: FileIsNotFile(const FilePath & path);
 };
 
 
 
 class DirectoryProblem : public TextExceptionBase
 {
-	public: DirectoryProblem(const std::string & path);
+	public: DirectoryProblem(const FilePath & path);
+	public: DirectoryProblem(const FilePath & path, const char * func);
 };
 class DirectoryNotFound : public TextExceptionBase
 {
-	public: DirectoryNotFound(const std::string & path);
+	public: DirectoryNotFound(const FilePath & path);
 };
 class DirectoryIsNotDirectory : public TextExceptionBase
 {
-	public: DirectoryIsNotDirectory(const std::string & path);
+	public: DirectoryIsNotDirectory(const FilePath & path);
 };
 
 #endif

@@ -58,12 +58,10 @@ std::string FileSystemInfo::Name() const { return std::string(Path.Name()); }
 
 
 #include <iostream>
-void FileSystemInfo::Log() const
+std::ostream & operator<<(std::ostream & o, const FileSystemInfo & obj)
 {
-	std::cout << "Mode " << Mode << '\n';
-}
-/*std::ostream & operator<<(std::ostream & o, const FileSystemInfo & obj)
-{
-	(void)obj;
+	o << "Path: " << obj.Path << '\n';
+	o << "OriginalPath: " << obj.OriginalPath() << '\n';
+	o << *((FileSystemStat*)&obj);
 	return o;
-}*/
+}

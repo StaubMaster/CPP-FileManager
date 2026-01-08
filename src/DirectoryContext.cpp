@@ -50,13 +50,13 @@ bool DirectoryContext::IsEmpty() const
 {
 	if (!Exists() || !Mode.IsDirectory())
 	{
-		throw DirectoryNotFound(Path.ToString());
+		throw DirectoryNotFound(Path);
 	}
 
 	DIR * dir = opendir(Path.ToString());
 	if (dir == NULL)
 	{
-		throw DirectoryProblem(Path.ToString());
+		throw DirectoryProblem(Path, "opendir");
 	}
 
 	bool empty = true;
@@ -76,19 +76,19 @@ bool DirectoryContext::IsEmpty() const
 
 	if (closedir(dir) != 0)
 	{
-		throw DirectoryProblem(Path.ToString());
+		throw DirectoryProblem(Path, "closedir");
 	}
 	return empty;
 }
 void DirectoryContext::Delete()
 {
-	if (!Exists()) { throw DirectoryNotFound(Path.ToString()); }
-	if (!Mode.IsDirectory()) { throw DirectoryIsNotDirectory(Path.ToString()); }
+	if (!Exists()) { throw DirectoryNotFound(Path); }
+	if (!Mode.IsDirectory()) { throw DirectoryIsNotDirectory(Path); }
 
 	DIR * dir = opendir(Path.ToString());
 	if (dir == NULL)
 	{
-		throw DirectoryProblem(Path.ToString());
+		throw DirectoryProblem(Path, "opendir");
 	}
 
 	struct dirent * ent;
@@ -116,38 +116,43 @@ void DirectoryContext::Delete()
 
 	if (closedir(dir) != 0)
 	{
-		throw DirectoryProblem(Path.ToString());
+		throw DirectoryProblem(Path, "closedir");
 	}
 
-	//std::cout << "Delete Directory " << Path.ToString() << '\n';
+	//std::cout << "Delete Directory: " << Mode << ' ' << Path << '\n';
 	if (rmdir(Path.ToString()) != 0)
 	{
-		throw DirectoryProblem(Path.ToString());
+		throw DirectoryProblem(Path, "rmdir");
 	}
+
+	Refresh();
+	//std::cout << "Directory: " << Mode << ' ' << Path << '\n';
+	//std::cout << "Directory Info\n" << *this << '\n';
 }
 void DirectoryContext::Create()
 {
-	if (Exists() && !Mode.IsDirectory()) { throw DirectoryIsNotDirectory(Path.ToString()); }
+	if (Exists() && !Mode.IsDirectory()) { throw DirectoryIsNotDirectory(Path); }
 
 	if (Path.ToString()[0] == '\0')
 	{
-		throw DirectoryProblem(Path.ToString());
+		throw DirectoryProblem(Path);
 	}
 
 	DirectoryContext parent = Parent();
 	if (!parent.Exists() && !parent.Path.IsNone())
 	{
-		std::cout << "needs Parent '" << parent.Path.ToString() << "'\n";
 		parent.Create();
 	}
 
-	std::cout << "Create Directory " << Path.ToString() << '\n';
+	//std::cout << "Create Directory: " << Mode << ' ' << Path << '\n';
 	if (mkdir(Path.ToString()) != 0)
 	{
-		throw DirectoryProblem(Path.ToString());
+		throw DirectoryProblem(Path, "mkdir");
 	}
+
 	Refresh();
-	std::cout << "Directory Info\n" << *((FileSystemStat*)this);
+	//std::cout << "Directory: " << Mode << ' ' << Path << '\n';
+	//std::cout << "Directory Info\n" << *this << '\n';
 }
 
 
@@ -177,13 +182,13 @@ DirectoryContext DirectoryContext::Child(const char * name) const
 
 std::vector<FilePath> DirectoryContext::Children() const
 {
-	if (!Exists()) { throw DirectoryNotFound(Path.ToString()); }
-	if (!Mode.IsDirectory()) { throw DirectoryIsNotDirectory(Path.ToString()); }
+	if (!Exists()) { throw DirectoryNotFound(Path); }
+	if (!Mode.IsDirectory()) { throw DirectoryIsNotDirectory(Path); }
 
 	DIR * dir = opendir(Path.ToString());
 	if (dir == NULL)
 	{
-		throw DirectoryProblem(Path.ToString());
+		throw DirectoryProblem(Path, "opendir");
 	}
 
 	std::vector<FilePath> children;
@@ -198,7 +203,7 @@ std::vector<FilePath> DirectoryContext::Children() const
 
 	if (closedir(dir) != 0)
 	{
-		throw DirectoryProblem(Path.ToString());
+		throw DirectoryProblem(Path, "closedir");
 	}
 	return children;
 }
