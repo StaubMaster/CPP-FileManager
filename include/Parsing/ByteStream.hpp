@@ -1,7 +1,7 @@
 
 #ifndef  BYTE_STREAM_HPP
 # define BYTE_STREAM_HPP
-# include "uint.hpp"
+# include "ValueType/uint.hpp"
 
 class ByteStream
 {

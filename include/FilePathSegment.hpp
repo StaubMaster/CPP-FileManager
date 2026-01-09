@@ -8,7 +8,7 @@ struct FilePathSegment
 
 	FilePathSegment();
 	~FilePathSegment();
-	
+
 	FilePathSegment(const FilePathSegment & other);
 	FilePathSegment & operator=(const FilePathSegment & other);
 

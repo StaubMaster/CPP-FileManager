@@ -1,7 +1,7 @@
 #ifndef  IMAGE_HPP
 # define IMAGE_HPP
 
-# include "Parsing/uint.hpp"
+# include "ValueType/uint.hpp"
 # include "ColorU4.hpp"
 
 class Image

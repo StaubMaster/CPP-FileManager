@@ -3,7 +3,7 @@
 # define PNG_HPP
 
 # include "FileContext.hpp"
-# include "Format/Image.hpp"
+# include "ValueType/Image.hpp"
 
 class PNG
 {

@@ -2,7 +2,7 @@
 #ifndef DEFLATE_HPP
 # define DEFLATE_HPP
 
-# include "Parsing/uint.hpp"
+# include "ValueType/uint.hpp"
 
 # include <exception>
 

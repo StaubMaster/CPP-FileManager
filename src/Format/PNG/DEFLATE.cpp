@@ -2,9 +2,9 @@
 #include "Format/PNG/Huffman.hpp"
 
 #include "Parsing/DebugManager.hpp"
-#include "Parsing/uint.hpp"
 #include "Parsing/BitStream.hpp"
 #include "Parsing/ByteStream.hpp"
+#include "ValueType/uint.hpp"
 
 
 

@@ -55,7 +55,6 @@ FILES_CPP := \
 	DirectoryContext.cpp \
 	FileExceptions.cpp \
 \
-	Parsing/uint.cpp \
 	Parsing/BitStream.cpp \
 	Parsing/ByteStream.cpp \
 	Parsing/LineCommand.cpp \
@@ -64,6 +63,9 @@ FILES_CPP := \
 	Parsing/ExceptionBase.cpp \
 	Parsing/CountCheck.cpp \
 	Parsing/ParsingCommand.cpp \
+	Parsing/Text/LineStream.cpp \
+	Parsing/Text/TextCommand.cpp \
+	Parsing/Text/TextCommandStream.cpp \
 \
 	Format/PNG/Chunk.cpp \
 	Format/PNG/ZLIB.cpp \
@@ -73,8 +75,10 @@ FILES_CPP := \
 	Format/PNG/PNG_IHDR.cpp \
 	Format/PNG/PNG.cpp \
 \
-	Format/ColorU4.cpp \
-	Format/Image.cpp
+	ValueType/Undex2D.cpp \
+	ValueType/ColorU4.cpp \
+	ValueType/Image.cpp \
+	ValueType/uint.cpp
 
 FILES_OBJ := $(FILES_CPP:.cpp=.o)
 
@@ -163,7 +167,8 @@ arguments:
 EXE = test.exe
 
 test: $(FILES_ABS_OBJ)
-	$(COMPILER) $(FLAGS) $(ARGS_INCLUDES) -o $(EXE) mainDir0.cpp $(FILES_ABS_OBJ)
+	$(COMPILER) $(FLAGS) $(ARGS_INCLUDES) -o $(EXE) mainTextCommands.cpp $(FILES_ABS_OBJ)
+#	$(COMPILER) $(FLAGS) $(ARGS_INCLUDES) -o $(EXE) mainLines.cpp $(FILES_ABS_OBJ)
 
 test_clean:
 	rm -f $(EXE)

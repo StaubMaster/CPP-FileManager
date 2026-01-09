@@ -3,7 +3,7 @@
 # define PNG_IHDR_HPP
 
 # include "Parsing/BitStream.hpp"
-# include "Parsing/uint.hpp"
+# include "ValueType/uint.hpp"
 
 struct IHDR
 		{

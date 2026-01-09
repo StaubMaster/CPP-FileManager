@@ -2,7 +2,7 @@
 #ifndef  ZLIB_HPP
 # define ZLIB_HPP
 
-# include "Parsing/uint.hpp"
+# include "ValueType/uint.hpp"
 
 class BitStream;
 class ByteStream;

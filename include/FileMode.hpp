@@ -2,7 +2,7 @@
 # define FILE_MODE_HPP
 
 //	Make this not a referance anymore
-//	renname to UnixMode
+//	renname to UnixFileMode
 //	make a UnixTime thing ?
 class FileMode
 {

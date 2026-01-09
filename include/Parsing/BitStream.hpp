@@ -1,7 +1,7 @@
 
 #ifndef  BITSTREAM_HPP
 # define BITSTREAM_HPP
-# include "uint.hpp"
+# include "ValueType/uint.hpp"
 
 class BitStream
 {

@@ -1,7 +1,7 @@
 #ifndef  COLORU4_HPP
 # define COLORU4_HPP
 
-# include "Parsing/uint.hpp"
+# include "ValueType/uint.hpp"
 
 struct ColorU4
 {

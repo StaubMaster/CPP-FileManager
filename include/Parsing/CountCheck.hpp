@@ -1,8 +1,13 @@
-
 #ifndef  COUNT_CHECK_HPP
 # define COUNT_CHECK_HPP
 
 # include <string>
+
+/*	is this stuff stupid
+this is just a lot of overhead stuff for checking
+just check the cound directly as needed
+for errors just give a string of what was checked
+*/
 
 struct CountCheck
 {
