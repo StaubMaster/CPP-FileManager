@@ -51,29 +51,29 @@ FILES_CPP := \
 	FileMode.cpp \
 	FileSystemStat.cpp \
 	FileSystemInfo.cpp \
-	FileContext.cpp \
-	DirectoryContext.cpp \
+	FileInfo.cpp \
+	DirectoryInfo.cpp \
 	FileExceptions.cpp \
 \
-	Parsing/BitStream.cpp \
-	Parsing/ByteStream.cpp \
-	Parsing/LineCommand.cpp \
-	Parsing/DebugManager.cpp \
-	Parsing/StringHelp.cpp \
-	Parsing/ExceptionBase.cpp \
-	Parsing/CountCheck.cpp \
-	Parsing/ParsingCommand.cpp \
-	Parsing/Text/LineStream.cpp \
-	Parsing/Text/TextCommand.cpp \
-	Parsing/Text/TextCommandStream.cpp \
+	FileParsing/BitStream.cpp \
+	FileParsing/ByteStream.cpp \
+	FileParsing/LineCommand.cpp \
+	FileParsing/DebugManager.cpp \
+	FileParsing/StringHelp.cpp \
+	FileParsing/ExceptionBase.cpp \
+	FileParsing/CountCheck.cpp \
+	FileParsing/ParsingCommand.cpp \
+	FileParsing/Text/LineStream.cpp \
+	FileParsing/Text/TextCommand.cpp \
+	FileParsing/Text/TextCommandStream.cpp \
 \
-	Format/PNG/Chunk.cpp \
-	Format/PNG/ZLIB.cpp \
-	Format/PNG/Huffman.cpp \
-	Format/PNG/DEFLATE.cpp \
-	Format/PNG/PNG_Filter.cpp \
-	Format/PNG/PNG_IHDR.cpp \
-	Format/PNG/PNG.cpp \
+	FileFormat/PNG/Chunk.cpp \
+	FileFormat/PNG/ZLIB.cpp \
+	FileFormat/PNG/Huffman.cpp \
+	FileFormat/PNG/DEFLATE.cpp \
+	FileFormat/PNG/PNG_Filter.cpp \
+	FileFormat/PNG/PNG_IHDR.cpp \
+	FileFormat/PNG/PNG.cpp \
 \
 	ValueType/Undex2D.cpp \
 	ValueType/ColorU4.cpp \
@@ -167,8 +167,8 @@ arguments:
 EXE = test.exe
 
 test: $(FILES_ABS_OBJ)
-	$(COMPILER) $(FLAGS) $(ARGS_INCLUDES) -o $(EXE) mainTextCommands.cpp $(FILES_ABS_OBJ)
-#	$(COMPILER) $(FLAGS) $(ARGS_INCLUDES) -o $(EXE) mainLines.cpp $(FILES_ABS_OBJ)
+	$(COMPILER) $(FLAGS) $(ARGS_INCLUDES) -o $(EXE) main/mainTextCommands.cpp $(FILES_ABS_OBJ)
+#	$(COMPILER) $(FLAGS) $(ARGS_INCLUDES) -o $(EXE) main/mainLines.cpp $(FILES_ABS_OBJ)
 
 test_clean:
 	rm -f $(EXE)
