@@ -2,7 +2,7 @@
 #include "FileExceptions.hpp"
 #include "DirectoryInfo.hpp"
 
-#include "ValueType/Image.hpp"
+#include "DataType/Image.hpp"
 #include "FileFormat/PNG/PNG.hpp"
 
 #include <sys/stat.h>

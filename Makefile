@@ -80,8 +80,9 @@ FILES_CPP := \
 \
 	ValueType/Undex2D.cpp \
 	ValueType/ColorU4.cpp \
-	ValueType/Image.cpp \
-	ValueType/uint.cpp
+	ValueType/uint.cpp \
+\
+	DataType/Image.cpp
 
 FILES_OBJ := $(FILES_CPP:.cpp=.o)
 

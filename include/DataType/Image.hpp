@@ -2,7 +2,7 @@
 # define IMAGE_HPP
 
 # include "ValueType/uint.hpp"
-# include "ColorU4.hpp"
+# include "ValueType/ColorU4.hpp"
 
 class Image
 {
