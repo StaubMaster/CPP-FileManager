@@ -1,21 +1,9 @@
 #ifndef  FILE_EXCEPTIONS_HPP
 # define FILE_EXCEPTIONS_HPP
 
-# include <exception>
-# include <string>
-
-
+# include "TextExceptionBase.hpp"
 
 class FilePath;
-
-
-
-class TextExceptionBase : public std::exception
-{
-	protected: std::string Text;
-	public: TextExceptionBase();
-	public: const char * what() const noexcept;
-};
 
 
 

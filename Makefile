@@ -53,6 +53,7 @@ FILES_CPP := \
 	FileSystemInfo.cpp \
 	FileInfo.cpp \
 	DirectoryInfo.cpp \
+	TextExceptionBase.cpp \
 	FileExceptions.cpp \
 \
 	FileParsing/BitStream.cpp \
@@ -63,6 +64,8 @@ FILES_CPP := \
 	FileParsing/ExceptionBase.cpp \
 	FileParsing/CountCheck.cpp \
 	FileParsing/ParsingCommand.cpp \
+\
+	FileParsing/Text/Exceptions.cpp \
 	FileParsing/Text/LineStream.cpp \
 	FileParsing/Text/TextCommand.cpp \
 	FileParsing/Text/TextCommandStream.cpp \
@@ -118,7 +121,7 @@ re:
 
 $(NAME) : $(FILES_ABS_OBJ)
 #	@$(FANCY_ECHO) "$(COLOR_REPO)$(FANCY_NAME): $(COLOR_TYPE)Target: $(COLOR_FILE)$@$(COLOR_NONE)"
-#	@$(FANCY_ECHO) "$(COLOR_REPO)$(FANCY_NAME): $(COLOR_TYPE)Compiling: $(COLOR_FILE)$@$(COLOR_NONE)"
+	@$(FANCY_ECHO) "$(COLOR_REPO)$(FANCY_NAME): $(COLOR_TYPE)Compiling: $(COLOR_FILE)$@$(COLOR_NONE)"
 	@ar -rcs $(NAME) $(FILES_ABS_OBJ)
 
 ################################################################
@@ -166,9 +169,9 @@ arguments:
 
 EXE = test.exe
 
-test: $(FILES_ABS_OBJ)
-	$(COMPILER) $(FLAGS) $(ARGS_INCLUDES) -o $(EXE) main/mainTextCommands.cpp $(FILES_ABS_OBJ)
-#	$(COMPILER) $(FLAGS) $(ARGS_INCLUDES) -o $(EXE) main/mainLines.cpp $(FILES_ABS_OBJ)
+test: all
+	$(COMPILER) $(FLAGS) $(ARGS_INCLUDES) -o $(EXE) main/mainTextCommands.cpp $(NAME)
+#	$(COMPILER) $(FLAGS) $(ARGS_INCLUDES) -o $(EXE) main/mainLines.cpp $(NAME)
 
 test_clean:
 	rm -f $(EXE)
