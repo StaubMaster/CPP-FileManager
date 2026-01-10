@@ -7,13 +7,6 @@
 
 
 
-TextExceptionBase::TextExceptionBase()
-{ }
-const char * TextExceptionBase::what() const noexcept
-{ return Text.c_str(); }
-
-
-
 InvalidPath::InvalidPath(const FilePath & path)
 {
 	std::stringstream ss;
