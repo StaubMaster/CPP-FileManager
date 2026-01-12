@@ -12,10 +12,14 @@ struct ColorU4
 
 	ColorU4();
 	ColorU4(uint32 rgba);
+	ColorU4(uint8 r, uint8 g, uint8 b);
+	ColorU4(uint8 r, uint8 g, uint8 b, uint8 a);
 	~ColorU4();
 
 	ColorU4(const ColorU4 & other);
 	ColorU4 & operator=(const ColorU4 & other);
+
+	uint32	ToUInt32_RGBA() const;
 };
 
 #endif

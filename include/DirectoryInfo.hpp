@@ -1,5 +1,5 @@
-#ifndef  DIRECTORY_CONTEXT_HPP
-# define DIRECTORY_CONTEXT_HPP
+#ifndef  DIRECTORY_INFO_HPP
+# define DIRECTORY_INFO_HPP
 
 # include "FileSystemInfo.hpp"
 

@@ -13,10 +13,11 @@ class UnknownCommandName : public TextExceptionBase
 };
 class InvalidCommandArgumentCount : public TextExceptionBase
 {
-	public: InvalidCommandArgumentCount(const TextCommand & cmd);
 	public: InvalidCommandArgumentCount(const TextCommand & cmd, const char * comparison);
 };
-
-
+class InvalidCommandArgument : public TextExceptionBase
+{
+	public: InvalidCommandArgument(const TextCommand & cmd, unsigned int idx);
+};
 
 #endif

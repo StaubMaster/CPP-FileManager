@@ -15,12 +15,12 @@
 
 
 
-Image * PNG::Load(const FileInfo & file, bool debug)
+Image PNG::Load(const FileInfo & file, bool debug)
 {
 	(void)debug;
 	DebugManager::SetOut(false);
 	std::ostream & os = DebugManager::GetOut();
-	Image * img = NULL;
+	Image img;
 
 	try
 	{
@@ -75,8 +75,8 @@ Image * PNG::Load(const FileInfo & file, bool debug)
 		ByteStream * data = new ByteStream(0xFFFFFFFF);
 		ZLIB::decompress(bits, *data);
 
-		img = new Image(imageHead.width, imageHead.height);
-		PNG_Filter::filter(*data, *img);
+		img.Init(imageHead.width, imageHead.height);
+		PNG_Filter::filter(*data, img);
 		delete data;
 
 		return (img);
@@ -84,12 +84,9 @@ Image * PNG::Load(const FileInfo & file, bool debug)
 	catch(const std::exception& e)
 	{
 		std::cerr << "Exception while loading Image: " << e.what() << "\n";
-		if (img != NULL)
-		{
-			delete img;
-		}
+		img.Dispose();
 	}
-	return (NULL);
+	return (img);
 }
 
 

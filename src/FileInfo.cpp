@@ -2,7 +2,7 @@
 #include "FileExceptions.hpp"
 #include "DirectoryInfo.hpp"
 
-#include "DataType/Image.hpp"
+#include "Image.hpp"
 #include "FileFormat/PNG/PNG.hpp"
 
 #include <sys/stat.h>
@@ -141,7 +141,7 @@ std::string FileInfo::LoadText() const
 
 
 
-Image * FileInfo::LoadImage() const
+Image FileInfo::LoadImage() const
 {
 	std::string extension = Extension();
 	if (extension == ".png") { return PNG::Load(*this, true); }

@@ -1,7 +1,7 @@
-#ifndef  UNDEX_3D_HPP
-# define UNDEX_3D_HPP
+#ifndef  UNDEX_2D_HPP
+# define UNDEX_2D_HPP
 
-//# include "Bool2D.hpp"
+# include "Bool2D.hpp"
 
 struct Undex2D
 {
@@ -31,12 +31,12 @@ struct Undex2D
 
 
 
-	//Bool2D operator==(const Undex2D & other) const;
-	//Bool2D operator<=(const Undex2D & other) const;
-	//Bool2D operator>=(const Undex2D & other) const;
-	//Bool2D operator!=(const Undex2D & other) const;
-	//Bool2D operator<(const Undex2D & other) const;
-	//Bool2D operator>(const Undex2D & other) const;
+	Bool2D operator==(const Undex2D & other) const;
+	Bool2D operator<=(const Undex2D & other) const;
+	Bool2D operator>=(const Undex2D & other) const;
+	Bool2D operator!=(const Undex2D & other) const;
+	Bool2D operator<(const Undex2D & other) const;
+	Bool2D operator>(const Undex2D & other) const;
 };
 
 #endif

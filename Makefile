@@ -78,11 +78,14 @@ FILES_CPP := \
 	FileFormat/PNG/PNG_IHDR.cpp \
 	FileFormat/PNG/PNG.cpp \
 \
+	ValueType/Bool2D.cpp \
 	ValueType/Undex2D.cpp \
+	ValueType/UndexBox2D.cpp \
+	ValueType/UndexLoop2D.cpp \
 	ValueType/ColorU4.cpp \
 	ValueType/uint.cpp \
 \
-	DataType/Image.cpp
+	Image.cpp
 
 FILES_OBJ := $(FILES_CPP:.cpp=.o)
 

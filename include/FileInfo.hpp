@@ -1,5 +1,5 @@
-#ifndef  FILE_CONTEXT_HPP
-# define FILE_CONTEXT_HPP
+#ifndef  FILE_INFO_HPP
+# define FILE_INFO_HPP
 
 # include "FileSystemInfo.hpp"
 
@@ -36,7 +36,7 @@ class FileInfo : public FileSystemInfo
 	std::string LoadText() const;
 	void SaveText(std::string text) const;
 
-	Image * LoadImage() const;
+	Image LoadImage() const;
 };
 
 #endif

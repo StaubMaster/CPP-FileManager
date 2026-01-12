@@ -185,15 +185,14 @@ std::vector<FilePath> DirectoryInfo::Children() const
 	if (!Exists()) { throw DirectoryNotFound(Path); }
 	if (!Mode.IsDirectory()) { throw DirectoryIsNotDirectory(Path); }
 
-	DIR * dir = opendir(Path.ToString());
-	if (dir == NULL)
-	{
-		throw DirectoryProblem(Path, "opendir");
-	}
+	DIR * dir;
+	struct dirent * ent;
+
+	dir = opendir(Path.ToString());
+	if (dir == NULL) { throw DirectoryProblem(Path, "opendir"); }
 
 	std::vector<FilePath> children;
 
-	struct dirent * ent;
 	ent = readdir(dir);
 	while (ent != NULL)
 	{
@@ -201,45 +200,69 @@ std::vector<FilePath> DirectoryInfo::Children() const
 		ent = readdir(dir);
 	}
 
-	if (closedir(dir) != 0)
-	{
-		throw DirectoryProblem(Path, "closedir");
-	}
+	if (closedir(dir) != 0) { throw DirectoryProblem(Path, "closedir"); }
+
 	return children;
 }
 std::vector<FileInfo> DirectoryInfo::Files() const
 {
-	std::vector<FilePath> paths = Children();
+	if (!Exists()) { throw DirectoryNotFound(Path); }
+	if (!Mode.IsDirectory()) { throw DirectoryIsNotDirectory(Path); }
 
-	std::vector<FileInfo> files;
+	DIR * dir;
+	struct dirent * ent;
 
-	for (size_t i = 0; i < paths.size(); i++)
+	dir = opendir(Path.ToString());
+	if (dir == NULL) { throw DirectoryProblem(Path, "opendir"); }
+
+	std::vector<FileInfo> children;
+
+	ent = readdir(dir);
+	while (ent != NULL)
 	{
-		FileSystemInfo info(paths[i].ToString());
+		//if (ent -> d_type == DT_REG)
+		FileSystemInfo info(ent -> d_name);
 		if (info.Mode.IsFile())
 		{
-			files.push_back(FileInfo(paths[i]));
+			children.push_back(info.Path);
+			//children.push_back(FilePath(ent -> d_name));
 		}
+		ent = readdir(dir);
 	}
 
-	return files;
+	if (closedir(dir) != 0) { throw DirectoryProblem(Path, "closedir"); }
+
+	return children;
 }
 std::vector<DirectoryInfo> DirectoryInfo::Directorys() const
 {
-	std::vector<FilePath> paths = Children();
+	if (!Exists()) { throw DirectoryNotFound(Path); }
+	if (!Mode.IsDirectory()) { throw DirectoryIsNotDirectory(Path); }
 
-	std::vector<DirectoryInfo> dirs;
+	DIR * dir;
+	struct dirent * ent;
 
-	for (size_t i = 0; i < paths.size(); i++)
+	dir = opendir(Path.ToString());
+	if (dir == NULL) { throw DirectoryProblem(Path, "opendir"); }
+
+	std::vector<DirectoryInfo> children;
+
+	ent = readdir(dir);
+	while (ent != NULL)
 	{
-		FileSystemInfo info(paths[i].ToString());
-		if (Mode.IsDirectory())
+		//if (ent -> d_type == DT_DIR)
+		FileSystemInfo info(ent -> d_name);
+		if (info.Mode.IsDirectory())
 		{
-			dirs.push_back(DirectoryInfo(paths[i]));
+			children.push_back(info.Path);
+			//children.push_back(FilePath(ent -> d_name));
 		}
+		ent = readdir(dir);
 	}
 
-	return dirs;
+	if (closedir(dir) != 0) { throw DirectoryProblem(Path, "closedir"); }
+
+	return children;
 }
 
 
