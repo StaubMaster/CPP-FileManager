@@ -55,51 +55,45 @@ Undex2D Undex2D::operator%(const Undex2D & other) const
 
 
 
-/*Bool3D Undex2D::operator==(const Undex2D & other) const
+Bool2D Undex2D::operator==(const Undex2D & other) const
 {
-	return Bool3D(
+	return Bool2D(
 		X == other.X,
-		Y == other.Y,
-		Z == other.Z
+		Y == other.Y
 	);
 }
-Bool3D Undex2D::operator<=(const Undex2D & other) const
+Bool2D Undex2D::operator<=(const Undex2D & other) const
 {
-	return Bool3D(
+	return Bool2D(
 		X <= other.X,
-		Y <= other.Y,
-		Z <= other.Z
+		Y <= other.Y
 	);
 }
-Bool3D Undex2D::operator>=(const Undex2D & other) const
+Bool2D Undex2D::operator>=(const Undex2D & other) const
 {
-	return Bool3D(
+	return Bool2D(
 		X >= other.X,
-		Y >= other.Y,
-		Z >= other.Z
+		Y >= other.Y
 	);
 }
-Bool3D Undex2D::operator!=(const Undex2D & other) const
+Bool2D Undex2D::operator!=(const Undex2D & other) const
 {
-	return Bool3D(
+	return Bool2D(
 		X != other.X,
-		Y != other.Y,
-		Z != other.Z
+		Y != other.Y
 	);
 }
-Bool3D Undex2D::operator<(const Undex2D & other) const
+Bool2D Undex2D::operator<(const Undex2D & other) const
 {
-	return Bool3D(
+	return Bool2D(
 		X < other.X,
-		Y < other.Y,
-		Z < other.Z
+		Y < other.Y
 	);
 }
-Bool3D Undex2D::operator>(const Undex2D & other) const
+Bool2D Undex2D::operator>(const Undex2D & other) const
 {
-	return Bool3D(
+	return Bool2D(
 		X > other.X,
-		Y > other.Y,
-		Z > other.Z
+		Y > other.Y
 	);
-}*/
+}

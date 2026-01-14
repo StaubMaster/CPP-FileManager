@@ -8,35 +8,54 @@
 # define SLASH '/'
 #endif
 
+#include <iostream>
+
+
+
+
+
+unsigned int FilePathSegmentCollection::Count() const { return _Count; }
+FilePathSegment & FilePathSegmentCollection::operator[](unsigned int idx) { return _Segments[idx]; }
+const FilePathSegment & FilePathSegmentCollection::operator[](unsigned int idx) const { return _Segments[idx]; }
+
+
+
 
 
 FilePathSegmentCollection::FilePathSegmentCollection() :
-	Count(0),
-	Segments(nullptr)
-{ }
+	_Count(0),
+	_Segments(0)
+{
+	std::cout << "  ++++  FilePathSegmentCollection " << this << " " << _Count << " " << _Segments << "\n";
+}
 FilePathSegmentCollection::~FilePathSegmentCollection()
 {
-	delete[] Segments;
+	std::cout << "  ----  FilePathSegmentCollection " << this << " " << _Count << " " << _Segments << "\n";
+	delete[] _Segments;
 }
 
 FilePathSegmentCollection::FilePathSegmentCollection(const FilePathSegmentCollection & other) :
-	Count(other.Count),
-	Segments(new FilePathSegment[Count])
+	_Count(other._Count),
+	_Segments(new FilePathSegment[_Count])
 {
-	for (unsigned int i = 0; i < Count; i++)
+	std::cout << "  ====  FilePathSegmentCollection " << this << " " << _Count << " " << _Segments << "\n";
+	for (unsigned int i = 0; i < _Count; i++)
 	{
-		Segments[i] = other.Segments[i];
+		_Segments[i] = other._Segments[i];
 	}
 }
 FilePathSegmentCollection & FilePathSegmentCollection::operator=(const FilePathSegmentCollection & other)
 {
-	delete[] Segments;
-	Count = other.Count;
-	Segments = new FilePathSegment[Count];
-	for (unsigned int i = 0; i < Count; i++)
+	std::cout << "  this  FilePathSegmentCollection " << this << " " << _Count << " " << _Segments << "\n";
+	std::cout << "  other FilePathSegmentCollection " << &other << " " << other._Count << " " << other._Segments << "\n";
+	delete[] _Segments;
+	_Count = other._Count;
+	_Segments = new FilePathSegment[_Count];
+	for (unsigned int i = 0; i < _Count; i++)
 	{
-		Segments[i] = other.Segments[i];
+		_Segments[i] = other._Segments[i];
 	}
+	std::cout << "FilePathSegmentCollection = done\n";
 	return *this;
 }
 
@@ -45,27 +64,29 @@ FilePathSegmentCollection & FilePathSegmentCollection::operator=(const FilePathS
 FilePathSegmentCollection FilePathSegmentCollection::RemoveLast() const
 {
 	FilePathSegmentCollection collection;
-	if (Count != 0) { collection.Count = Count - 1; }
-	collection.Segments = new FilePathSegment[collection.Count];
-	for (unsigned int i = 0; i < collection.Count; i++)
+	if (_Count != 0) { collection._Count = _Count - 1; }
+	collection._Segments = new FilePathSegment[collection._Count];
+	for (unsigned int i = 0; i < collection._Count; i++)
 	{
-		collection.Segments[i] = Segments[i];
+		collection._Segments[i] = _Segments[i];
 	}
+	std::cout << "RemoveLast() return " << &collection << " " << collection._Count << " " << collection._Segments << "\n";
 	return collection;
 }
 FilePathSegmentCollection FilePathSegmentCollection::Append(const FilePathSegmentCollection & other) const
 {
 	FilePathSegmentCollection collection;
-	collection.Count = Count + other.Count;
-	collection.Segments = new FilePathSegment[collection.Count];
-	for (unsigned int i = 0; i < Count; i++)
+	collection._Count = _Count + other._Count;
+	collection._Segments = new FilePathSegment[collection._Count];
+	for (unsigned int i = 0; i < _Count; i++)
 	{
-		collection.Segments[i] = Segments[i];
+		collection._Segments[i] = _Segments[i];
 	}
-	for (unsigned int i = 0; i < other.Count; i++)
+	for (unsigned int i = 0; i < other._Count; i++)
 	{
-		collection.Segments[i + Count] = other.Segments[i];
+		collection._Segments[i + _Count] = other._Segments[i];
 	}
+	std::cout << "Append() return " << &collection << " " << collection._Count << " " << collection._Segments << "\n";
 	return collection;
 }
 
@@ -87,7 +108,7 @@ FilePathSegmentCollection FilePathSegmentCollection::Split(const char * path)
 
 	FilePathSegmentCollection collection;
 	
-	//	Count
+	//	_Count
 	if (len != 0)
 	{
 		unsigned int i = 0;
@@ -98,28 +119,28 @@ FilePathSegmentCollection FilePathSegmentCollection::Split(const char * path)
 				if (str[i] != SLASH)
 				{
 					i++;
-					collection.Count++;
+					collection._Count++;
 					break;
 				}
 			}
-			if (i == len) { collection.Count++; }
+			if (i == len) { collection._Count++; }
 		}
 		else
 		{
-			collection.Count++;
+			collection._Count++;
 		}
 
 		for (; i < len; i++)
 		{
 			if (str[i] != SLASH && (i != 0 && str[i - 1] == SLASH))
 			{
-				collection.Count++;
+				collection._Count++;
 			}
 		}
 	}
 
 	//	Take
-	collection.Segments = new FilePathSegment[collection.Count];
+	collection._Segments = new FilePathSegment[collection._Count];
 	if (len != 0)
 	{
 		unsigned int idx = 0;
@@ -138,7 +159,7 @@ FilePathSegmentCollection FilePathSegmentCollection::Split(const char * path)
 			}
 			if (i == len)
 			{
-				collection.Segments[idx].FromTo(str, len - 1, len);
+				collection._Segments[idx].FromTo(str, len - 1, len);
 			}
 		}
 		else
@@ -154,44 +175,46 @@ FilePathSegmentCollection FilePathSegmentCollection::Split(const char * path)
 			}
 			if (str[i] == SLASH && (i != 0 && str[i - 1] != SLASH))
 			{
-				collection.Segments[idx].FromTo(str, off, i);
+				collection._Segments[idx].FromTo(str, off, i);
 				idx++;
 			}
 		}
 		if (str[len - 1] != SLASH)
 		{
-			collection.Segments[idx].FromTo(str, off, len);
+			collection._Segments[idx].FromTo(str, off, len);
 			idx++;
 		}
 	}
 	delete[] str;
 
+	std::cout << "Split() return " << &collection << " " << collection._Count << " " << collection._Segments << "\n";
 	return collection;
 }
 
 
 
+#include <iostream>
 char * FilePathSegmentCollection::ToString() const
 {
 	unsigned int len = 0;
-	for (unsigned int i = 0; i < Count; i++)
+	for (unsigned int i = 0; i < _Count; i++)
 	{
-		len += Segments[i].Length;
+		len += _Segments[i].Length;
 	}
-	if (Count != 0) { len += Count - 1; }
+	if (_Count != 0) { len += _Count - 1; }
 
 	unsigned int idx = 0;
 	char * str = new char[len + 1];
-	for (unsigned int i = 0; i < Count; i++)
+	for (unsigned int i = 0; i < _Count; i++)
 	{
 		if (i != 0)
 		{
 			str[idx] = SLASH;
 			idx++;
 		}
-		for (unsigned int j = 0; j < Segments[i].Length; j++)
+		for (unsigned int j = 0; j < _Segments[i].Length; j++)
 		{
-			str[idx] = Segments[i].String[j];
+			str[idx] = _Segments[i].String[j];
 			idx++;
 		}
 	}

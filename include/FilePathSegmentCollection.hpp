@@ -3,11 +3,21 @@
 
 # include "FilePathSegment.hpp"
 
-struct FilePathSegmentCollection
+class FilePathSegmentCollection
 {
-	unsigned int Count;
-	FilePathSegment * Segments;
+	private:
+	unsigned int _Count;
+	FilePathSegment * _Segments;
 
+	public:
+	unsigned int Count() const;
+	FilePathSegment & operator[](unsigned int idx);
+	const FilePathSegment & operator[](unsigned int idx) const;
+
+	//private:
+	//void Allocate();
+
+	public:
 	FilePathSegmentCollection();
 	~FilePathSegmentCollection();
 
