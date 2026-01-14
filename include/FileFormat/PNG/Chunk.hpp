@@ -5,33 +5,24 @@
 # include "FileParsing/BitStream.hpp"
 # include "ValueType/uint.hpp"
 
-class Chunk
+struct Chunk
 {
-	private:
-		static uint8	knownTypeIndex(uint32 type);
+	const uint32	Length;
+	const uint32	Type;
+	const uint8 *	Data;
+	const uint32	CRC;
 
-	public:
-		const uint32	Length;
-		const uint32	Type;
-		const uint8 *	Data;
-		const uint32	CRC;
+	const BitStream & BitS;
 
-		const uint8		typeIndex;
+	Chunk(BitStream & bits);
 
-		const BitStream & BitS;
+	uint32		calc_CRC() const;
+	BitStream	ToBitStream() const;
 
-		Chunk(BitStream & bits);
+	std::string	ToString() const;
 
-	private:
-		uint32		calc_CRC() const;
-	public:
-		BitStream	ToBitStream() const;
-
-		std::string	ToString() const;
-
-		bool		isIHRD() const;
-		bool		isIDAT() const;
-		bool		isIEND() const;
+	bool		CheckType(uint8 c0, uint8 c1, uint8 c2, uint8 c3);
+	bool		CheckType(const char * str);
 };
 
 #endif

@@ -4,33 +4,6 @@
 
 
 
-const char * knownChunkTypes[] = {
-	"IHDR",
-	"IDAT",
-	"IEND",
-};
-
-uint8	Chunk::knownTypeIndex(uint32 type)
-{
-	const uint8 * p = (const uint8 *)&type;
-	const uint8 * k;
-
-	for (uint8 i = 0; i < 3; i++)
-	{
-		k = (const uint8 *)knownChunkTypes[i];
-		if (k[0] == p[0] && 
-			k[1] == p[1] &&
-			k[2] == p[2] &&
-			k[3] == p[3])
-		{
-			return (i);
-		}
-	}
-	return (0xFF);
-}
-
-
-
 
 
 Chunk::Chunk(BitStream & bits) :
@@ -38,11 +11,8 @@ Chunk::Chunk(BitStream & bits) :
 	Type(bits.GetIncBits32()),
 	Data(bits.DataAtIndex()),
 	CRC((bits.IncByBytes(Length), ReverseBytes(bits.GetIncBits32()))),
-	typeIndex(knownTypeIndex(Type)),
 	BitS(bits)
-{
-
-}
+{ }
 
 
 
@@ -113,18 +83,11 @@ std::string	Chunk::ToString() const
 {
 	std::stringstream ss;
 
-	ss << "Length: " << Length << "\n";
-
-	ss << "Type: " << uint_Chr(Type);
-	ss << " (";
-	if (typeIndex == 0xFF)
-		ss << "\e[31mUnknown\e[m";
-	else
-		ss << "\e[32mKnown\e[m";
-	ss << ")\n";
+	ss << "Length: " << Length << '\n';
+	ss << "Type: " << uint_Chr(Type) << '\n';
 
 	uint32 crc = calc_CRC();
-	ss << "CRC: " << ToBase16(CRC) << "\n";
+	ss << "CRC: " << ToBase16(CRC) << '\n';
 	ss << "     " << ToBase16(crc);
 	ss << " (";
 	if (CRC == crc)
@@ -136,15 +99,22 @@ std::string	Chunk::ToString() const
 	return (ss.str());
 }
 
-bool	Chunk::isIHRD() const
+bool	Chunk::CheckType(uint8 c0, uint8 c1, uint8 c2, uint8 c3)
 {
-	return (typeIndex == 0);
+	return (
+		((uint8)(Type >> 0)) == c0 &&
+		((uint8)(Type >> 8)) == c1 &&
+		((uint8)(Type >> 16)) == c2 &&
+		((uint8)(Type >> 24)) == c3
+	);
 }
-bool	Chunk::isIDAT() const
+bool	Chunk::CheckType(const char * str)
 {
-	return (typeIndex == 1);
-}
-bool	Chunk::isIEND() const
-{
-	return (typeIndex == 2);
+	unsigned int len = 0;
+	while (str[len] != '\0') { len++; }
+	if (len != 4)
+	{
+		throw "Bad Type Check";
+	}
+	return CheckType(str[0], str[1], str[2], str[3]);
 }

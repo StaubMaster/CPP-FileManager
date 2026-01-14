@@ -33,6 +33,9 @@ Image PNG::Load(const FileInfo & file, bool debug)
 		os << "\n";
 		{
 			uint64	signature_template = 0x0A1A0A0D474E5089;
+			//	89
+			//	50 4E 47
+			//	0D 0A 1A 0A
 			uint64	signature_received;
 
 			signature_received = file.GetIncBits64();
@@ -57,17 +60,23 @@ Image PNG::Load(const FileInfo & file, bool debug)
 			BitStream chunk_stream = chunk.ToBitStream();
 			os << chunk.ToString();
 			os << "\n";
-			if (chunk.isIHRD())
+			if (chunk.CheckType("IEND"))
+			{
+				break;
+			}
+			else if (chunk.CheckType("IHDR"))
 			{
 				imageHead = IHDR(chunk_stream);
 				imageHead.ToString(os);
 			}
-			if (chunk.isIDAT())
+			else if (chunk.CheckType("IDAT"))
 			{
 				imageData.Concatenation(chunk_stream.Data, chunk_stream.Len);
 			}
-			if (chunk.isIEND())
-				break;
+			else
+			{
+				std::cout << "PNG Unknown Type: " << uint_Chr(chunk.Type) << '\n';
+			}
 		}
 
 		BitStream bits(imageData.Data, imageData.Len);
