@@ -4,7 +4,7 @@
 
 FilePathSegment::FilePathSegment() :
 	Length(0),
-	String(nullptr)
+	String(0)
 { }
 FilePathSegment::~FilePathSegment()
 {

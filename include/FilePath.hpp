@@ -7,7 +7,8 @@
 
 class FilePath
 {
-	private:
+	//private:
+	public:
 	FilePathSegmentCollection	Segments;
 	char * PathString;
 

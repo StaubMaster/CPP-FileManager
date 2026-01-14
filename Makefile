@@ -38,8 +38,8 @@ endif
 
 
 NAME := FileManager.a
-#COMPILER := c++ -std=c++11
-COMPILER := g++ -g -std=c++11
+COMPILER := c++ -std=c++11
+#COMPILER := g++ -g -std=c++11
 FLAGS := -Wall -Wextra -Werror
 
 
@@ -103,28 +103,27 @@ FILES_ABS_OBJ := $(addprefix $(DIR_OBJ), $(FILES_OBJ))
 ################################################################
 
 all:
-#	@$(FANCY_ECHO) "$(COLOR_REPO)$(FANCY_NAME): $(COLOR_TYPE)Target: $(COLOR_FILE)$@$(COLOR_NONE)"
+	@$(FANCY_ECHO) "$(COLOR_REPO)$(FANCY_NAME): $(COLOR_TYPE)Target: $(COLOR_FILE)$@$(COLOR_NONE)"
 	@$(MAKE) $(FILES_ABS_OBJ) -s
 	@$(MAKE) $(NAME) -s
 
 clean:
-#	@$(FANCY_ECHO) "$(COLOR_REPO)$(FANCY_NAME): $(COLOR_TYPE)Target: $(COLOR_FILE)$@$(COLOR_NONE)"
+	@$(FANCY_ECHO) "$(COLOR_REPO)$(FANCY_NAME): $(COLOR_TYPE)Target: $(COLOR_FILE)$@$(COLOR_NONE)"
 	@rm -f $(FILES_ABS_OBJ)
 
 fclean:
-#	@$(FANCY_ECHO) "$(COLOR_REPO)$(FANCY_NAME): $(COLOR_TYPE)Target: $(COLOR_FILE)$@$(COLOR_NONE)"
+	@$(FANCY_ECHO) "$(COLOR_REPO)$(FANCY_NAME): $(COLOR_TYPE)Target: $(COLOR_FILE)$@$(COLOR_NONE)"
 	@$(MAKE) clean -s
 	@rm -f $(NAME)
 
 re:
-#	@$(FANCY_ECHO) "$(COLOR_REPO)$(FANCY_NAME): $(COLOR_TYPE)Target: $(COLOR_FILE)$@$(COLOR_NONE)"
+	@$(FANCY_ECHO) "$(COLOR_REPO)$(FANCY_NAME): $(COLOR_TYPE)Target: $(COLOR_FILE)$@$(COLOR_NONE)"
 	@$(MAKE) fclean -s
 	@$(MAKE) all -s
 
 .PHONY: all clean fclean re
 
 $(NAME) : $(FILES_ABS_OBJ)
-#	@$(FANCY_ECHO) "$(COLOR_REPO)$(FANCY_NAME): $(COLOR_TYPE)Target: $(COLOR_FILE)$@$(COLOR_NONE)"
 	@$(FANCY_ECHO) "$(COLOR_REPO)$(FANCY_NAME): $(COLOR_TYPE)Compiling: $(COLOR_FILE)$@$(COLOR_NONE)"
 	@ar -rcs $(NAME) $(FILES_ABS_OBJ)
 
@@ -174,7 +173,8 @@ arguments:
 EXE = test.exe
 
 test: all
-	$(COMPILER) $(FLAGS) $(ARGS_INCLUDES) -o $(EXE) main/mainTextCommands.cpp $(NAME)
+	$(COMPILER) $(FLAGS) $(ARGS_INCLUDES) -o $(EXE) main/copy.cpp $(NAME)
+#	$(COMPILER) $(FLAGS) $(ARGS_INCLUDES) -o $(EXE) main/mainTextCommands.cpp $(NAME)
 #	$(COMPILER) $(FLAGS) $(ARGS_INCLUDES) -o $(EXE) main/mainLines.cpp $(NAME)
 
 test_clean:

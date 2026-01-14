@@ -145,7 +145,14 @@ void DirectoryInfo::Create()
 	}
 
 	//std::cout << "Create Directory: " << Mode << ' ' << Path << '\n';
+#if defined(_WIN32)
 	if (mkdir(Path.ToString()) != 0)
+#endif
+#if defined(__APPLE__)
+	FileMode mode;
+	mode.AllAll(true);
+	if (mkdir(Path.ToString(), mode.Data) != 0)
+#endif
 	{
 		throw DirectoryProblem(Path, "mkdir");
 	}

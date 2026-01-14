@@ -37,9 +37,11 @@ FilePath::FilePath(const FilePath & other) :
 { }
 FilePath & FilePath::operator=(const FilePath & other)
 {
+	std::cout << "FilePath =\n";
 	delete[] PathString;
 	Segments = other.Segments;
 	PathString = Segments.ToString();
+	std::cout << "FilePath = done\n";
 	return *this;
 }
 
@@ -51,8 +53,8 @@ const char * FilePath::ToString() const
 }
 const char * FilePath::Name() const
 {
-	if (Segments.Count == 0) { return nullptr; }
-	return Segments.Segments[Segments.Count - 1].String;
+	if (Segments.Count() == 0) { return 0; }
+	return Segments[Segments.Count() - 1].String;
 }
 
 
@@ -83,7 +85,7 @@ FilePath FilePath::Here()
 
 bool FilePath::IsNone() const
 {
-	return (Segments.Count == 0);
+	return (Segments.Count() == 0);
 }
 /*bool FilePath::IsAbsolute() const
 {
@@ -175,6 +177,7 @@ FilePath FilePath::Child(const FilePath & path) const
 
 std::ostream & operator<<(std::ostream & o, const FilePath & obj)
 {
-	o << obj.ToString();
+	const char * str = obj.ToString();
+	if (str != 0) { o << str; }
 	return o;
 }
