@@ -1,5 +1,7 @@
 #include "FileSystemStat.hpp"
 
+#include <unistd.h>
+
 
 
 FileSystemStat::FileSystemStat() :
