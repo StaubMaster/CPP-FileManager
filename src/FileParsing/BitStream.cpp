@@ -73,25 +73,6 @@ uint8	BitStream::GetBits8(uint8 bit_count) const
 		val = ((uint8)Data[ByteIndex]);
 	}
 
-	/*uint8 byte_count = UINT8_BYTE_COUNT;
-	uint8 val = 0;
-
-	if (BitIndex == 0)
-	{
-		val |= ((uint8)Data[ByteIndex]) >> (BitIndex);
-		byte_count++;
-	}
-
-	for (uint8 i = 0; i < byte_count; i++)
-	{
-		val |= ((uint8)Data[ByteIndex + i]) << ((i * 8) - BitIndex);
-	}
-
-	if (bit_count != UINT8_BIT_COUNT)
-	{
-		val = val & (0xFF >> (UINT8_BIT_COUNT - bit_count));
-	}*/
-
 	return val;
 }
 uint16	BitStream::GetBits16(uint8 bit_count) const
@@ -112,28 +93,6 @@ uint16	BitStream::GetBits16(uint8 bit_count) const
 		if (bit_count > (1 * 8) - 1)	{ val |= ((uint16)Data[ByteIndex + 1]) << (1 * 8); }
 	}
 
-	//uint32	bitI = BitIndex;
-	//uint32	byteI = ByteIndex;
-
-	/*uint8 byte_count = UINT16_BYTE_COUNT;
-	uint16 val = 0;
-
-	if (bitI != 0)
-	{
-		val |= ((uint16)Data[byteI]) >> (bitI);
-		byte_count++;
-	}
-
-	for (uint8 i = 0; i < byte_count; i++)
-	{
-		val |= ((uint16)Data[byteI + i]) << ((i * 8) - bitI);
-	}
-
-	if (bit_count != UINT16_BIT_COUNT)
-	{
-		val = val & (0xFFFF >> (UINT16_BIT_COUNT - bit_count));
-	}*/
-
 	return val;
 }
 uint32	BitStream::GetBits32(uint8 bit_count) const
@@ -141,18 +100,10 @@ uint32	BitStream::GetBits32(uint8 bit_count) const
 	if (bit_count == 0) { return 0; }
 	bit_count = ((bit_count - 1) & UINT32_BIT_LIMIT) + 1;
 
-	//uint8 byte_count;
-	//if (bit_count <= 7)			{ byte_count = 1; }
-	//else if (bit_count <= 15)	{ byte_count = 2; }
-	//else if (bit_count <= 23)	{ byte_count = 3; }
-	//else						{ byte_count = UINT32_BYTE_COUNT; }
-
 	uint32 val;
 	if (BitIndex != 0)
 	{
 		val = ((uint32)Data[ByteIndex]) >> (BitIndex);
-		/*for (uint8 i = 1; i <= byte_count; i++)
-		{ val |= ((uint32)Data[ByteIndex + i]) << ((i * 8) - BitIndex); }*/
 		val |= ((uint32)Data[ByteIndex + 1]) << ((1 * 8) - BitIndex);
 		if (bit_count > 7)	{ val |= ((uint32)Data[ByteIndex + 2]) << ((2 * 8) - BitIndex); }
 		if (bit_count > 15)	{ val |= ((uint32)Data[ByteIndex + 3]) << ((3 * 8) - BitIndex); }
@@ -161,8 +112,6 @@ uint32	BitStream::GetBits32(uint8 bit_count) const
 	else
 	{
 		val = ((uint32)Data[ByteIndex]);
-		/*for (uint8 i = 1; i < byte_count; i++)
-		{ val |= ((uint32)Data[ByteIndex + i]) << (i * 8); }*/
 		if (bit_count > 7)	{ val |= ((uint32)Data[ByteIndex + 1]) << (1 * 8); }
 		if (bit_count > 15)	{ val |= ((uint32)Data[ByteIndex + 2]) << (2 * 8); }
 		if (bit_count > 23)	{ val |= ((uint32)Data[ByteIndex + 3]) << (3 * 8); }
@@ -204,20 +153,6 @@ uint64	BitStream::GetBits64(uint8 bit_count) const
 		if (bit_count > (6 * 8) - 1)	{ val |= ((uint64)Data[ByteIndex + 6]) << (6 * 8); }
 		if (bit_count > (7 * 8) - 1)	{ val |= ((uint64)Data[ByteIndex + 7]) << (7 * 8); }
 	}
-
-	//uint8 byte_count = UINT64_BYTE_COUNT;
-	//uint64 val = 0;
-
-	/*if (BitIndex != 0)
-	{
-		val |= ((uint64)Data[ByteIndex]) >> (BitIndex);
-		byte_count++;
-	}*/
-
-	/*for (uint8 i = 0; i < byte_count; i++)
-	{
-		val |= ((uint64)Data[ByteIndex + i]) << ((i * 8) - BitIndex);
-	}*/
 
 	if (bit_count != UINT64_BIT_COUNT)
 	{

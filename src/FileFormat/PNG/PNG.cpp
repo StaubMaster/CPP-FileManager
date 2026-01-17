@@ -13,8 +13,7 @@
 #include <fstream>
 #include <sstream>
 
-#include <ctime>
-#include <chrono>
+//#include <chrono>
 
 
 
@@ -38,11 +37,11 @@ static void Parse_Chunk_tEXt(const Chunk & chunk)
 		text_data_idx++;
 	}
 
-	std::cout << "Text";
-	std::cout << " [" << text_key_len << "|" << text_value_len << "] ";
-	std::cout << "\"" << text_key << "\" \"" << text_value << "\"";
-	std::cout << " " << text_data_idx << " | " << chunk.Length;
-	std::cout << '\n';
+	*DebugManager::Console << "Text";
+	*DebugManager::Console << " [" << text_key_len << "|" << text_value_len << "] ";
+	*DebugManager::Console << "\"" << text_key << "\" \"" << text_value << "\"";
+	*DebugManager::Console << " " << text_data_idx << " | " << chunk.Length;
+	*DebugManager::Console << '\n';
 }
 
 Image PNG::Load(const FileInfo & file, bool debug)
@@ -51,13 +50,13 @@ Image PNG::Load(const FileInfo & file, bool debug)
 	else { DebugManager::ChangeConsoleToDump(); }
 	Image img;
 
-	std::chrono::time_point<std::chrono::high_resolution_clock> timeBase = std::chrono::high_resolution_clock::now();
-	std::chrono::nanoseconds time;
+	//std::chrono::time_point<std::chrono::high_resolution_clock> timeBase = std::chrono::high_resolution_clock::now();
+	//std::chrono::nanoseconds time;
 
 	try
 	{
-		time = std::chrono::high_resolution_clock::now() - timeBase;
-		std::cout << "\ntime: " << (time.count() / 1000000000.0f) << '\n';
+		//time = std::chrono::high_resolution_clock::now() - timeBase;
+		//std::cout << "\ntime: " << (time.count() / 1000000000.0f) << '\n';
 		*DebugManager::Console << "loading '" << file.Path.ToString() << "' ...\n";
 
 		std::string file_str = file.LoadText();
@@ -88,8 +87,8 @@ Image PNG::Load(const FileInfo & file, bool debug)
 		IHDR imageHead;
 		ByteStream imageData(0);
 
-		time = std::chrono::high_resolution_clock::now() - timeBase;
-		std::cout << "\ntime: " << (time.count() / 1000000000.0f) << '\n';
+		//time = std::chrono::high_resolution_clock::now() - timeBase;
+		//std::cout << "\ntime: " << (time.count() / 1000000000.0f) << '\n';
 		*DebugManager::Console << "PNG: Assambling Data ...\n";
 
 		uint32 ChunkCount = 0;
@@ -126,34 +125,34 @@ Image PNG::Load(const FileInfo & file, bool debug)
 			}
 			else
 			{
-				std::cout << "PNG Chunk: Unknown Type: " << uint_Chr(chunk.Type) << '\n';
+				*DebugManager::Console << "PNG Chunk: Unknown Type: " << uint_Chr(chunk.Type) << '\n';
 			}
 			ChunkCount++;
 		}
 
-		time = std::chrono::high_resolution_clock::now() - timeBase;
-		std::cout << "\ntime: " << (time.count() / 1000000000.0f) << '\n';
+		//time = std::chrono::high_resolution_clock::now() - timeBase;
+		//std::cout << "\ntime: " << (time.count() / 1000000000.0f) << '\n';
 		*DebugManager::Console << "PNG: Decompressing Data Init ...\n";
 
 		BitStream bits(imageData.Data, imageData.Len);
 		ByteStream * data = new ByteStream(0xFFFFFFFF);
 
-		time = std::chrono::high_resolution_clock::now() - timeBase;
-		std::cout << "\ntime: " << (time.count() / 1000000000.0f) << '\n';
+		//time = std::chrono::high_resolution_clock::now() - timeBase;
+		//std::cout << "\ntime: " << (time.count() / 1000000000.0f) << '\n';
 		*DebugManager::Console << "PNG: Decompressing Data ...\n";
 
 		ZLIB::decompress(bits, *data);
 
-		time = std::chrono::high_resolution_clock::now() - timeBase;
-		std::cout << "\ntime: " << (time.count() / 1000000000.0f) << '\n';
+		//time = std::chrono::high_resolution_clock::now() - timeBase;
+		//std::cout << "\ntime: " << (time.count() / 1000000000.0f) << '\n';
 		*DebugManager::Console << "PNG: Filtering Data ...\n";
 
 		img.Init(imageHead.width, imageHead.height);
 		PNG::Filter::filter(*data, img);
 		delete data;
 
-		time = std::chrono::high_resolution_clock::now() - timeBase;
-		std::cout << "\ntime: " << (time.count() / 1000000000.0f) << '\n';
+		//time = std::chrono::high_resolution_clock::now() - timeBase;
+		//std::cout << "\ntime: " << (time.count() / 1000000000.0f) << '\n';
 		*DebugManager::Console << "PNG: done\n";
 	}
 	catch(const std::exception& e)
