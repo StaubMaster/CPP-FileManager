@@ -142,10 +142,10 @@ std::string FileInfo::LoadText() const
 
 
 
-Image FileInfo::LoadImage() const
+Image FileInfo::LoadImage(bool debug) const
 {
 	std::string extension = Extension();
-	if (extension == ".png") { return PNG::Load(*this, true); }
-	if (extension == ".PNG") { return PNG::Load(*this, true); }
+	if (extension == ".png") { return PNG::Load(*this, debug); }
+	if (extension == ".PNG") { return PNG::Load(*this, debug); }
 	throw InvalidExtension(extension);
 }

@@ -1,16 +1,28 @@
+#ifndef  DEBUG_MANAGER_HPP
+# define DEBUG_MANAGER_HPP
 
-#ifndef DEBUGMANAGER_HPP
-# define DEBUGMANAGER_HPP
-
-# include <iostream>
-# include <sstream>
+# include <iosfwd>
 # include <fstream>
 
-class DebugManager
+namespace DebugManager
 {
-	public:
-		static void SetOut(bool debug);
-		static std::ostream & GetOut();
+	struct LogChange
+	{
+		char Data;
+		LogChange(char data);
+		bool operator==(const LogChange & other) const;
+	};
+
+	extern LogChange Tabs;
+	extern LogChange TabInc;
+	extern LogChange TabDec;
+
+	extern std::ostream * Console;
+
+	void ChangeConsoleToDump();
+	void ChangeConsoleToCOut();
 };
+
+std::ostream & operator<<(std::ostream & log, DebugManager::LogChange & type);
 
 #endif

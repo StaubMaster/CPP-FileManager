@@ -27,6 +27,7 @@ ZLIB::ZLIB(BitStream & bits)
 	bits.MoveToNextByte();
 	bits.IncByBytes(Length);
 	ADLER32 = bits.GetIncBits32();
+	//	maybe check this ?
 }
 
 BitStream	ZLIB::ToBitStream() const
@@ -37,44 +38,40 @@ BitStream	ZLIB::ToBitStream() const
 
 
 
-std::string	ZLIB::ToString() const
-{
-	std::ostream & os = DebugManager::GetOut();
-
-	uint8	CM = (CMF >> 0) & 0b1111;
-	uint8	CINFO = (CMF >> 4) & 0b1111;
-	os << "CMF   : " << ToBase2(CMF) << "\n";
-	os << "CM    : "    << ToBase2(CM, 3) << "\n";
-	os << "CINFO : " << ToBase2(CINFO, 3) << "\n";
-
-	uint8	FCHECK = (FLG >> 0) & 0b11111;
-	uint8	FDICT = (FLG >> 5) & 0b1;
-	uint8	FLEVEL = (FLG >> 6) & 0b11;
-	os << "FLG    : " << ToBase2(FLG) << "\n";
-	os << "FCHECK : "    << ToBase2(FCHECK, 4) << "\n";
-	os << "FDICT  : " << ToBase2(FDICT, 0) << "\n";
-	os << "FLEVEL : " << ToBase2(FLEVEL, 1) << "\n";
-
-	os << "DICTID  : " << ToBase16(DICTID) << "\n";
-	os << "ADLER32 : " << ToBase16(ADLER32) << "\n";
-
-	os << "Length : " << Length << "\n";
-
-	return (std::string());
-}
-
-
 void	ZLIB::decompress(BitStream & bits, ByteStream & data)
 {
-	std::ostream & os = DebugManager::GetOut();
-	os << "\e[34mzlib ...\e[m\n";
+	//*DebugManager::Console << "\e[34mzlib ...\e[m\n";
 
 	ZLIB zlib(bits);
-	zlib.ToString();
-	os << "\n";
+	//zlib.ToConsole();
+	//*DebugManager::Console << "\n";
 
 	BitStream deflate = zlib.ToBitStream();
 	DEFLATE::Blocks(deflate, data);
 
-	os << "\e[34mzlib done\e[m\n";
+	//*DebugManager::Console << "\e[34mzlib done\e[m\n";
+}
+
+
+
+void ZLIB::ToConsole() const
+{
+	uint8	CM = (CMF >> 0) & 0b1111;
+	uint8	CINFO = (CMF >> 4) & 0b1111;
+	*DebugManager::Console << "CMF   : " << ToBase2(CMF) << "\n";
+	*DebugManager::Console << "CM    : "    << ToBase2(CM, 3) << "\n";
+	*DebugManager::Console << "CINFO : " << ToBase2(CINFO, 3) << "\n";
+
+	uint8	FCHECK = (FLG >> 0) & 0b11111;
+	uint8	FDICT = (FLG >> 5) & 0b1;
+	uint8	FLEVEL = (FLG >> 6) & 0b11;
+	*DebugManager::Console << "FLG    : " << ToBase2(FLG) << "\n";
+	*DebugManager::Console << "FCHECK : "    << ToBase2(FCHECK, 4) << "\n";
+	*DebugManager::Console << "FDICT  : " << ToBase2(FDICT, 0) << "\n";
+	*DebugManager::Console << "FLEVEL : " << ToBase2(FLEVEL, 1) << "\n";
+
+	*DebugManager::Console << "DICTID  : " << ToBase16(DICTID) << "\n";
+	*DebugManager::Console << "ADLER32 : " << ToBase16(ADLER32) << "\n";
+
+	*DebugManager::Console << "Length : " << Length << "\n";
 }

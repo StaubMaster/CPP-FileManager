@@ -68,8 +68,7 @@ static uint32 dist_base_extra_bits[] = {
 
 void	DEFLATE::decode_Huffman(BitStream & bits, HuffmanTree & literal, HuffmanTree & distance, ByteStream & data)
 {
-	std::ostream & os = DebugManager::GetOut();
-	os << "\e[34mHuffman decode ... \e[m\n";
+	//*DebugManager::Console << "\e[34mHuffman decode ... \e[m\n";
 
 	uint32	decode_value;
 
@@ -79,20 +78,20 @@ void	DEFLATE::decode_Huffman(BitStream & bits, HuffmanTree & literal, HuffmanTre
 	uint32	dist_idx;
 	uint32	dist_len;
 
-	uint32	back_idx;
+	//uint32	back_idx;
 
 	while (1)
 	{
 		decode_value = literal.decode(bits);
 
-		if (decode_value == 256)
-		{
-			break;
-		}
-		else if (decode_value < 256)
+		if (decode_value < 256)
 		{
 			data.Set(decode_value);
 			data.Next();
+		}
+		else if (decode_value == 256)
+		{
+			break;
 		}
 		else if (decode_value < 286)
 		{
@@ -102,29 +101,27 @@ void	DEFLATE::decode_Huffman(BitStream & bits, HuffmanTree & literal, HuffmanTre
 			dist_idx = distance.decode(bits);
 			dist_len = dist_base[dist_idx] + bits.GetIncBits32(dist_base_extra_bits[dist_idx]);
 
-			back_idx = data.Index - dist_len;
+			data.SetRange(&(data.Data[data.Index - dist_len]), len_len);
+			/*back_idx = data.Index - dist_len;
 			while (len_len != 0)
 			{
 				len_len--;
 				data.Set(data.Data[back_idx]);
 				data.Next();
 				back_idx++;
-			}
+			}*/
 		}
 		else
 		{
-			os << "\e[31mError: Invalid Huffman Decode\e[m\n";
+			*DebugManager::Console << "\e[31mError: Invalid Huffman Decode\e[m\n";
 			throw Exception_InvalidData("Huffman Decode: ", decode_value);
 		}
 	}
-
-	os << "\e[34mHuffman decode done \e[m\n";
+	//*DebugManager::Console << "\e[34mHuffman decode done \e[m\n";
 }
 
 uint8 *	DEFLATE::dynamic_Huffman(BitStream & bits, uint32 H_LIT, uint32 H_DIST, uint32 H_CLEN)
 {
-	std::ostream & os = DebugManager::GetOut();
-
 	uint8 codeLenCodeLenOrder[19] = { 16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15 };
 	uint8 codeLenCodeLen[19];
 	for (uint32 i = 0; i < 19; i++)
@@ -164,7 +161,7 @@ uint8 *	DEFLATE::dynamic_Huffman(BitStream & bits, uint32 H_LIT, uint32 H_DIST, 
 			}
 			else
 			{
-				os << "\e[31mError: Invalid Huffman Decode\e[m\n";
+				*DebugManager::Console << "\e[31mError: Invalid Huffman Decode\e[m\n";
 				throw Exception_InvalidData("Huffman Decode: ", decode_value);
 			}
 
@@ -184,37 +181,39 @@ uint8 *	DEFLATE::dynamic_Huffman(BitStream & bits, uint32 H_LIT, uint32 H_DIST, 
 
 void	DEFLATE::Block_direct(BitStream & bits, ByteStream & data)
 {
-	std::ostream & os = DebugManager::GetOut();
-	os << "\e[34mdirect Data ...\e[m\n";
+	//*DebugManager::Console << "\e[34mdirect Data ...\e[m\n";
 
 	throw Exception_NotImplemented("direct Data Block", "");
 
-	os << "\e[34mdirect Data done\e[m\n";
+	//*DebugManager::Console << "\e[34mdirect Data done\e[m\n";
 	(void)bits;
 	(void)data;
 }
 void	DEFLATE::Block_static(BitStream & bits, ByteStream & data)
 {
-	std::ostream & os = DebugManager::GetOut();
-	os << "\e[34mstatic Huffman ...\e[m\n";
+	//*DebugManager::Console << "\e[34mstatic Huffman ...\e[m\n";
 
 	throw Exception_NotImplemented("static Huffman Block", "");
 
-	os << "\e[34mstatic Huffman done\e[m\n";
+	//*DebugManager::Console << "\e[34mstatic Huffman done\e[m\n";
 	(void)bits;
 	(void)data;
 }
 void	DEFLATE::Block_dynamic(BitStream & bits, ByteStream & data)
 {
-	std::ostream & os = DebugManager::GetOut();
-	os << "\e[34mdynamic Huffman ...\e[m\n";
+	//*DebugManager::Console << "\e[34mdynamic Huffman ...\e[m\n";
 
 	uint32	H_LIT = bits.GetIncBits32(5) + 257;
 	uint32	H_DIST = bits.GetIncBits32(5) + 1;
 	uint32	H_CLEN = bits.GetIncBits32(4) + 4;
-	os << "H_LIT  : " << H_LIT  << "\n";
-	os << "H_DIST : " << H_DIST << "\n";
-	os << "H_CLEN : " << H_CLEN << "\n";
+	//*DebugManager::Console << "Huffman:";
+	//*DebugManager::Console << ' ' << H_LIT;
+	//*DebugManager::Console << ' ' << H_DIST;
+	//*DebugManager::Console << ' ' << H_CLEN;
+	//*DebugManager::Console << '\n';
+	//*DebugManager::Console << "H_LIT  : " << H_LIT  << "\n";
+	//*DebugManager::Console << "H_DIST : " << H_DIST << "\n";
+	//*DebugManager::Console << "H_CLEN : " << H_CLEN << "\n";
 
 	uint8 * bitLens = DEFLATE::dynamic_Huffman(bits, H_LIT, H_DIST, H_CLEN);
 
@@ -225,25 +224,31 @@ void	DEFLATE::Block_dynamic(BitStream & bits, ByteStream & data)
 
 	delete [] bitLens;
 
-	os << "\e[34mdynamic Huffman done\e[m\n";
+	//*DebugManager::Console << "\e[34mdynamic Huffman done\e[m\n";
 }
 
 void	DEFLATE::Blocks(BitStream & bits, ByteStream & data)
 {
-	std::ostream & os = DebugManager::GetOut();
-
 	uint8	BFINAL;
 	uint8	BTYPE;
 
+	uint32	BlockCount = 0;
 	do
 	{
-		//os << "decoding ...  " << bits.get_ByteIndex() << "/" << bits.Len << "\n";
-		os << "decoding ...\n";
+		//*DebugManager::Console << "decoding ...  " << bits.get_ByteIndex() << "/" << bits.Len << "\n";
+		//*DebugManager::Console << "decoding ...\n";
 
 		BFINAL = bits.GetIncBits32(1);
 		BTYPE = bits.GetIncBits32(2);
-		os << "BFINAL : " << ToBase2(BFINAL, 0) << "\n";
-		os << "BTYPE  : " << ToBase2(BTYPE, 1) << "\n";
+		//*DebugManager::Console << "[" << ToBase16(BlockCount) << "] ";
+		//*DebugManager::Console << "Deflate Block: ";
+		//if (BFINAL == 0) { *DebugManager::Console << "not final, "; }
+		//else { *DebugManager::Console << "final, "; }
+		//if (BTYPE == 0b00) { *DebugManager::Console << "direct."; }
+		//else if (BTYPE == 0b01) { *DebugManager::Console << "static."; }
+		//else if (BTYPE == 0b10) { *DebugManager::Console << "dynamic."; }
+		//else { *DebugManager::Console << "Invalid."; }
+		//*DebugManager::Console << '\n';
 
 		if (BTYPE == 0b00)
 		{
@@ -260,13 +265,14 @@ void	DEFLATE::Blocks(BitStream & bits, ByteStream & data)
 		else
 		{
 			throw Exception_InvalidBlockType(BTYPE);
-			os << "\e[31mError: Invalid Block Type\e[m\n";
+			*DebugManager::Console << "\e[31mError: Invalid Block Type\e[m\n";
 		}
-		os << "\n";
+		//*DebugManager::Console << "\n";
+		BlockCount++;
 	}
 	while (BFINAL == 0);
-	//os << "decoding done " << bits.get_ByteIndex() << "/" << bits.Len << "\n";
-	os << "decoding done\n";
+	//*DebugManager::Console << "decoding done " << bits.get_ByteIndex() << "/" << bits.Len << "\n";
+	//*DebugManager::Console << "decoding done\n";
 }
 
 
@@ -283,8 +289,6 @@ void	DEFLATE::Blocks(BitStream & bits, ByteStream & data)
 	also the headers here could use more foreward declate stuff
 */
 
-
-
 DEFLATE::Exception_NotImplemented::Exception_NotImplemented(std::string head, std::string name)
 {
 	std::ostringstream ss("DEFLATE: not implemented: ");
@@ -297,8 +301,6 @@ const char * DEFLATE::Exception_NotImplemented::what() const noexcept
 	return Text.c_str();
 }
 
-
-
 DEFLATE::Exception_InvalidBlockType::Exception_InvalidBlockType(uint32 type)
 {
 	std::ostringstream ss("DEFLATE: invalid Block Type: ");
@@ -309,8 +311,6 @@ const char * DEFLATE::Exception_InvalidBlockType::what() const noexcept
 {
 	return Text.c_str();
 }
-
-
 
 DEFLATE::Exception_InvalidData::Exception_InvalidData(std::string head, uint32 value)
 {
@@ -323,6 +323,3 @@ const char * DEFLATE::Exception_InvalidData::what() const noexcept
 {
 	return Text.c_str();
 }
-
-
-

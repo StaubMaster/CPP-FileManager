@@ -70,12 +70,13 @@ FILES_CPP := \
 	FileParsing/Text/TextCommand.cpp \
 	FileParsing/Text/TextCommandStream.cpp \
 \
+	FileFormat/PNG/ErrorDetection.cpp \
 	FileFormat/PNG/Chunk.cpp \
 	FileFormat/PNG/ZLIB.cpp \
 	FileFormat/PNG/Huffman.cpp \
 	FileFormat/PNG/DEFLATE.cpp \
-	FileFormat/PNG/PNG_Filter.cpp \
-	FileFormat/PNG/PNG_IHDR.cpp \
+	FileFormat/PNG/Filter.cpp \
+	FileFormat/PNG/IHDR.cpp \
 	FileFormat/PNG/PNG.cpp \
 \
 	ValueType/Bool2D.cpp \

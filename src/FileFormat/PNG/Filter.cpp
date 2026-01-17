@@ -1,19 +1,17 @@
-#include "FileFormat/PNG/PNG_Filter.hpp"
+#include "FileFormat/PNG/Filter.hpp"
 
 
 
-PNG_Filter::PixelData::PixelData(Image & img) :
+PNG::Filter::PixelData::PixelData(Image & img) :
 	img(img)
-{
-	
-}
+{ }
 
-uint32	PNG_Filter::PixelIndex(PixelData pxl)
+/*uint32	PNG::Filter::PixelIndex(PixelData pxl)
 {
 	return (((pxl.img.W() * pxl.y + pxl.x) * 4) + pxl.col);
-}
+}*/
 
-uint8	PNG_Filter::getPixel(PixelData pxl, uint8 rel)
+uint8	PNG::Filter::getPixel(PixelData pxl, uint8 rel)
 {
 	if ((rel & rel_X) != 0)
 	{
@@ -32,27 +30,27 @@ uint8	PNG_Filter::getPixel(PixelData pxl, uint8 rel)
 	return (pxl.img.Pixel(pxl.x, pxl.y, pxl.col));
 }
 
-void	PNG_Filter::filter_None(PixelData pxl, uint8 byte)
+void	PNG::Filter::filter_None(PixelData pxl, uint8 byte)
 {
 	pxl.img.Pixel(pxl.x, pxl.y, pxl.col) = byte;
 }
-void	PNG_Filter::filter_Sub(PixelData pxl, uint8 byte)
+void	PNG::Filter::filter_Sub(PixelData pxl, uint8 byte)
 {
 	uint8	a = getPixel(pxl, rel_X);
 	pxl.img.Pixel(pxl.x, pxl.y, pxl.col) = byte + a;
 }
-void	PNG_Filter::filter_Up(PixelData pxl, uint8 byte)
+void	PNG::Filter::filter_Up(PixelData pxl, uint8 byte)
 {
 	uint8	b = getPixel(pxl, rel_Y);
 	pxl.img.Pixel(pxl.x, pxl.y, pxl.col) = byte + b;
 }
-void	PNG_Filter::filter_Avg(PixelData pxl, uint8 byte)
+void	PNG::Filter::filter_Avg(PixelData pxl, uint8 byte)
 {
 	uint8	a = getPixel(pxl, rel_X);
 	uint8	b = getPixel(pxl, rel_Y);
 	pxl.img.Pixel(pxl.x, pxl.y, pxl.col) = byte + ((a + b) >> 1);
 }
-void	PNG_Filter::filter_Paeth(PixelData pxl, uint8 byte)
+void	PNG::Filter::filter_Paeth(PixelData pxl, uint8 byte)
 {
 	uint8	a = getPixel(pxl, rel_X);
 	uint8	b = getPixel(pxl, rel_Y);
@@ -71,10 +69,10 @@ void	PNG_Filter::filter_Paeth(PixelData pxl, uint8 byte)
 		pxl.img.Pixel(pxl.x, pxl.y, pxl.col) = byte + c;
 }
 
-void	PNG_Filter::filter(ByteStream & data, Image & img)
+void	PNG::Filter::filter(ByteStream & data, Image & img)
 {
 	PixelData pxl(img);
-	void (*filter)(PixelData, uint8);
+	void (*filterFunc)(PixelData, uint8);
 
 	data.Index = 0;
 
@@ -84,38 +82,38 @@ void	PNG_Filter::filter(ByteStream & data, Image & img)
 		data_byte = data.Get();
 		data.Next();
 		if (data_byte == 0)
-			filter = &filter_None;
+			filterFunc = &filter_None;
 		else if (data_byte == 1)
-			filter = &filter_Sub;
+			filterFunc = &filter_Sub;
 		else if (data_byte == 2)
-			filter = &filter_Up;
+			filterFunc = &filter_Up;
 		else if (data_byte == 3)
-			filter = &filter_Avg;
+			filterFunc = &filter_Avg;
 		else if (data_byte == 4)
-			filter = &filter_Paeth;
+			filterFunc = &filter_Paeth;
 
 		for (pxl.x = 0; pxl.x < img.W(); pxl.x++)
 		{
 			pxl.col = 0;
 			data_byte = data.Get();
 			data.Next();
-			filter(pxl, data_byte);
+			filterFunc(pxl, data_byte);
 
 			pxl.col = 1;
 			data_byte = data.Get();
 			data.Next();
-			filter(pxl, data_byte);
+			filterFunc(pxl, data_byte);
 
 			pxl.col = 2;
 			data_byte = data.Get();
 			data.Next();
-			filter(pxl, data_byte);
+			filterFunc(pxl, data_byte);
 
 			pxl.col = 3;
 			//	color_type = 6
 			data_byte = data.Get();
 			data.Next();
-			filter(pxl, data_byte);
+			filterFunc(pxl, data_byte);
 
 			//	color_type = 2
 			//img.data[PixelIndex(pxl)] = 0xFF;

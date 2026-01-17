@@ -37,11 +37,9 @@ FilePath::FilePath(const FilePath & other) :
 { }
 FilePath & FilePath::operator=(const FilePath & other)
 {
-	std::cout << "FilePath =\n";
 	delete[] PathString;
 	Segments = other.Segments;
 	PathString = Segments.ToString();
-	std::cout << "FilePath = done\n";
 	return *this;
 }
 

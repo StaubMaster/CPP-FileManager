@@ -8,7 +8,7 @@
 # define SLASH '/'
 #endif
 
-#include <iostream>
+//#include <iostream>
 
 
 
@@ -26,11 +26,11 @@ FilePathSegmentCollection::FilePathSegmentCollection() :
 	_Count(0),
 	_Segments(0)
 {
-	std::cout << "  ++++  FilePathSegmentCollection " << this << " " << _Count << " " << _Segments << "\n";
+	//std::cout << "  ++++  FilePathSegmentCollection " << this << " " << _Count << " " << _Segments << "\n";
 }
 FilePathSegmentCollection::~FilePathSegmentCollection()
 {
-	std::cout << "  ----  FilePathSegmentCollection " << this << " " << _Count << " " << _Segments << "\n";
+	//std::cout << "  ----  FilePathSegmentCollection " << this << " " << _Count << " " << _Segments << "\n";
 	delete[] _Segments;
 }
 
@@ -38,7 +38,7 @@ FilePathSegmentCollection::FilePathSegmentCollection(const FilePathSegmentCollec
 	_Count(other._Count),
 	_Segments(new FilePathSegment[_Count])
 {
-	std::cout << "  ====  FilePathSegmentCollection " << this << " " << _Count << " " << _Segments << "\n";
+	//std::cout << "  ====  FilePathSegmentCollection " << this << " " << _Count << " " << _Segments << "\n";
 	for (unsigned int i = 0; i < _Count; i++)
 	{
 		_Segments[i] = other._Segments[i];
@@ -46,8 +46,8 @@ FilePathSegmentCollection::FilePathSegmentCollection(const FilePathSegmentCollec
 }
 FilePathSegmentCollection & FilePathSegmentCollection::operator=(const FilePathSegmentCollection & other)
 {
-	std::cout << "  this  FilePathSegmentCollection " << this << " " << _Count << " " << _Segments << "\n";
-	std::cout << "  other FilePathSegmentCollection " << &other << " " << other._Count << " " << other._Segments << "\n";
+	//std::cout << "  this  FilePathSegmentCollection " << this << " " << _Count << " " << _Segments << "\n";
+	//std::cout << "  other FilePathSegmentCollection " << &other << " " << other._Count << " " << other._Segments << "\n";
 	delete[] _Segments;
 	_Count = other._Count;
 	_Segments = new FilePathSegment[_Count];
@@ -55,7 +55,7 @@ FilePathSegmentCollection & FilePathSegmentCollection::operator=(const FilePathS
 	{
 		_Segments[i] = other._Segments[i];
 	}
-	std::cout << "FilePathSegmentCollection = done\n";
+	//std::cout << "FilePathSegmentCollection = done\n";
 	return *this;
 }
 
@@ -70,7 +70,7 @@ FilePathSegmentCollection FilePathSegmentCollection::RemoveLast() const
 	{
 		collection._Segments[i] = _Segments[i];
 	}
-	std::cout << "RemoveLast() return " << &collection << " " << collection._Count << " " << collection._Segments << "\n";
+	//std::cout << "RemoveLast() return " << &collection << " " << collection._Count << " " << collection./_Segments << "\n";
 	return collection;
 }
 FilePathSegmentCollection FilePathSegmentCollection::Append(const FilePathSegmentCollection & other) const
@@ -86,7 +86,7 @@ FilePathSegmentCollection FilePathSegmentCollection::Append(const FilePathSegmen
 	{
 		collection._Segments[i + _Count] = other._Segments[i];
 	}
-	std::cout << "Append() return " << &collection << " " << collection._Count << " " << collection._Segments << "\n";
+	//std::cout << "Append() return " << &collection << " " << collection._Count << " " << collection._Segments << "\n";
 	return collection;
 }
 
@@ -187,13 +187,12 @@ FilePathSegmentCollection FilePathSegmentCollection::Split(const char * path)
 	}
 	delete[] str;
 
-	std::cout << "Split() return " << &collection << " " << collection._Count << " " << collection._Segments << "\n";
+	//std::cout << "Split() return " << &collection << " " << collection._Count << " " << collection._Segments << "\n";
 	return collection;
 }
 
 
 
-#include <iostream>
 char * FilePathSegmentCollection::ToString() const
 {
 	unsigned int len = 0;

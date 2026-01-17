@@ -1,6 +1,7 @@
 #include "FileFormat/PNG/Huffman.hpp"
 
 #include "FileParsing/BitStream.hpp"
+#include "FileParsing/DebugManager.hpp"
 
 #include <iostream>
 #include <iomanip>
@@ -104,40 +105,47 @@ HuffmanTree::HuffmanTree(uint8 * codeBitLen, uint32 len)
 
 	yes = 1;
 
+	Masks = new uint32[Len];
+	for (uint32 i = 0; i < Len; i++)
+	{
+		Codes[i] = ReverseBits(Codes[i] << (UINT32_BIT_COUNT - BitLens[i]));
+		Masks[i] = ~(0xFFFFFFFF << (BitLens[i]));
+	}
+
 	delete [] codeCount;
 	delete [] firstCodes;
 }
 HuffmanTree::~HuffmanTree()
 {
 	delete [] Codes;
-}
-
-
-void	HuffmanTree::ToString() const
-{
-	for (uint32 i = 0; i < Len; i++)
-	{
-		std::cout << "[" << std::setw(3) << i << "] " << ToBase2(Codes[i], BitLens[i]) << "\n";
-	}
+	delete [] Masks;
 }
 
 
 
 uint32	HuffmanTree::decode(BitStream & bits)
 {
+	uint32 code32 = bits.GetBits32();
 	for (uint32 i = 0; i < Len; i++)
 	{
 		if (BitLens[i] != 0)
 		{
-			uint32 code = ReverseBits(bits.GetBits32(BitLens[i]) << (UINT32_BIT_COUNT - BitLens[i]));
-
-			if (Codes[i] == code)
+			if (Codes[i] == (code32 & Masks[i]))
 			{
 				bits.IncByBits(BitLens[i]);
 				return (i);
 			}
 		}
 	}
-
 	return (0);
+}
+
+
+
+void HuffmanTree::ToConsole() const
+{
+	for (uint32 i = 0; i < Len; i++)
+	{
+		*DebugManager::Console << "[" << std::setw(3) << i << "] " << ToBase2(Codes[i], BitLens[i]) << "\n";
+	}
 }

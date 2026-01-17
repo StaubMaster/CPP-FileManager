@@ -36,7 +36,7 @@ class FileInfo : public FileSystemInfo
 	std::string LoadText() const;
 	void SaveText(std::string text) const;
 
-	Image LoadImage() const;
+	Image LoadImage(bool debug = false) const;
 };
 
 #endif

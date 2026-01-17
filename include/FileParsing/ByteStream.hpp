@@ -22,6 +22,8 @@ class ByteStream
 
 		void	Set(uint8 val);
 		uint8	Get();
+
+		void	SetRange(uint8 * ptr, uint32 len);
 };
 
 #endif

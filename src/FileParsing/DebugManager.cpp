@@ -1,23 +1,47 @@
 #include "FileParsing/DebugManager.hpp"
 
+#include <iostream>
 
 
-static std::ostream dump(0);
-static std::ostream * ptr;
 
-void DebugManager::SetOut(bool debug)
+DebugManager::LogChange::LogChange(char data) :
+	Data(data)
+{ }
+bool DebugManager::LogChange::operator==(const LogChange & other) const
 {
-	if (debug)
-	{
-		ptr = &std::cout;
-	}
-	else
-	{
-		ptr = &dump;
-	}
+	return (Data == other.Data);
 }
 
-std::ostream & DebugManager::GetOut()
+
+
+DebugManager::LogChange DebugManager::Tabs('\t');
+DebugManager::LogChange DebugManager::TabInc('\x0e');	//	Shift In	-->
+DebugManager::LogChange DebugManager::TabDec('\x0f');	//	Shift Out	<--
+static unsigned int TabsCount = 0;
+static std::string TabsString(TabsCount, ' ');
+
+
+
+static std::ostream StreamDump(0);
+std::ostream * DebugManager::Console = &StreamDump;
+
+
+
+void DebugManager::ChangeConsoleToDump()
 {
-	return *ptr;
+	Console = &StreamDump;
+}
+void DebugManager::ChangeConsoleToCOut()
+{
+	Console = &std::cout;
+}
+
+
+
+std::ostream & operator<<(std::ostream & log, DebugManager::LogChange & type)
+{
+	if (type == DebugManager::TabInc) { TabsCount += 2; TabsString = std::string(TabsCount, ' '); }
+	if (type == DebugManager::TabDec) { TabsCount -= 2; TabsString = std::string(TabsCount, ' '); }
+	if (type == DebugManager::Tabs) { log << TabsString; }
+	return log;
 }
