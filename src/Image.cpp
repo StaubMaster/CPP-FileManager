@@ -53,9 +53,7 @@ Image::Image(uint32 w, uint32 h) :
 	_Data(new ColorU4[_Size.X * _Size.Y])
 { }
 Image::~Image()
-{
-	//delete [] _Data;
-}
+{ }
 
 Image::Image(const Image & other) :
 	_Size(other._Size),
@@ -92,13 +90,11 @@ void Image::Dispose()
 
 void Image::Bind(const Image & other)
 {
-	delete[] _Data;
 	_Size = other._Size;
 	_Data = other._Data;
 }
 void Image::Copy(const Image & other)
 {
-	delete[] _Data;
 	_Size = other._Size;
 	_Data = new ColorU4[_Size.X * _Size.X];
 	unsigned int size = _Size.X * _Size.X;
