@@ -33,6 +33,16 @@ COLOR_NONE := \033[m
 
 endif
 
+ifeq ($(CheckOS), Linux)
+
+FANCY_ECHO := echo
+COLOR_REPO := \033[38;2;127;127;127m
+COLOR_TYPE := \033[38;2;127;255;127m
+COLOR_FILE := \033[38;2;127;127;255m
+COLOR_NONE := \033[m
+
+endif
+
 ################################################################
 
 

@@ -8,6 +8,10 @@
 # define SLASH '/'
 #endif
 
+#if defined(__linux__)
+# define SLASH '/'
+#endif
+
 //#include <iostream>
 
 

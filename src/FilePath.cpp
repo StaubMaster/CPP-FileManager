@@ -16,6 +16,11 @@
 # define SLASH '/'
 #endif
 
+#if defined(__linux__)
+# include <unistd.h>
+# define SLASH '/'
+#endif
+
 
 
 FilePath::FilePath() :
@@ -72,6 +77,15 @@ FilePath FilePath::Here()
 #if defined(__APPLE__)
 	char path[PATH_MAX];
 	if (getwd(path) == NULL)
+	{
+		std::cout << "Error getting current Dir\n";
+	}
+	return FilePath(path);
+#endif
+
+#if defined(__linux__)
+	char path[PATH_MAX];
+	if (getcwd(path, PATH_MAX) == NULL)
 	{
 		std::cout << "Error getting current Dir\n";
 	}
