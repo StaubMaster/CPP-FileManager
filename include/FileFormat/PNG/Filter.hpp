@@ -3,7 +3,8 @@
 # define PNG_FILTER_HPP
 
 # include "FileParsing/ByteStream.hpp"
-
+# include "IHDR.hpp"
+# include "ValueType/Undex2D.hpp"
 # include "PNG.hpp"
 
 class	Image;
@@ -16,25 +17,15 @@ namespace Filter
 	static const uint8	rel_Y = 0b10;
 	static const uint8	rel_XY = 0b11;
 
-	struct PixelData
-	{
-		uint32	x;
-		uint32	y;
-		uint8	col;
-		Image &	img;
+	uint8	getPixel(Image & img, Undex2D pxl, uint8 col, uint8 rel);
 
-		PixelData(Image & img);
-	};
+	void	filter_None(Image & img, Undex2D pxl, uint8 col, uint8 byte);
+	void	filter_Sub(Image & img, Undex2D pxl, uint8 col, uint8 byte);
+	void	filter_Up(Image & img, Undex2D pxl, uint8 col, uint8 byte);
+	void	filter_Avg(Image & img, Undex2D pxl, uint8 col, uint8 byte);
+	void	filter_Paeth(Image & img, Undex2D pxl, uint8 col, uint8 byte);
 
-	uint8	getPixel(PixelData pxl, uint8 rel);
-
-	void	filter_None(PixelData pxl, uint8 byte);
-	void	filter_Sub(PixelData pxl, uint8 byte);
-	void	filter_Up(PixelData pxl, uint8 byte);
-	void	filter_Avg(PixelData pxl, uint8 byte);
-	void	filter_Paeth(PixelData pxl, uint8 byte);
-
-	void	filter(ByteStream & data, Image & img);
+	void	filter(IHDR head, ByteStream & data, Image & img);
 };
 };
 

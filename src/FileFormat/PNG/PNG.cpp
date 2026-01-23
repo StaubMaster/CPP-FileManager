@@ -148,7 +148,7 @@ Image PNG::Load(const FileInfo & file, bool debug)
 		*DebugManager::Console << "PNG: Filtering Data ...\n";
 
 		img.Init(imageHead.width, imageHead.height);
-		PNG::Filter::filter(*data, img);
+		PNG::Filter::filter(imageHead, *data, img);
 		delete data;
 
 		//time = std::chrono::high_resolution_clock::now() - timeBase;
