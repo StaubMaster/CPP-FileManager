@@ -27,6 +27,8 @@ class Image
 	const ColorU4 &		Pixel(uint32 x, uint32 y) const;
 	uint8 &				Pixel(uint32 x, uint32 y, uint8 col);
 	const uint8 &		Pixel(uint32 x, uint32 y, uint8 col) const;
+	ColorU4 &			Pixel(uint32 udx);
+	const ColorU4 &		Pixel(uint32 udx) const;
 
 	public:
 	Image();

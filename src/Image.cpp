@@ -37,6 +37,14 @@ const uint8 & Image::Pixel(uint32 x, uint32 y, uint8 col) const
 	const uint8 * data = (const uint8*)&_Data[x + y * _Size.X];
 	return data[col];
 }
+ColorU4 & Image::Pixel(uint32 udx)
+{
+	return _Data[udx];
+}
+const ColorU4 & Image::Pixel(uint32 udx) const
+{
+	return _Data[udx];
+}
 
 
 
