@@ -4,6 +4,19 @@
 
 
 
+BitMap::BITMAPINFOHEADER::BITMAPINFOHEADER(const Image & img)
+{
+	ImageSizeW = img.W();
+	ImageSizeH = img.H();
+	NumberOfColorPlanes = 1;
+	NumberOfBitsPerPixel = 24;
+	Compression = 0;
+	ImageDataSize = img.W() * img.H() * 3;
+	HoriPixelPerMetre = 0;
+	VertPixelPerMetre = 0;
+	NumberOfColorsInPallet = 0;
+	NumberOfImportantColors = 0;
+}
 BitMap::BITMAPINFOHEADER::BITMAPINFOHEADER(ByteStreamGetter & stream)
 {
 	ImageSizeW = stream.Get4();
@@ -49,4 +62,17 @@ bool BitMap::BITMAPINFOHEADER::Parse(ByteStreamGetter & stream, Image & img, uin
 	img.Init(header.ImageSizeW, header.ImageSizeH);
 	data_size = header.ImageDataSize;
 	return ret;
+}
+void BitMap::BITMAPINFOHEADER::Put(ByteStreamSetter & stream)
+{
+	stream.Set4(ImageSizeW);
+	stream.Set4(ImageSizeH);
+	stream.Set2(NumberOfColorPlanes);
+	stream.Set2(NumberOfBitsPerPixel);
+	stream.Set4(Compression);
+	stream.Set4(ImageDataSize);
+	stream.Set4(HoriPixelPerMetre);
+	stream.Set4(VertPixelPerMetre);
+	stream.Set4(NumberOfColorsInPallet);
+	stream.Set4(NumberOfImportantColors);
 }

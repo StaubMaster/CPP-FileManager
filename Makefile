@@ -40,6 +40,7 @@ FILES_CPP := \
 	FileParsing/ByteBlock.cpp \
 	FileParsing/ByteStreamBase.cpp \
 	FileParsing/ByteStreamGetter.cpp \
+	FileParsing/ByteStreamSetter.cpp \
 \
 	FileParsing/Text/Exceptions.cpp \
 	FileParsing/Text/LineStream.cpp \

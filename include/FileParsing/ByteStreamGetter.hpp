@@ -3,9 +3,6 @@
 
 # include "FileParsing/ByteStreamBase.hpp"
 
-# include <exception>
-# include <string>
-
 struct ByteStreamGetter : public ByteStreamBase
 {
 	public:

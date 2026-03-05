@@ -2,6 +2,7 @@
 # define BITMAP_BITMAPINFOHEADER_HPP
 
 # include "FileParsing/ByteStreamGetter.hpp"
+# include "FileParsing/ByteStreamSetter.hpp"
 # include "ValueType/uint.hpp"
 # include "Image.hpp"
 
@@ -20,11 +21,13 @@ struct BITMAPINFOHEADER
 	uint32 NumberOfColorsInPallet;
 	uint32 NumberOfImportantColors;
 
+	BITMAPINFOHEADER(const Image & img);
 	BITMAPINFOHEADER(ByteStreamGetter & stream);
 
 	void Show() const;
 
 	static bool Parse(ByteStreamGetter & stream, Image & img, uint32 & data_size);
+	void Put(ByteStreamSetter & stream);
 };
 };
 

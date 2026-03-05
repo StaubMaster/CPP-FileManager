@@ -124,15 +124,22 @@ ByteBlock FileInfo::LoadBytes() const
 }
 void FileInfo::SaveBytes(const ByteBlock & block) const
 {
-	if (Exists()) { throw FileProblem(Path, "File already exists."); }
-
+	std::cout << __FILE__ << ':' << __LINE__ << '\n';
+	if (Exists())
+	{
+		std::cout << __FILE__ << ':' << __LINE__ << '\n';
+		throw FileProblem(Path, "File already exists.");
+	}
+	std::cout << __FILE__ << ':' << __LINE__ << '\n';
 	std::ofstream stream(Path.ToString(), std::ios::binary);
+	std::cout << __FILE__ << ':' << __LINE__ << '\n';
 	if (!stream.is_open())
 	{
 		throw FileProblem(Path);
 	}
-
+	std::cout << __FILE__ << ':' << __LINE__ << '\n';
 	stream.write((const char *)block.Data(), block.Size());
+	std::cout << __FILE__ << ':' << __LINE__ << '\n';
 }
 
 
@@ -193,7 +200,8 @@ void FileInfo::SaveImage(const Image & img) const
 	std::string extension = Extension();
 //	if (extension == ".png") { return PNG::Save(*this, debug); }
 //	if (extension == ".PNG") { return PNG::Save(*this, debug); }
-	if (extension == ".bmp") { return BitMap::Save(*this, img); }
-	if (extension == ".dib") { return BitMap::Save(*this, img); }
+//	if (extension == ".bmp") { return BitMap::Save(*this, img); }
+//	if (extension == ".dib") { return BitMap::Save(*this, img); }
 	throw InvalidExtension(extension);
+	(void)img;
 }

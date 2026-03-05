@@ -19,79 +19,74 @@ ByteStreamGetter & ByteStreamGetter::Concatenation(const ByteBlock & block)
 
 uint8 ByteStreamGetter::Get1()
 {
-	uint64 data = 0;
-	if (Order == ByteOrder::HiToLo)
-	{
-		data |= ((uint64)Block[Index + 0]) << (0 * 8);
-	}
-	else
-	{
-		data |= ((uint64)Block[Index + 0]) << (0 * 8);
-	}
+	uint8 val = Block[Index];
 	Index += 1;
-	return data;
+	return val;
 }
 uint16 ByteStreamGetter::Get2()
 {
-	uint16 data = 0;
+	uint16 val = 0;
+	uint8 * ptr = (uint8 *)&val;
 	if (Order == ByteOrder::HiToLo)
 	{
-		data |= ((uint16)Block[Index + 0]) << (0 * 8);
-		data |= ((uint16)Block[Index + 1]) << (1 * 8);
+		ptr[0] = Block[Index + 0];
+		ptr[1] = Block[Index + 1];
 	}
 	else
 	{
-		data |= ((uint16)Block[Index + 0]) << (1 * 8);
-		data |= ((uint16)Block[Index + 1]) << (0 * 8);
+		ptr[0] = Block[Index + 1];
+		ptr[1] = Block[Index + 0];
 	}
 	Index += 2;
-	return data;
+	return val;
 }
 uint32 ByteStreamGetter::Get4()
 {
-	uint32 data = 0;
+	uint32 val;
+	uint8 * ptr = (uint8 *)&val;
 	if (Order == ByteOrder::HiToLo)
 	{
-		data |= ((uint32)Block[Index + 0]) << (0 * 8);
-		data |= ((uint32)Block[Index + 1]) << (1 * 8);
-		data |= ((uint32)Block[Index + 2]) << (2 * 8);
-		data |= ((uint32)Block[Index + 3]) << (3 * 8);
+		ptr[0] = Block[Index + 0];
+		ptr[1] = Block[Index + 1];
+		ptr[2] = Block[Index + 2];
+		ptr[3] = Block[Index + 3];
 	}
 	else
 	{
-		data |= ((uint32)Block[Index + 0]) << (3 * 8);
-		data |= ((uint32)Block[Index + 1]) << (2 * 8);
-		data |= ((uint32)Block[Index + 2]) << (1 * 8);
-		data |= ((uint32)Block[Index + 3]) << (0 * 8);
+		ptr[0] = Block[Index + 3];
+		ptr[1] = Block[Index + 2];
+		ptr[2] = Block[Index + 1];
+		ptr[3] = Block[Index + 0];
 	}
 	Index += 4;
-	return data;
+	return val;
 }
 uint64 ByteStreamGetter::Get8()
 {
-	uint64 data = 0;
+	uint64 val;
+	uint8 * ptr = (uint8 *)&val;
 	if (Order == ByteOrder::HiToLo)
 	{
-		data |= ((uint64)Block[Index + 0]) << (0 * 8);
-		data |= ((uint64)Block[Index + 1]) << (1 * 8);
-		data |= ((uint64)Block[Index + 2]) << (2 * 8);
-		data |= ((uint64)Block[Index + 3]) << (3 * 8);
-		data |= ((uint64)Block[Index + 4]) << (4 * 8);
-		data |= ((uint64)Block[Index + 5]) << (5 * 8);
-		data |= ((uint64)Block[Index + 6]) << (6 * 8);
-		data |= ((uint64)Block[Index + 7]) << (7 * 8);
+		ptr[0] = Block[Index + 0];
+		ptr[1] = Block[Index + 1];
+		ptr[2] = Block[Index + 2];
+		ptr[3] = Block[Index + 3];
+		ptr[4] = Block[Index + 4];
+		ptr[5] = Block[Index + 5];
+		ptr[6] = Block[Index + 6];
+		ptr[7] = Block[Index + 7];
 	}
 	else
 	{
-		data |= ((uint64)Block[Index + 0]) << (7 * 8);
-		data |= ((uint64)Block[Index + 1]) << (6 * 8);
-		data |= ((uint64)Block[Index + 2]) << (5 * 8);
-		data |= ((uint64)Block[Index + 3]) << (4 * 8);
-		data |= ((uint64)Block[Index + 4]) << (3 * 8);
-		data |= ((uint64)Block[Index + 5]) << (2 * 8);
-		data |= ((uint64)Block[Index + 6]) << (1 * 8);
-		data |= ((uint64)Block[Index + 7]) << (0 * 8);
+		ptr[0] = Block[Index + 7];
+		ptr[1] = Block[Index + 6];
+		ptr[2] = Block[Index + 5];
+		ptr[3] = Block[Index + 4];
+		ptr[4] = Block[Index + 3];
+		ptr[5] = Block[Index + 2];
+		ptr[6] = Block[Index + 1];
+		ptr[7] = Block[Index + 0];
 	}
 	Index += 8;
-	return data;
+	return val;
 }
