@@ -7,7 +7,7 @@
 namespace BitMap
 {
 	Image	Load(const FileInfo & file);
-	void	Save(const FileInfo & file, Image & img);
+	void	Save(const FileInfo & file, const Image & img);
 };
 
 #endif

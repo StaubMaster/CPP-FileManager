@@ -5,9 +5,9 @@
 
 # include <string>
 
-class Image;
-
 class DirectoryInfo;
+class Image;
+class ByteBlock;
 
 class FileInfo : public FileSystemInfo
 {
@@ -32,11 +32,20 @@ class FileInfo : public FileSystemInfo
 	std::string DirectoryString() const;
 	std::string Extension() const;
 
-	public:
-	std::string LoadText() const;
-	void SaveText(std::string text) const;
 
-	Image LoadImage(bool debug = false) const;
+
+	public:
+	ByteBlock LoadBytes() const;
+	void SaveBytes(const ByteBlock & block) const;
+
+	std::string LoadText() const;
+	void SaveText(const std::string & text) const;
+
+	// should Save be non-constant ?
+	// maybe Update FileInfo ?
+
+	Image	LoadImage(bool debug = false) const;
+	void	SaveImage(const Image & img) const;
 };
 
 #endif

@@ -95,5 +95,3 @@ uint64 ByteStreamGetter::Get8()
 	Index += 8;
 	return data;
 }
-
-

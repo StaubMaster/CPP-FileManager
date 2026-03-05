@@ -3,7 +3,9 @@
 #include "DirectoryInfo.hpp"
 
 #include "Image.hpp"
+#include "FileParsing/ByteBlock.hpp"
 #include "FileFormat/PNG/PNG.hpp"
+#include "FileFormat/BitMap/BitMap.hpp"
 
 #include <sys/stat.h>
 #include <unistd.h>
@@ -111,6 +113,32 @@ std::string FileInfo::Extension() const
 
 
 
+
+
+ByteBlock FileInfo::LoadBytes() const
+{
+	if (!Exists()) { throw FileNotFound(Path); }
+	if (!Mode.IsFile()) { throw FileIsNotFile(Path); }
+
+	return ByteBlock(LoadText());
+}
+void FileInfo::SaveBytes(const ByteBlock & block) const
+{
+	if (Exists()) { throw FileProblem(Path, "File already exists."); }
+
+	std::ofstream stream(Path.ToString(), std::ios::binary);
+	if (!stream.is_open())
+	{
+		throw FileProblem(Path);
+	}
+
+	stream.write((const char *)block.Data(), block.Size());
+}
+
+
+
+// this should be in LoadBytes
+// LoadText should not have ios::binary
 std::string FileInfo::LoadText() const
 {
 	if (!Exists()) { throw FileNotFound(Path); }
@@ -135,17 +163,37 @@ std::string FileInfo::LoadText() const
 
 	return (text);
 }
-/*void FileInfo::SaveText(std::string text) const
+void FileInfo::SaveText(const std::string & text) const
 {
-	(void)text;
-}*/
+	if (Exists()) { throw FileProblem(Path, "File already exists."); }
+
+	SaveBytes(ByteBlock(text));
+}
+
+
 
 
 
 Image FileInfo::LoadImage(bool debug) const
 {
+	if (!Exists()) { throw FileNotFound(Path); }
+	if (!Mode.IsFile()) { throw FileIsNotFile(Path); }
+
 	std::string extension = Extension();
 	if (extension == ".png") { return PNG::Load(*this, debug); }
 	if (extension == ".PNG") { return PNG::Load(*this, debug); }
+	if (extension == ".bmp") { return BitMap::Load(*this); }
+	if (extension == ".dib") { return BitMap::Load(*this); }
+	throw InvalidExtension(extension);
+}
+void FileInfo::SaveImage(const Image & img) const
+{
+	if (Exists()) { throw FileProblem(Path, "File already exists."); }
+
+	std::string extension = Extension();
+//	if (extension == ".png") { return PNG::Save(*this, debug); }
+//	if (extension == ".PNG") { return PNG::Save(*this, debug); }
+	if (extension == ".bmp") { return BitMap::Save(*this, img); }
+	if (extension == ".dib") { return BitMap::Save(*this, img); }
 	throw InvalidExtension(extension);
 }
