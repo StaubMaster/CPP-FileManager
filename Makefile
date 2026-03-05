@@ -37,6 +37,10 @@ FILES_CPP := \
 	FileParsing/CountCheck.cpp \
 	FileParsing/ParsingCommand.cpp \
 \
+	FileParsing/ByteBlock.cpp \
+	FileParsing/ByteStreamBase.cpp \
+	FileParsing/ByteStreamGetter.cpp \
+\
 	FileParsing/Text/Exceptions.cpp \
 	FileParsing/Text/LineStream.cpp \
 	FileParsing/Text/TextCommand.cpp \
@@ -50,6 +54,9 @@ FILES_CPP := \
 	FileFormat/PNG/Filter.cpp \
 	FileFormat/PNG/IHDR.cpp \
 	FileFormat/PNG/PNG.cpp \
+\
+	FileFormat/BitMap/Headers/BITMAPINFOHEADER.cpp \
+	FileFormat/BitMap/BitMap.cpp \
 \
 	ValueType/Bool2D.cpp \
 	ValueType/Undex2D.cpp \
