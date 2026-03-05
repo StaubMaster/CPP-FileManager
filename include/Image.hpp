@@ -19,6 +19,7 @@ class Image
 	Undex2D			Size() const;
 	const void *	Data() const;
 	UndexLoop2D		Loop() const;
+	void *			Data();
 
 	public:
 	ColorU4 &			Pixel(Undex2D udx);

@@ -32,7 +32,6 @@ void SaveRGB(ByteStreamSetter & stream, const Image & img, uint32 data_size)
 		stream.Set1(col.G);
 		stream.Set1(col.R);
 	}
-
 }
 
 
@@ -81,10 +80,9 @@ Image BitMap::Load(const FileInfo & file)
 
 void BitMap::Save(const FileInfo & file, const Image & img)
 {
-	ByteStreamSetter stream(img.W() * img.H() * 3 * 2);
-	// too lazy to figure out the exact size right now
-	// make sure to not save empty space at the end of the file
-	// but that shouldnt effect anything anyway
+	uint32 data_size = img.W() * img.H();
+
+	ByteStreamSetter stream(14 + 40 + data_size * 3);
 
 	uint64 file_size_idx;
 	{
@@ -99,19 +97,13 @@ void BitMap::Save(const FileInfo & file, const Image & img)
 	stream.Move(4);
 
 	stream.Set4(40);
-	BITMAPINFOHEADER header(img);
+	BITMAPINFOHEADER header(img, data_size);
 	header.Put(stream);
 
-	uint32 data_size = img.W() * img.H() * 3;
 	stream.Set4(data_offset_idx, stream.Index);
-
-	std::cout << __FILE__ << ':' << __LINE__ << '\n';
 	SaveRGB(stream, img, data_size);
-	std::cout << __FILE__ << ':' << __LINE__ << '\n';
 
 	stream.Set4(file_size_idx, stream.Index);
 
-	std::cout << __FILE__ << ':' << __LINE__ << '\n';
 	file.SaveBytes(stream.Block);
-	std::cout << __FILE__ << ':' << __LINE__ << '\n';
 }

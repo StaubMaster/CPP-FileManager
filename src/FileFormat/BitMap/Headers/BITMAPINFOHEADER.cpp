@@ -4,14 +4,14 @@
 
 
 
-BitMap::BITMAPINFOHEADER::BITMAPINFOHEADER(const Image & img)
+BitMap::BITMAPINFOHEADER::BITMAPINFOHEADER(const Image & img, uint32 data_size)
 {
 	ImageSizeW = img.W();
 	ImageSizeH = img.H();
 	NumberOfColorPlanes = 1;
 	NumberOfBitsPerPixel = 24;
 	Compression = 0;
-	ImageDataSize = img.W() * img.H() * 3;
+	ImageDataSize = data_size * 3;
 	HoriPixelPerMetre = 0;
 	VertPixelPerMetre = 0;
 	NumberOfColorsInPallet = 0;

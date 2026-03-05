@@ -8,6 +8,7 @@ uint32	Image::H() const { return _Size.Y; }
 Undex2D			Image::Size() const { return _Size; }
 const void *	Image::Data() const { return _Data; }
 UndexLoop2D		Image::Loop() const { return UndexLoop2D(Undex2D(), _Size); }
+void *			Image::Data() { return _Data; }
 
 
 

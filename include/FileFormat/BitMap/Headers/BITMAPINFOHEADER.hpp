@@ -21,7 +21,7 @@ struct BITMAPINFOHEADER
 	uint32 NumberOfColorsInPallet;
 	uint32 NumberOfImportantColors;
 
-	BITMAPINFOHEADER(const Image & img);
+	BITMAPINFOHEADER(const Image & img, uint32 data_size);
 	BITMAPINFOHEADER(ByteStreamGetter & stream);
 
 	void Show() const;
