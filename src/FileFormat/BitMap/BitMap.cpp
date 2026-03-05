@@ -1,4 +1,5 @@
 #include "FileFormat/BitMap/BitMap.hpp"
+#include "FileFormat/BitMap/Exceptions.hpp"
 #include "FileFormat/BitMap/Headers/BITMAPINFOHEADER.hpp"
 
 #include "FileParsing/ByteBlock.hpp"
@@ -45,29 +46,25 @@ Image BitMap::Load(const FileInfo & file)
 		uint16 signature = stream.Get2();
 		if (signature != 0x4D42)
 		{
-			std::cout << "LoadBitMap: Error: Bad Signature.\n";
-			return img;
+			throw Exceptions::UnknownSignature();
 		}
 		uint32 file_size = stream.Get4();
-		(void)file_size;
+		(void)file_size; // == stream.Block.Size(). maybe used for stream reading ?
 		stream.Move(2); // Reserved
 		stream.Move(2); // Reserved
 	}
 
 	uint32 data_offset = stream.Get4();
 	uint32 data_size;
-	bool ret = false; // replace with Exception
 	uint32 header_size = stream.Get4();
 	switch (header_size)
 	{
 		case 40:
-			ret = BITMAPINFOHEADER::Parse(stream, img, data_size);
+			BITMAPINFOHEADER::Parse(stream, img, data_size);
 			break;
 		default:
-			std::cout << "LoadBitMap: Error: Unknown Header Size.\n";
-			return img;
+			throw BitMap::Exceptions::UnknownHeader();
 	}
-	if (ret) { return img; }
 
 	stream.Index = data_offset;
 	// data_size / 3 depends on BitsPerPixel being 24

@@ -26,7 +26,7 @@ struct BITMAPINFOHEADER
 
 	void Show() const;
 
-	static bool Parse(ByteStreamGetter & stream, Image & img, uint32 & data_size);
+	static void Parse(ByteStreamGetter & stream, Image & img, uint32 & data_size);
 	void Put(ByteStreamSetter & stream);
 };
 };

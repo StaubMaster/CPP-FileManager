@@ -56,6 +56,7 @@ FILES_CPP := \
 	FileFormat/PNG/IHDR.cpp \
 	FileFormat/PNG/PNG.cpp \
 \
+	FileFormat/BitMap/Exceptions.cpp \
 	FileFormat/BitMap/Headers/BITMAPINFOHEADER.cpp \
 	FileFormat/BitMap/BitMap.cpp \
 \

@@ -1,4 +1,5 @@
 #include "FileFormat/BitMap/Headers/BITMAPINFOHEADER.hpp"
+#include "FileFormat/BitMap/Exceptions.hpp"
 
 #include <iostream>
 
@@ -47,21 +48,19 @@ void BitMap::BITMAPINFOHEADER::Show() const
 	std::cout << '\n';
 }
 
-bool BitMap::BITMAPINFOHEADER::Parse(ByteStreamGetter & stream, Image & img, uint32 & data_size)
+void BitMap::BITMAPINFOHEADER::Parse(ByteStreamGetter & stream, Image & img, uint32 & data_size)
 {
 	BITMAPINFOHEADER header(stream);
 	//header.Show();
 
-	bool ret = false;
-	if (header.NumberOfColorPlanes != 1)		{ std::cout << "BITMAPINFOHEADER: Unimplemented: NumberOfColorPlanes " << header.NumberOfColorPlanes << ".\n"; ret = true; }
-	if (header.NumberOfBitsPerPixel != 24)		{ std::cout << "BITMAPINFOHEADER: Unimplemented: NumberOfBitsPerPixel " << header.NumberOfBitsPerPixel << ".\n"; ret = true; }
-	if (header.Compression != 0)				{ std::cout << "BITMAPINFOHEADER: Unimplemented: Compression " << header.Compression << ".\n"; ret = true; }
-	if (header.NumberOfColorsInPallet != 0)		{ std::cout << "BITMAPINFOHEADER: Unimplemented: NumberOfColorsInPallet " << header.NumberOfColorsInPallet << ".\n"; ret = true; }
-	if (header.NumberOfImportantColors != 0)	{ std::cout << "BITMAPINFOHEADER: Unimplemented: NumberOfImportantColors " << header.NumberOfImportantColors << ".\n"; ret = true; }
+	if (header.NumberOfColorPlanes != 1)		{ throw Exceptions::UnknownHeaderValue("NumberOfColorPlanes", header.NumberOfColorPlanes); }
+	if (header.NumberOfBitsPerPixel != 24)		{ throw Exceptions::UnknownHeaderValue("NumberOfBitsPerPixel", header.NumberOfBitsPerPixel); }
+	if (header.Compression != 0)				{ throw Exceptions::UnknownHeaderValue("Compression", header.Compression); }
+	if (header.NumberOfColorsInPallet != 0)		{ throw Exceptions::UnknownHeaderValue("NumberOfColorsInPallet", header.NumberOfColorsInPallet); }
+	if (header.NumberOfImportantColors != 0)	{ throw Exceptions::UnknownHeaderValue("NumberOfImportantColors", header.NumberOfImportantColors); }
 
 	img.Init(header.ImageSizeW, header.ImageSizeH);
 	data_size = header.ImageDataSize;
-	return ret;
 }
 void BitMap::BITMAPINFOHEADER::Put(ByteStreamSetter & stream)
 {
