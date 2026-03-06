@@ -157,8 +157,12 @@ Image PNG::Load(const FileInfo & file, bool debug)
 		*DebugManager::Console << "PNG: Decompressing Data Init ...\n";
 
 		BitStream bits(CompressedImageData);
-		ByteStream * data = new ByteStream(0xFFFFFFFF);
+
 		// calculate how much is needed
+		ByteStream * data = new ByteStream(0xFFFFFFFF);
+		ByteBlock UncompressedImageData(data -> Len, data -> Data);
+		ByteStreamSetter UncompressedImageDataSetter(UncompressedImageData);
+		ByteStreamGetter UncompressedImageDataGetter(UncompressedImageData);
 
 		//time = std::chrono::high_resolution_clock::now() - timeBase;
 		//std::cout << "\ntime: " << (time.count() / 1000000000.0f) << '\n';
@@ -172,7 +176,7 @@ Image PNG::Load(const FileInfo & file, bool debug)
 		*DebugManager::Console << "PNG: Filtering Data ...\n";
 
 		img.Init(ImageHeader.width, ImageHeader.height);
-		PNG::Filter::filter(ImageHeader, *data, img);
+		PNG::Filter::filter(ImageHeader, UncompressedImageDataGetter, img);
 		delete data;
 
 		//time = std::chrono::high_resolution_clock::now() - timeBase;

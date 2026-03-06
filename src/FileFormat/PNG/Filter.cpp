@@ -66,7 +66,7 @@ void	PNG::Filter::filter_Paeth(Image & img, Undex2D pxl, uint8 col, uint8 byte)
 	else										{ img.Pixel(pxl.X, pxl.Y, col) = byte + c; }
 }
 
-void	PNG::Filter::filter(IHDR head, ByteStream & data, Image & img)
+void	PNG::Filter::filter(IHDR head, ByteStreamGetter & data, Image & img)
 {
 	void (*filterFunc)(Image &, Undex2D, uint8, uint8);
 
@@ -76,8 +76,7 @@ void	PNG::Filter::filter(IHDR head, ByteStream & data, Image & img)
 	Undex2D	pxl;
 	for (pxl.Y = 0; pxl.Y < img.H(); pxl.Y++)
 	{
-		data_byte = data.Get();
-		data.Next();
+		data_byte = data.Get1();
 
 		if (data_byte == 0)      { filterFunc = &filter_None; }
 		else if (data_byte == 1) { filterFunc = &filter_Sub; }
@@ -89,17 +88,17 @@ void	PNG::Filter::filter(IHDR head, ByteStream & data, Image & img)
 		{
 			if (head.color_type == 2)
 			{
-				filterFunc(img, pxl, 0, data.Get());	data.Next();
-				filterFunc(img, pxl, 1, data.Get());	data.Next();
-				filterFunc(img, pxl, 2, data.Get());	data.Next();
+				filterFunc(img, pxl, 0, data.Get1());
+				filterFunc(img, pxl, 1, data.Get1());
+				filterFunc(img, pxl, 2, data.Get1());
 				img.Pixel(pxl.X, pxl.Y, 3) = 0xFF;
 			}
 			if (head.color_type == 6)
 			{
-				filterFunc(img, pxl, 0, data.Get());	data.Next();
-				filterFunc(img, pxl, 1, data.Get());	data.Next();
-				filterFunc(img, pxl, 2, data.Get());	data.Next();
-				filterFunc(img, pxl, 3, data.Get());	data.Next();
+				filterFunc(img, pxl, 0, data.Get1());
+				filterFunc(img, pxl, 1, data.Get1());
+				filterFunc(img, pxl, 2, data.Get1());
+				filterFunc(img, pxl, 3, data.Get1());
 			}
 		}
 	}
