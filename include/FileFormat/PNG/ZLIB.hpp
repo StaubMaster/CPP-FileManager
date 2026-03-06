@@ -4,7 +4,7 @@
 # include "ValueType/uint.hpp"
 
 class BitStream;
-class ByteStream;
+class ByteStreamSetter;
 
 class ZLIB
 {
@@ -25,7 +25,7 @@ class ZLIB
 
 	BitStream	ToBitStream() const;
 
-	static void	decompress(BitStream & bits, ByteStream & data);
+	static void	decompress(BitStream & bits, ByteStreamSetter & data);
 
 	void	ToConsole() const;
 };

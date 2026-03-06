@@ -28,19 +28,19 @@ FILES_CPP := \
 	TextExceptionBase.cpp \
 	FileExceptions.cpp \
 \
+	FileParsing/ByteBlock.cpp \
+	FileParsing/ByteStreamBase.cpp \
+	FileParsing/ByteStreamGetter.cpp \
+	FileParsing/ByteStreamSetter.cpp \
+\
 	FileParsing/BitStream.cpp \
+\
 	FileParsing/LineCommand.cpp \
 	FileParsing/DebugManager.cpp \
 	FileParsing/StringHelp.cpp \
 	FileParsing/ExceptionBase.cpp \
 	FileParsing/CountCheck.cpp \
 	FileParsing/ParsingCommand.cpp \
-\
-	FileParsing/ByteStream.cpp \
-	FileParsing/ByteBlock.cpp \
-	FileParsing/ByteStreamBase.cpp \
-	FileParsing/ByteStreamGetter.cpp \
-	FileParsing/ByteStreamSetter.cpp \
 \
 	FileParsing/Text/Exceptions.cpp \
 	FileParsing/Text/LineStream.cpp \

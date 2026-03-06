@@ -2,7 +2,7 @@
 #include "FileFormat/PNG/DEFLATE.hpp"
 
 #include "FileParsing/BitStream.hpp"
-#include "FileParsing/ByteStream.hpp"
+#include "FileParsing/ByteStreamSetter.hpp"
 #include "FileParsing/DebugManager.hpp"
 
 
@@ -39,7 +39,7 @@ BitStream	ZLIB::ToBitStream() const
 
 
 
-void	ZLIB::decompress(BitStream & bits, ByteStream & data)
+void	ZLIB::decompress(BitStream & bits, ByteStreamSetter & data)
 {
 	//*DebugManager::Console << "\e[34mzlib ...\e[m\n";
 
@@ -48,6 +48,8 @@ void	ZLIB::decompress(BitStream & bits, ByteStream & data)
 	//*DebugManager::Console << "\n";
 
 	BitStream deflate = zlib.ToBitStream();
+	//ByteBlock block(data.Len, data.Data);
+	//ByteStreamSetter stream(block);
 	DEFLATE::Blocks(deflate, data);
 
 	//*DebugManager::Console << "\e[34mzlib done\e[m\n";

@@ -11,7 +11,6 @@
 #include "FileParsing/ByteBlock.hpp"
 #include "FileParsing/ByteStreamGetter.hpp"
 #include "FileParsing/ByteStreamSetter.hpp"
-#include "FileParsing/ByteStream.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -159,8 +158,7 @@ Image PNG::Load(const FileInfo & file, bool debug)
 		BitStream bits(CompressedImageData);
 
 		// calculate how much is needed
-		ByteStream * data = new ByteStream(0xFFFFFFFF);
-		ByteBlock UncompressedImageData(data -> Len, data -> Data);
+		ByteBlock UncompressedImageData(0xFFFFFFFF);
 		ByteStreamSetter UncompressedImageDataSetter(UncompressedImageData);
 		ByteStreamGetter UncompressedImageDataGetter(UncompressedImageData);
 
@@ -168,7 +166,7 @@ Image PNG::Load(const FileInfo & file, bool debug)
 		//std::cout << "\ntime: " << (time.count() / 1000000000.0f) << '\n';
 		*DebugManager::Console << "PNG: Decompressing Data ...\n";
 
-		ZLIB::decompress(bits, *data);
+		ZLIB::decompress(bits, UncompressedImageDataSetter);
 		CompressedImageData.Dispose();
 
 		//time = std::chrono::high_resolution_clock::now() - timeBase;
@@ -177,7 +175,6 @@ Image PNG::Load(const FileInfo & file, bool debug)
 
 		img.Init(ImageHeader.width, ImageHeader.height);
 		PNG::Filter::filter(ImageHeader, UncompressedImageDataGetter, img);
-		delete data;
 
 		//time = std::chrono::high_resolution_clock::now() - timeBase;
 		//std::cout << "\ntime: " << (time.count() / 1000000000.0f) << '\n';
