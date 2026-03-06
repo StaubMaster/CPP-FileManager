@@ -7,12 +7,19 @@
 struct ByteStreamGetter : public ByteStreamBase
 {
 	public:
+	uint64		Index;
+
+	public:
 	~ByteStreamGetter();
 	ByteStreamGetter() = delete;
 	ByteStreamGetter(const ByteStreamGetter & other) = delete;
 	ByteStreamGetter & operator=(const ByteStreamGetter & other) = delete;
 
 	ByteStreamGetter(ByteBlock block);
+
+	public:
+	void Move();
+	void Move(uint64 move);
 
 	public:
 	uint8		Get1();

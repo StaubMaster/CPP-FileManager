@@ -11,6 +11,7 @@
 #include "FileParsing/ByteBlock.hpp"
 #include "FileParsing/ByteStreamGetter.hpp"
 #include "FileParsing/ByteStreamSetter.hpp"
+#include "FileParsing/ByteStreamQueue.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -49,21 +50,6 @@ static void Parse_Chunk_tEXt(const Chunk & chunk)
 
 
 
-/* currently
-	it loads the whole File into a single ByteBlock
-	then takes ByteBlocks from that
-	it should not allocat any new ByteBlocks
-	is should just read from the existing ones
-	all the Getters / Setters are passed by referance
-	so instead of using their own block, just store a referance to the one given ?
-
-	except Image Data
-	the main File data is split into chunks
-	that have stuff before and after the data
-	the image data needs to be just the Data Blocks
-	so I need a second ByteBlock for all that stuff
-	but nothing more then that
-*/
 Image PNG::Load(const FileInfo & file, bool debug)
 {
 	if (debug) { DebugManager::ChangeConsoleToCOut(); }
@@ -90,7 +76,6 @@ Image PNG::Load(const FileInfo & file, bool debug)
 			//	0D 0A 1A 0A
 			uint64	signature_received;
 
-			//signature_received = file_bit_stream.GetIncBits64();
 			signature_received = file_data_stream.Get8();
 			*DebugManager::Console << "signature\n";
 			*DebugManager::Console << "template: " << ToBase16(signature_template) << "\n";
@@ -159,14 +144,13 @@ Image PNG::Load(const FileInfo & file, bool debug)
 
 		// calculate how much is needed
 		ByteBlock UncompressedImageData(0xFFFFFFFF);
-		ByteStreamSetter UncompressedImageDataSetter(UncompressedImageData);
-		ByteStreamGetter UncompressedImageDataGetter(UncompressedImageData);
+		ByteStreamQueue UncompressedImageDataQueue(UncompressedImageData);
 
 		//time = std::chrono::high_resolution_clock::now() - timeBase;
 		//std::cout << "\ntime: " << (time.count() / 1000000000.0f) << '\n';
 		*DebugManager::Console << "PNG: Decompressing Data ...\n";
 
-		ZLIB::decompress(bits, UncompressedImageDataSetter);
+		ZLIB::decompress(bits, UncompressedImageDataQueue);
 		CompressedImageData.Dispose();
 
 		//time = std::chrono::high_resolution_clock::now() - timeBase;
@@ -174,7 +158,9 @@ Image PNG::Load(const FileInfo & file, bool debug)
 		*DebugManager::Console << "PNG: Filtering Data ...\n";
 
 		img.Init(ImageHeader.width, ImageHeader.height);
-		PNG::Filter::filter(ImageHeader, UncompressedImageDataGetter, img);
+		PNG::Filter::filter(ImageHeader, UncompressedImageDataQueue, img);
+
+		UncompressedImageData.Dispose();
 
 		//time = std::chrono::high_resolution_clock::now() - timeBase;
 		//std::cout << "\ntime: " << (time.count() / 1000000000.0f) << '\n';

@@ -6,7 +6,13 @@ ByteStreamSetter::~ByteStreamSetter() { }
 
 ByteStreamSetter::ByteStreamSetter(ByteBlock block)
 	: ByteStreamBase(block)
+	, Index(0)
 { }
+
+
+
+void ByteStreamSetter::Move() { Index++; }
+void ByteStreamSetter::Move(uint64 move) { Index += move; }
 
 
 

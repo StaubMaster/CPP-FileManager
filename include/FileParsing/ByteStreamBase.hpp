@@ -18,7 +18,6 @@ struct ByteStreamBase
 
 	public:
 	ByteBlock	Block;
-	uint64		Index;
 	ByteOrder	Order;
 
 	protected:
@@ -31,10 +30,6 @@ struct ByteStreamBase
 
 	protected:
 	ByteStreamBase(ByteBlock block);
-
-	public:
-	void Move();
-	void Move(uint64 move);
 };
 
 #endif

@@ -6,7 +6,13 @@ ByteStreamGetter::~ByteStreamGetter() { }
 
 ByteStreamGetter::ByteStreamGetter(ByteBlock block)
 	: ByteStreamBase(block)
+	, Index(0)
 { }
+
+
+
+void ByteStreamGetter::Move() { Index++; }
+void ByteStreamGetter::Move(uint64 move) { Index += move; }
 
 
 

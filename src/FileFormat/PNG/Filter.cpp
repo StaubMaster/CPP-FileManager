@@ -66,11 +66,9 @@ void	PNG::Filter::filter_Paeth(Image & img, Undex2D pxl, uint8 col, uint8 byte)
 	else										{ img.Pixel(pxl.X, pxl.Y, col) = byte + c; }
 }
 
-void	PNG::Filter::filter(IHDR head, ByteStreamGetter & data, Image & img)
+void	PNG::Filter::filter(IHDR head, ByteStreamQueue & data, Image & img)
 {
 	void (*filterFunc)(Image &, Undex2D, uint8, uint8);
-
-	data.Index = 0;
 
 	uint8	data_byte;
 	Undex2D	pxl;

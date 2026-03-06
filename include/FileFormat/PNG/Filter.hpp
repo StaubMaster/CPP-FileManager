@@ -3,7 +3,7 @@
 
 # include "IHDR.hpp"
 # include "ValueType/Undex2D.hpp"
-# include "FileParsing/ByteStreamGetter.hpp"
+# include "FileParsing/ByteStreamQueue.hpp"
 # include "PNG.hpp"
 
 class	Image;
@@ -24,7 +24,7 @@ namespace Filter
 	void	filter_Avg(Image & img, Undex2D pxl, uint8 col, uint8 byte);
 	void	filter_Paeth(Image & img, Undex2D pxl, uint8 col, uint8 byte);
 
-	void	filter(IHDR head, ByteStreamGetter & data, Image & img);
+	void	filter(IHDR head, ByteStreamQueue & stream, Image & img);
 };
 };
 

@@ -6,12 +6,19 @@
 struct ByteStreamSetter : public ByteStreamBase
 {
 	public:
+	uint64		Index;
+
+	public:
 	~ByteStreamSetter();
 	ByteStreamSetter() = delete;
 	ByteStreamSetter(const ByteStreamSetter & other) = delete;
 	ByteStreamSetter & operator=(const ByteStreamSetter & other) = delete;
 
 	ByteStreamSetter(ByteBlock block);
+
+	public:
+	void Move();
+	void Move(uint64 move);
 
 	public:
 	void	Set1(uint8 val);

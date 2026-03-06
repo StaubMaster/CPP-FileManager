@@ -32,6 +32,7 @@ FILES_CPP := \
 	FileParsing/ByteStreamBase.cpp \
 	FileParsing/ByteStreamGetter.cpp \
 	FileParsing/ByteStreamSetter.cpp \
+	FileParsing/ByteStreamQueue.cpp \
 \
 	FileParsing/BitStream.cpp \
 \
