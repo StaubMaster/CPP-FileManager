@@ -6,8 +6,12 @@
 #include "FileFormat/PNG/Huffman.hpp"
 #include "FileFormat/PNG/DEFLATE.hpp"
 
-#include "FileParsing/ByteStream.hpp"
 #include "FileParsing/DebugManager.hpp"
+
+#include "FileParsing/ByteBlock.hpp"
+#include "FileParsing/ByteStreamGetter.hpp"
+#include "FileParsing/ByteStreamSetter.hpp"
+#include "FileParsing/ByteStream.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -44,25 +48,40 @@ static void Parse_Chunk_tEXt(const Chunk & chunk)
 	*DebugManager::Console << '\n';
 }
 
+
+
+/* currently
+	it loads the whole File into a single ByteBlock
+	then takes ByteBlocks from that
+	it should not allocat any new ByteBlocks
+	is should just read from the existing ones
+	all the Getters / Setters are passed by referance
+	so instead of using their own block, just store a referance to the one given ?
+
+	except Image Data
+	the main File data is split into chunks
+	that have stuff before and after the data
+	the image data needs to be just the Data Blocks
+	so I need a second ByteBlock for all that stuff
+	but nothing more then that
+*/
 Image PNG::Load(const FileInfo & file, bool debug)
 {
 	if (debug) { DebugManager::ChangeConsoleToCOut(); }
 	else { DebugManager::ChangeConsoleToDump(); }
-	Image img;
 
 	//std::chrono::time_point<std::chrono::high_resolution_clock> timeBase = std::chrono::high_resolution_clock::now();
 	//std::chrono::nanoseconds time;
 
+	Image img;
 	try
 	{
 		//time = std::chrono::high_resolution_clock::now() - timeBase;
 		//std::cout << "\ntime: " << (time.count() / 1000000000.0f) << '\n';
 		*DebugManager::Console << "loading '" << file.Path.ToString() << "' ...\n";
 
-		std::string file_str = file.LoadText();
-
-		*DebugManager::Console << "file length: " << file_str.size() << "\n";
-		BitStream file_bit_stream(file_str);
+		ByteStreamGetter file_data_stream(file.LoadBytes());
+		//*DebugManager::Console << "file length: " << file_str.size() << "\n";
 
 		*DebugManager::Console << "\n";
 		{
@@ -72,7 +91,8 @@ Image PNG::Load(const FileInfo & file, bool debug)
 			//	0D 0A 1A 0A
 			uint64	signature_received;
 
-			signature_received = file_bit_stream.GetIncBits64();
+			//signature_received = file_bit_stream.GetIncBits64();
+			signature_received = file_data_stream.Get8();
 			*DebugManager::Console << "signature\n";
 			*DebugManager::Console << "template: " << ToBase16(signature_template) << "\n";
 			*DebugManager::Console << "received: " << ToBase16(signature_received) << "\n";
@@ -84,8 +104,8 @@ Image PNG::Load(const FileInfo & file, bool debug)
 		}
 		*DebugManager::Console << "\n";
 
-		IHDR imageHead;
-		ByteStream imageData(0);
+		IHDR ImageHeader;
+		ByteBlock CompressedImageData;
 
 		//time = std::chrono::high_resolution_clock::now() - timeBase;
 		//std::cout << "\ntime: " << (time.count() / 1000000000.0f) << '\n';
@@ -94,8 +114,8 @@ Image PNG::Load(const FileInfo & file, bool debug)
 		uint32 ChunkCount = 0;
 		while (1)
 		{
-			Chunk chunk(file_bit_stream);
-			BitStream chunk_stream = chunk.ToBitStream();
+			Chunk chunk(file_data_stream);
+
 			if (!chunk.CheckCRC())
 			{
 				//Throw an Error
@@ -112,12 +132,13 @@ Image PNG::Load(const FileInfo & file, bool debug)
 			}
 			else if (chunk.CheckType("IHDR"))
 			{
-				imageHead = IHDR(chunk_stream);
-				imageHead.ToConsole();
+				ByteStreamGetter block_getter(chunk.ToBlock());
+				ImageHeader = IHDR(block_getter);
+				ImageHeader.ToConsole();
 			}
 			else if (chunk.CheckType("IDAT"))
 			{
-				imageData.Concatenation(chunk_stream.Data, chunk_stream.Len);
+				CompressedImageData.Concatenation(chunk.ToBlock());
 			}
 			else if (chunk.CheckType("tEXt"))
 			{
@@ -129,26 +150,29 @@ Image PNG::Load(const FileInfo & file, bool debug)
 			}
 			ChunkCount++;
 		}
+		file_data_stream.Block.Dispose();
 
 		//time = std::chrono::high_resolution_clock::now() - timeBase;
 		//std::cout << "\ntime: " << (time.count() / 1000000000.0f) << '\n';
 		*DebugManager::Console << "PNG: Decompressing Data Init ...\n";
 
-		BitStream bits(imageData.Data, imageData.Len);
+		BitStream bits(CompressedImageData);
 		ByteStream * data = new ByteStream(0xFFFFFFFF);
+		// calculate how much is needed
 
 		//time = std::chrono::high_resolution_clock::now() - timeBase;
 		//std::cout << "\ntime: " << (time.count() / 1000000000.0f) << '\n';
 		*DebugManager::Console << "PNG: Decompressing Data ...\n";
 
 		ZLIB::decompress(bits, *data);
+		CompressedImageData.Dispose();
 
 		//time = std::chrono::high_resolution_clock::now() - timeBase;
 		//std::cout << "\ntime: " << (time.count() / 1000000000.0f) << '\n';
 		*DebugManager::Console << "PNG: Filtering Data ...\n";
 
-		img.Init(imageHead.width, imageHead.height);
-		PNG::Filter::filter(imageHead, *data, img);
+		img.Init(ImageHeader.width, ImageHeader.height);
+		PNG::Filter::filter(ImageHeader, *data, img);
 		delete data;
 
 		//time = std::chrono::high_resolution_clock::now() - timeBase;

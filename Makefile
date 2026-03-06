@@ -29,7 +29,6 @@ FILES_CPP := \
 	FileExceptions.cpp \
 \
 	FileParsing/BitStream.cpp \
-	FileParsing/ByteStream.cpp \
 	FileParsing/LineCommand.cpp \
 	FileParsing/DebugManager.cpp \
 	FileParsing/StringHelp.cpp \
@@ -37,6 +36,7 @@ FILES_CPP := \
 	FileParsing/CountCheck.cpp \
 	FileParsing/ParsingCommand.cpp \
 \
+	FileParsing/ByteStream.cpp \
 	FileParsing/ByteBlock.cpp \
 	FileParsing/ByteStreamBase.cpp \
 	FileParsing/ByteStreamGetter.cpp \

@@ -2,6 +2,8 @@
 # define PNG_CHUNKS_HPP
 
 # include "FileParsing/BitStream.hpp"
+# include "FileParsing/ByteBlock.hpp"
+# include "FileParsing/ByteStreamGetter.hpp"
 # include "ValueType/uint.hpp"
 
 struct Chunk
@@ -15,8 +17,10 @@ struct Chunk
 	const BitStream & BitS;
 
 	Chunk(BitStream & bits);
+	Chunk(ByteStreamGetter & stream);
 
 	BitStream	ToBitStream() const;
+	ByteBlock	ToBlock() const;
 
 	bool	CheckCRC();
 	bool	CheckType(uint8 c0, uint8 c1, uint8 c2, uint8 c3);

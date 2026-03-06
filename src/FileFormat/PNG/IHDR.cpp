@@ -23,6 +23,18 @@ PNG::IHDR::IHDR(BitStream & bits)
 	filter_method = bits.GetIncBits8();
 	interlace_method = bits.GetIncBits8();
 }
+PNG::IHDR::IHDR(ByteStreamGetter & stream)
+{
+	width = ReverseBytes(stream.Get4());
+	height = ReverseBytes(stream.Get4());
+
+	bit_depth = stream.Get1();
+	color_type = stream.Get1();
+
+	compression_method = stream.Get1();
+	filter_method = stream.Get1();
+	interlace_method = stream.Get1();
+}
 
 
 

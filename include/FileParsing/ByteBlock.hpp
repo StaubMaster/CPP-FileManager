@@ -4,8 +4,6 @@
 # include "ValueType/uint.hpp"
 # include <string>
 
-// kind of the same std::string ?
-// but less confusing about that it is
 class ByteBlock
 {
 	private:
@@ -20,19 +18,43 @@ class ByteBlock
 	uint8 * Data();
 	const uint8 * Data() const;
 
+	uint8 * DataAt(uint64 idx);
+	const uint8 * DataAt(uint64 idx) const;
+
 	uint8 & operator[](uint64 idx);
 	const uint8 & operator[](uint64 idx) const;
+
+	ByteBlock BlockAt(uint64 idx, uint64 size) const;
 
 
 
 	public:
 	~ByteBlock();
+	void Dispose();
+
 	ByteBlock();
 	ByteBlock(uint64 size);
+	ByteBlock(uint64 size, uint8 * data);
+	ByteBlock(uint64 size, const uint8 * data);
 
 	ByteBlock(const ByteBlock & other);
 	ByteBlock operator=(const ByteBlock & other);
 
+
+
+	public:
+	ByteBlock Bind() const;
+	ByteBlock Copy() const;
+
+	static ByteBlock Bind(const ByteBlock & other);
+	static ByteBlock Copy(const ByteBlock & other);
+
+	static ByteBlock Bind(uint64 size, uint8 * data);
+	static ByteBlock Copy(uint64 size, uint8 * data);
+
+
+
+	public:
 	ByteBlock & Concatenation(uint64 size);
 	ByteBlock & Concatenation(const ByteBlock & other);
 

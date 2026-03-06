@@ -2,35 +2,15 @@
 
 
 
-BitStream::BitStream(const void * ptr, uint32 len) :
-	Data((const uint8*)ptr),
-	Len(len),
-	BitIndex(0),
-	ByteIndex(0)
-{ }
-
-BitStream::BitStream(const std::string & str) :
-	Data((const uint8*)str.c_str()),
-	Len(str.size()),
-	BitIndex(0),
-	ByteIndex(0)
-{ }
-
-BitStream::BitStream(const BitStream & other, uint32 len) :
-	Data(other.Data),
-	Len(len),
-	BitIndex(0),
-	ByteIndex(0)
+BitStream::BitStream(ByteBlock block)
+	: Block(block)
+	, BitIndex(0)
+	, ByteIndex(0)
 { }
 
 
 
-
-
-const uint8 *	BitStream::DataAtIndex() const
-{
-	return Data + ByteIndex;
-}
+const uint8 * BitStream::DataAtIndex() const { return Block.DataAt(ByteIndex); }
 
 
 
@@ -65,12 +45,12 @@ uint8	BitStream::GetBits8(uint8 bit_count) const
 	uint8 val;
 	if (BitIndex != 0)
 	{
-		val = ((uint8)Data[ByteIndex]) >> (BitIndex);
-		val |= ((uint8)Data[ByteIndex + 1]) << ((1 * 8) - BitIndex);
+		val = ((uint8)Block[ByteIndex]) >> (BitIndex);
+		val |= ((uint8)Block[ByteIndex + 1]) << ((1 * 8) - BitIndex);
 	}
 	else
 	{
-		val = ((uint8)Data[ByteIndex]);
+		val = ((uint8)Block[ByteIndex]);
 	}
 
 	return val;
@@ -83,14 +63,14 @@ uint16	BitStream::GetBits16(uint8 bit_count) const
 	uint16 val;
 	if (BitIndex != 0)
 	{
-		val = ((uint16)Data[ByteIndex]) >> (BitIndex);
-		val |= ((uint16)Data[ByteIndex + 1]) << ((1 * 8) - BitIndex);
-		if (bit_count > (1 * 8) - 1)	{ val |= ((uint16)Data[ByteIndex + 2]) << ((2 * 8) - BitIndex); }
+		val = ((uint16)Block[ByteIndex]) >> (BitIndex);
+		val |= ((uint16)Block[ByteIndex + 1]) << ((1 * 8) - BitIndex);
+		if (bit_count > (1 * 8) - 1)	{ val |= ((uint16)Block[ByteIndex + 2]) << ((2 * 8) - BitIndex); }
 	}
 	else
 	{
-		val = ((uint16)Data[ByteIndex]);
-		if (bit_count > (1 * 8) - 1)	{ val |= ((uint16)Data[ByteIndex + 1]) << (1 * 8); }
+		val = ((uint16)Block[ByteIndex]);
+		if (bit_count > (1 * 8) - 1)	{ val |= ((uint16)Block[ByteIndex + 1]) << (1 * 8); }
 	}
 
 	return val;
@@ -103,18 +83,18 @@ uint32	BitStream::GetBits32(uint8 bit_count) const
 	uint32 val;
 	if (BitIndex != 0)
 	{
-		val = ((uint32)Data[ByteIndex]) >> (BitIndex);
-		val |= ((uint32)Data[ByteIndex + 1]) << ((1 * 8) - BitIndex);
-		if (bit_count > 7)	{ val |= ((uint32)Data[ByteIndex + 2]) << ((2 * 8) - BitIndex); }
-		if (bit_count > 15)	{ val |= ((uint32)Data[ByteIndex + 3]) << ((3 * 8) - BitIndex); }
-		if (bit_count > 23)	{ val |= ((uint32)Data[ByteIndex + 4]) << ((4 * 8) - BitIndex); }
+		val = ((uint32)Block[ByteIndex]) >> (BitIndex);
+		val |= ((uint32)Block[ByteIndex + 1]) << ((1 * 8) - BitIndex);
+		if (bit_count > 7)	{ val |= ((uint32)Block[ByteIndex + 2]) << ((2 * 8) - BitIndex); }
+		if (bit_count > 15)	{ val |= ((uint32)Block[ByteIndex + 3]) << ((3 * 8) - BitIndex); }
+		if (bit_count > 23)	{ val |= ((uint32)Block[ByteIndex + 4]) << ((4 * 8) - BitIndex); }
 	}
 	else
 	{
-		val = ((uint32)Data[ByteIndex]);
-		if (bit_count > 7)	{ val |= ((uint32)Data[ByteIndex + 1]) << (1 * 8); }
-		if (bit_count > 15)	{ val |= ((uint32)Data[ByteIndex + 2]) << (2 * 8); }
-		if (bit_count > 23)	{ val |= ((uint32)Data[ByteIndex + 3]) << (3 * 8); }
+		val = ((uint32)Block[ByteIndex]);
+		if (bit_count > 7)	{ val |= ((uint32)Block[ByteIndex + 1]) << (1 * 8); }
+		if (bit_count > 15)	{ val |= ((uint32)Block[ByteIndex + 2]) << (2 * 8); }
+		if (bit_count > 23)	{ val |= ((uint32)Block[ByteIndex + 3]) << (3 * 8); }
 	}
 
 	if (bit_count != UINT32_BIT_COUNT)
@@ -132,26 +112,26 @@ uint64	BitStream::GetBits64(uint8 bit_count) const
 	uint64 val;
 	if (BitIndex != 0)
 	{
-		val = ((uint64)Data[ByteIndex]) >> (BitIndex);
-		val |= ((uint64)Data[ByteIndex + 1]) << ((1 * 8) - BitIndex);
-		if (bit_count > (1 * 8) - 1)	{ val |= ((uint64)Data[ByteIndex + 2]) << ((2 * 8) - BitIndex); }
-		if (bit_count > (2 * 8) - 1)	{ val |= ((uint64)Data[ByteIndex + 3]) << ((3 * 8) - BitIndex); }
-		if (bit_count > (3 * 8) - 1)	{ val |= ((uint64)Data[ByteIndex + 4]) << ((4 * 8) - BitIndex); }
-		if (bit_count > (4 * 8) - 1)	{ val |= ((uint64)Data[ByteIndex + 5]) << ((5 * 8) - BitIndex); }
-		if (bit_count > (5 * 8) - 1)	{ val |= ((uint64)Data[ByteIndex + 6]) << ((6 * 8) - BitIndex); }
-		if (bit_count > (6 * 8) - 1)	{ val |= ((uint64)Data[ByteIndex + 7]) << ((7 * 8) - BitIndex); }
-		if (bit_count > (7 * 8) - 1)	{ val |= ((uint64)Data[ByteIndex + 8]) << ((8 * 8) - BitIndex); }
+		val = ((uint64)Block[ByteIndex]) >> (BitIndex);
+		val |= ((uint64)Block[ByteIndex + 1]) << ((1 * 8) - BitIndex);
+		if (bit_count > (1 * 8) - 1)	{ val |= ((uint64)Block[ByteIndex + 2]) << ((2 * 8) - BitIndex); }
+		if (bit_count > (2 * 8) - 1)	{ val |= ((uint64)Block[ByteIndex + 3]) << ((3 * 8) - BitIndex); }
+		if (bit_count > (3 * 8) - 1)	{ val |= ((uint64)Block[ByteIndex + 4]) << ((4 * 8) - BitIndex); }
+		if (bit_count > (4 * 8) - 1)	{ val |= ((uint64)Block[ByteIndex + 5]) << ((5 * 8) - BitIndex); }
+		if (bit_count > (5 * 8) - 1)	{ val |= ((uint64)Block[ByteIndex + 6]) << ((6 * 8) - BitIndex); }
+		if (bit_count > (6 * 8) - 1)	{ val |= ((uint64)Block[ByteIndex + 7]) << ((7 * 8) - BitIndex); }
+		if (bit_count > (7 * 8) - 1)	{ val |= ((uint64)Block[ByteIndex + 8]) << ((8 * 8) - BitIndex); }
 	}
 	else
 	{
-		val = ((uint64)Data[ByteIndex]);
-		if (bit_count > (1 * 8) - 1)	{ val |= ((uint64)Data[ByteIndex + 1]) << (1 * 8); }
-		if (bit_count > (2 * 8) - 1)	{ val |= ((uint64)Data[ByteIndex + 2]) << (2 * 8); }
-		if (bit_count > (3 * 8) - 1)	{ val |= ((uint64)Data[ByteIndex + 3]) << (3 * 8); }
-		if (bit_count > (4 * 8) - 1)	{ val |= ((uint64)Data[ByteIndex + 4]) << (4 * 8); }
-		if (bit_count > (5 * 8) - 1)	{ val |= ((uint64)Data[ByteIndex + 5]) << (5 * 8); }
-		if (bit_count > (6 * 8) - 1)	{ val |= ((uint64)Data[ByteIndex + 6]) << (6 * 8); }
-		if (bit_count > (7 * 8) - 1)	{ val |= ((uint64)Data[ByteIndex + 7]) << (7 * 8); }
+		val = ((uint64)Block[ByteIndex]);
+		if (bit_count > (1 * 8) - 1)	{ val |= ((uint64)Block[ByteIndex + 1]) << (1 * 8); }
+		if (bit_count > (2 * 8) - 1)	{ val |= ((uint64)Block[ByteIndex + 2]) << (2 * 8); }
+		if (bit_count > (3 * 8) - 1)	{ val |= ((uint64)Block[ByteIndex + 3]) << (3 * 8); }
+		if (bit_count > (4 * 8) - 1)	{ val |= ((uint64)Block[ByteIndex + 4]) << (4 * 8); }
+		if (bit_count > (5 * 8) - 1)	{ val |= ((uint64)Block[ByteIndex + 5]) << (5 * 8); }
+		if (bit_count > (6 * 8) - 1)	{ val |= ((uint64)Block[ByteIndex + 6]) << (6 * 8); }
+		if (bit_count > (7 * 8) - 1)	{ val |= ((uint64)Block[ByteIndex + 7]) << (7 * 8); }
 	}
 
 	if (bit_count != UINT64_BIT_COUNT)

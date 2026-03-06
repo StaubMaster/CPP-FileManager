@@ -15,12 +15,12 @@ ZLIB::ZLIB(BitStream & bits)
 	if ((FLG >> 5) & 0b1)
 	{
 		DICTID = bits.GetIncBits32();
-		Length = bits.Len - 10;
+		Length = bits.Block.Size() - 10;
 	}
 	else
 	{
 		DICTID = 0;
-		Length = bits.Len - 6;
+		Length = bits.Block.Size() - 6;
 	}
 
 	Data = bits.DataAtIndex();
@@ -32,7 +32,8 @@ ZLIB::ZLIB(BitStream & bits)
 
 BitStream	ZLIB::ToBitStream() const
 {
-	return (BitStream(Data, Length));
+	return BitStream(ByteBlock(Length, Data));
+	//return (BitStream(Data, Length));
 	//return BitStream(BitS, Length);
 }
 

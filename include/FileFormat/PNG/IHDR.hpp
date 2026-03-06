@@ -2,6 +2,7 @@
 # define PNG_IHDR_HPP
 
 # include "FileParsing/BitStream.hpp"
+# include "FileParsing/ByteStreamGetter.hpp"
 # include "ValueType/uint.hpp"
 
 namespace PNG
@@ -20,6 +21,7 @@ struct IHDR
 
 	IHDR();
 	IHDR(BitStream & bits);
+	IHDR(ByteStreamGetter & stream);
 
 	void	ToConsole() const;
 };

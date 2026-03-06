@@ -23,15 +23,14 @@ struct ByteStreamBase
 
 	protected:
 	virtual ~ByteStreamBase();
-	ByteStreamBase();
+	ByteStreamBase() = delete;
 
 	private:
 	ByteStreamBase(const ByteStreamBase & other) = delete;
 	ByteStreamBase & operator=(const ByteStreamBase & other) = delete;
 
 	protected:
-	ByteStreamBase(const ByteBlock & block);
-//	ByteStreamBase & Concatenation(const std::string & str);
+	ByteStreamBase(ByteBlock block);
 
 	public:
 	void Move();

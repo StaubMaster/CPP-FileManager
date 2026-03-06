@@ -4,16 +4,9 @@
 
 ByteStreamSetter::~ByteStreamSetter() { }
 
-
-
-ByteStreamSetter::ByteStreamSetter(uint64 size)
-	: ByteStreamBase(size)
+ByteStreamSetter::ByteStreamSetter(ByteBlock block)
+	: ByteStreamBase(block)
 { }
-ByteStreamSetter & ByteStreamSetter::Concatenation(uint64 size)
-{
-	Block.Concatenation(size);
-	return *this;
-}
 
 
 
@@ -82,6 +75,15 @@ void ByteStreamSetter::Set8(uint64 val)
 		Block[Index + 0] = ptr[7];
 	}
 	Index += 8;
+}
+
+void ByteStreamSetter::SetBlock(const ByteBlock & block)
+{
+	for (uint64 i = 0; i < block.Size(); i++)
+	{
+		Block[Index + i] = block[i];
+	}
+	Index += block.Size();
 }
 
 

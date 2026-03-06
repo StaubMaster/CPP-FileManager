@@ -39,7 +39,8 @@ void SaveRGB(ByteStreamSetter & stream, const Image & img, uint32 data_size)
 
 Image BitMap::Load(const FileInfo & file)
 {
-	ByteStreamGetter stream(file.LoadBytes());
+	ByteBlock block(file.LoadBytes());
+	ByteStreamGetter stream(block);
 
 	Image img;
 	{
@@ -79,7 +80,8 @@ void BitMap::Save(const FileInfo & file, const Image & img)
 {
 	uint32 data_size = img.W() * img.H();
 
-	ByteStreamSetter stream(14 + 40 + data_size * 3);
+	ByteBlock data(14 + 40 + data_size * 3);
+	ByteStreamSetter stream(data);
 
 	uint64 file_size_idx;
 	{
@@ -102,5 +104,6 @@ void BitMap::Save(const FileInfo & file, const Image & img)
 
 	stream.Set4(file_size_idx, stream.Index);
 
-	file.SaveBytes(stream.Block);
+	//file.SaveBytes(stream.Block);
+	file.SaveBytes(data);
 }

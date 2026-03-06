@@ -4,16 +4,9 @@
 
 ByteStreamGetter::~ByteStreamGetter() { }
 
-
-
-ByteStreamGetter::ByteStreamGetter(const ByteBlock & block)
+ByteStreamGetter::ByteStreamGetter(ByteBlock block)
 	: ByteStreamBase(block)
 { }
-ByteStreamGetter & ByteStreamGetter::Concatenation(const ByteBlock & block)
-{
-	Block.Concatenation(block);
-	return *this;
-}
 
 
 
@@ -89,4 +82,9 @@ uint64 ByteStreamGetter::Get8()
 	}
 	Index += 8;
 	return val;
+}
+
+ByteBlock ByteStreamGetter::GetBlock(uint64 size)
+{
+	return Block.BlockAt(Index, size);
 }
