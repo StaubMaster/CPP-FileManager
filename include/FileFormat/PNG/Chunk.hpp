@@ -1,18 +1,22 @@
 #ifndef  PNG_CHUNKS_HPP
 # define PNG_CHUNKS_HPP
 
+# include "ValueType/uint.hpp"
 # include "FileParsing/ByteBlock.hpp"
 # include "FileParsing/ByteStreamGetter.hpp"
 # include "FileParsing/BitStreamGetter.hpp"
-# include "ValueType/uint.hpp"
 
+# include "FileFormat/PNG/IHDR.hpp"
+
+namespace PNG
+{
 struct Chunk
 {
-	const uint32	Length;
-	const uint32	CRC_Calc;
-	const uint32	Type;
-	const uint8 *	Data;
-	const uint32	CRC_Read;
+	uint32		Length;
+	uint32		CRC_Calc;
+	uint32		Type;
+	uint8 *		Data;
+	uint32		CRC_Read;
 
 	Chunk(ByteStreamGetter & stream);
 
@@ -23,6 +27,11 @@ struct Chunk
 	bool	CheckType(const char * str);
 
 	void	ToConsole() const;
+
+	void	Parse_IHDR(IHDR & ihdr) const;
+	void	Parse_IDAT(ByteBlock & data) const;
+	void	Parse_tEXt() const;
+};
 };
 
 #endif

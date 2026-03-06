@@ -9,7 +9,8 @@
 
 PNG::IHDR::IHDR()
 { }
-PNG::IHDR::IHDR(ByteStreamGetter & stream)
+
+void PNG::IHDR::Parse(ByteStreamGetter & stream)
 {
 	width = ReverseBytes(stream.Get4());
 	height = ReverseBytes(stream.Get4());

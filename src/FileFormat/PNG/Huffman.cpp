@@ -125,14 +125,14 @@ HuffmanTree::~HuffmanTree()
 
 uint32	HuffmanTree::decode(BitStreamGetter & bits)
 {
-	uint32 code32 = bits.GetBits32();
+	uint32 code32 = bits.Get32();
 	for (uint32 i = 0; i < Len; i++)
 	{
 		if (BitLens[i] != 0)
 		{
 			if (Codes[i] == (code32 & Masks[i]))
 			{
-				bits.IncByBits(BitLens[i]);
+				bits.MoveBit(BitLens[i]);
 				return (i);
 			}
 		}

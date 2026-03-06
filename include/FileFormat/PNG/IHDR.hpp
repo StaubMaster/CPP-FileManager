@@ -19,7 +19,8 @@ struct IHDR
 	uint8	interlace_method;
 
 	IHDR();
-	IHDR(ByteStreamGetter & stream);
+
+	void	Parse(ByteStreamGetter & stream);
 
 	void	ToConsole() const;
 };

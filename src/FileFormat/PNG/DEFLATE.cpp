@@ -93,10 +93,10 @@ void	DEFLATE::decode_Huffman(BitStreamGetter & bits, HuffmanTree & literal, Huff
 		else if (decode_value < 286)
 		{
 			len_idx = decode_value - 257;
-			len_len = len_base[len_idx] + bits.GetIncBits32(len_base_extra_bits[len_idx]);
+			len_len = len_base[len_idx] + bits.Get32Move(len_base_extra_bits[len_idx]);
 
 			dist_idx = distance.decode(bits);
-			dist_len = dist_base[dist_idx] + bits.GetIncBits32(dist_base_extra_bits[dist_idx]);
+			dist_len = dist_base[dist_idx] + bits.Get32Move(dist_base_extra_bits[dist_idx]);
 
 			data.SetBlock(data.Block.BlockAt(data.IndexSet - dist_len, len_len));
 		}
@@ -116,7 +116,7 @@ uint8 *	DEFLATE::dynamic_Huffman(BitStreamGetter & bits, uint32 H_LIT, uint32 H_
 	for (uint32 i = 0; i < 19; i++)
 		codeLenCodeLen[i] = 0;
 	for (uint32 i = 0; i < H_CLEN; i++)
-		codeLenCodeLen[codeLenCodeLenOrder[i]] = bits.GetIncBits32(3);
+		codeLenCodeLen[codeLenCodeLenOrder[i]] = bits.Get32Move(3);
 
 	HuffmanTree	Trees(codeLenCodeLen, 19);
 	uint8 * Huffman_BitLen_Trees = new uint8[H_LIT + H_DIST];
@@ -137,16 +137,16 @@ uint8 *	DEFLATE::dynamic_Huffman(BitStreamGetter & bits, uint32 H_LIT, uint32 H_
 			uint8	repeat_data = 0;
 			if (decode_value == 16)
 			{
-				repeat_count = bits.GetIncBits32(2) + 3;
+				repeat_count = bits.Get32Move(2) + 3;
 				repeat_data = Huffman_BitLen_Trees[i - 1];
 			}
 			else if (decode_value == 17)
 			{
-				repeat_count = bits.GetIncBits32(3) + 3;
+				repeat_count = bits.Get32Move(3) + 3;
 			}
 			else if (decode_value == 18)
 			{
-				repeat_count = bits.GetIncBits32(7) + 11;
+				repeat_count = bits.Get32Move(7) + 11;
 			}
 			else
 			{
@@ -192,9 +192,9 @@ void	DEFLATE::Block_dynamic(BitStreamGetter & bits, ByteStreamQueue & data)
 {
 	//*DebugManager::Console << "\e[34mdynamic Huffman ...\e[m\n";
 
-	uint32	H_LIT = bits.GetIncBits32(5) + 257;
-	uint32	H_DIST = bits.GetIncBits32(5) + 1;
-	uint32	H_CLEN = bits.GetIncBits32(4) + 4;
+	uint32	H_LIT = bits.Get32Move(5) + 257;
+	uint32	H_DIST = bits.Get32Move(5) + 1;
+	uint32	H_CLEN = bits.Get32Move(4) + 4;
 	//*DebugManager::Console << "Huffman:";
 	//*DebugManager::Console << ' ' << H_LIT;
 	//*DebugManager::Console << ' ' << H_DIST;
@@ -227,8 +227,8 @@ void	DEFLATE::Blocks(BitStreamGetter & bits, ByteStreamQueue & data)
 		//*DebugManager::Console << "decoding ...  " << bits.get_ByteIndex() << "/" << bits.Len << "\n";
 		//*DebugManager::Console << "decoding ...\n";
 
-		BFINAL = bits.GetIncBits32(1);
-		BTYPE = bits.GetIncBits32(2);
+		BFINAL = bits.Get32Move(1);
+		BTYPE = bits.Get32Move(2);
 		//*DebugManager::Console << "[" << ToBase16(BlockCount) << "] ";
 		//*DebugManager::Console << "Deflate Block: ";
 		//if (BFINAL == 0) { *DebugManager::Console << "not final, "; }

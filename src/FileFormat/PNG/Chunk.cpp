@@ -6,7 +6,7 @@
 
 
 
-Chunk::Chunk(ByteStreamGetter & stream)
+PNG::Chunk::Chunk(ByteStreamGetter & stream)
 	: Length(ReverseBytes(stream.Get4()))
 	, CRC_Calc(CRC32(&(stream.Block.Data()[stream.Index]), Length + 4))
 	, Type(stream.Get4())
@@ -16,18 +16,18 @@ Chunk::Chunk(ByteStreamGetter & stream)
 
 
 
-ByteBlock	Chunk::ToBlock() const
+ByteBlock PNG::Chunk::ToBlock() const
 {
 	return ByteBlock(Length, Data);
 }
 
 
 
-bool	Chunk::CheckCRC()
+bool PNG::Chunk::CheckCRC()
 {
 	return (CRC_Calc == CRC_Read);
 }
-bool	Chunk::CheckType(uint8 c0, uint8 c1, uint8 c2, uint8 c3)
+bool PNG::Chunk::CheckType(uint8 c0, uint8 c1, uint8 c2, uint8 c3)
 {
 	return (
 		((uint8)(Type >> 0)) == c0 &&
@@ -36,7 +36,7 @@ bool	Chunk::CheckType(uint8 c0, uint8 c1, uint8 c2, uint8 c3)
 		((uint8)(Type >> 24)) == c3
 	);
 }
-bool	Chunk::CheckType(const char * str)
+bool PNG::Chunk::CheckType(const char * str)
 {
 	unsigned int len = 0;
 	while (str[len] != '\0') { len++; }
@@ -49,10 +49,51 @@ bool	Chunk::CheckType(const char * str)
 
 
 
-void Chunk::ToConsole() const
+void PNG::Chunk::ToConsole() const
 {
 	*DebugManager::Console << "PNG Chunk:";
 	*DebugManager::Console << ' ' << uint_Chr(Type);
 	*DebugManager::Console << ' ' << Length;
+	*DebugManager::Console << '\n';
+}
+
+
+
+
+
+void PNG::Chunk::Parse_IHDR(IHDR & ihdr) const
+{
+	ByteStreamGetter stream(ByteBlock(Length, Data));
+	ihdr.Parse(stream);
+	ihdr.ToConsole();
+}
+void PNG::Chunk::Parse_IDAT(ByteBlock & data) const
+{
+	data.Concatenation(ByteBlock(Length, Data));
+}
+void PNG::Chunk::Parse_tEXt() const
+{
+	uint32 text_data_idx = 0;
+	const char * text_key = (const char *)Data + text_data_idx;
+	uint32 text_key_len = 0;
+	while ((text_key[text_key_len] != '\0') && (text_data_idx < Length))
+	{
+		text_key_len++;
+		text_data_idx++;
+	}
+
+	text_data_idx++;
+	const char * text_value = (const char *)Data + text_data_idx;
+	uint32 text_value_len = 0;
+	while ((text_value[text_value_len] != '\0') && (text_data_idx < Length))
+	{
+		text_key_len++;
+		text_data_idx++;
+	}
+
+	*DebugManager::Console << "Text";
+	*DebugManager::Console << " [" << text_key_len << "|" << text_value_len << "] ";
+	*DebugManager::Console << "\"" << text_key << "\" \"" << text_value << "\"";
+	*DebugManager::Console << " " << text_data_idx << " | " << Length;
 	*DebugManager::Console << '\n';
 }
