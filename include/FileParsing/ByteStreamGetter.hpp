@@ -18,8 +18,7 @@ struct ByteStreamGetter : public ByteStreamBase
 	ByteStreamGetter(ByteBlock block);
 
 	public:
-	void Move();
-	void Move(uint64 move);
+	void Move(uint64 step = 1);
 
 	public:
 	uint8		Get1();

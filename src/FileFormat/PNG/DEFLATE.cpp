@@ -2,7 +2,7 @@
 #include "FileFormat/PNG/Huffman.hpp"
 
 #include "FileParsing/DebugManager.hpp"
-#include "FileParsing/BitStream.hpp"
+#include "FileParsing/BitStreamGetter.hpp"
 #include "FileParsing/ByteStreamQueue.hpp"
 #include "ValueType/uint.hpp"
 
@@ -66,7 +66,7 @@ static uint32 dist_base_extra_bits[] = {
 
 
 
-void	DEFLATE::decode_Huffman(BitStream & bits, HuffmanTree & literal, HuffmanTree & distance, ByteStreamQueue & data)
+void	DEFLATE::decode_Huffman(BitStreamGetter & bits, HuffmanTree & literal, HuffmanTree & distance, ByteStreamQueue & data)
 {
 	//*DebugManager::Console << "\e[34mHuffman decode ... \e[m\n";
 
@@ -109,7 +109,7 @@ void	DEFLATE::decode_Huffman(BitStream & bits, HuffmanTree & literal, HuffmanTre
 	//*DebugManager::Console << "\e[34mHuffman decode done \e[m\n";
 }
 
-uint8 *	DEFLATE::dynamic_Huffman(BitStream & bits, uint32 H_LIT, uint32 H_DIST, uint32 H_CLEN)
+uint8 *	DEFLATE::dynamic_Huffman(BitStreamGetter & bits, uint32 H_LIT, uint32 H_DIST, uint32 H_CLEN)
 {
 	uint8 codeLenCodeLenOrder[19] = { 16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15 };
 	uint8 codeLenCodeLen[19];
@@ -168,7 +168,7 @@ uint8 *	DEFLATE::dynamic_Huffman(BitStream & bits, uint32 H_LIT, uint32 H_DIST, 
 
 
 
-void	DEFLATE::Block_direct(BitStream & bits, ByteStreamQueue & data)
+void	DEFLATE::Block_direct(BitStreamGetter & bits, ByteStreamQueue & data)
 {
 	//*DebugManager::Console << "\e[34mdirect Data ...\e[m\n";
 
@@ -178,7 +178,7 @@ void	DEFLATE::Block_direct(BitStream & bits, ByteStreamQueue & data)
 	(void)bits;
 	(void)data;
 }
-void	DEFLATE::Block_static(BitStream & bits, ByteStreamQueue & data)
+void	DEFLATE::Block_static(BitStreamGetter & bits, ByteStreamQueue & data)
 {
 	//*DebugManager::Console << "\e[34mstatic Huffman ...\e[m\n";
 
@@ -188,7 +188,7 @@ void	DEFLATE::Block_static(BitStream & bits, ByteStreamQueue & data)
 	(void)bits;
 	(void)data;
 }
-void	DEFLATE::Block_dynamic(BitStream & bits, ByteStreamQueue & data)
+void	DEFLATE::Block_dynamic(BitStreamGetter & bits, ByteStreamQueue & data)
 {
 	//*DebugManager::Console << "\e[34mdynamic Huffman ...\e[m\n";
 
@@ -216,7 +216,7 @@ void	DEFLATE::Block_dynamic(BitStream & bits, ByteStreamQueue & data)
 	//*DebugManager::Console << "\e[34mdynamic Huffman done\e[m\n";
 }
 
-void	DEFLATE::Blocks(BitStream & bits, ByteStreamQueue & data)
+void	DEFLATE::Blocks(BitStreamGetter & bits, ByteStreamQueue & data)
 {
 	uint8	BFINAL;
 	uint8	BTYPE;

@@ -9,20 +9,6 @@
 
 PNG::IHDR::IHDR()
 { }
-PNG::IHDR::IHDR(BitStream & bits)
-{
-	bits.MoveToNextByte();
-
-	width = ReverseBytes(bits.GetIncBits32());
-	height = ReverseBytes(bits.GetIncBits32());
-
-	bit_depth = bits.GetIncBits8();
-	color_type = bits.GetIncBits8();
-
-	compression_method = bits.GetIncBits8();
-	filter_method = bits.GetIncBits8();
-	interlace_method = bits.GetIncBits8();
-}
 PNG::IHDR::IHDR(ByteStreamGetter & stream)
 {
 	width = ReverseBytes(stream.Get4());

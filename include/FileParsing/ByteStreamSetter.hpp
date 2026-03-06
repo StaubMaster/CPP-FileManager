@@ -17,8 +17,7 @@ struct ByteStreamSetter : public ByteStreamBase
 	ByteStreamSetter(ByteBlock block);
 
 	public:
-	void Move();
-	void Move(uint64 move);
+	void Move(uint64 step = 1);
 
 	public:
 	void	Set1(uint8 val);

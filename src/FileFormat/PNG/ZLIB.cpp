@@ -1,20 +1,18 @@
 #include "FileFormat/PNG/ZLIB.hpp"
 #include "FileFormat/PNG/DEFLATE.hpp"
 
-#include "FileParsing/BitStream.hpp"
-#include "FileParsing/ByteStreamQueue.hpp"
 #include "FileParsing/DebugManager.hpp"
 
 
 
-ZLIB::ZLIB(BitStream & bits)
+ZLIB::ZLIB(ByteStreamGetter & bits)
 {
-	CMF = bits.GetIncBits8();
-	FLG = bits.GetIncBits8();
+	CMF = bits.Get1();
+	FLG = bits.Get1();
 
 	if ((FLG >> 5) & 0b1)
 	{
-		DICTID = bits.GetIncBits32();
+		DICTID = bits.Get4();
 		Length = bits.Block.Size() - 10;
 	}
 	else
@@ -23,23 +21,22 @@ ZLIB::ZLIB(BitStream & bits)
 		Length = bits.Block.Size() - 6;
 	}
 
-	Data = bits.DataAtIndex();
-	bits.MoveToNextByte();
-	bits.IncByBytes(Length);
-	ADLER32 = bits.GetIncBits32();
-	//	maybe check this ?
+	//Data = bits.DataAtIndex();
+	Data = bits.Block.DataAt(bits.Index);
+	//bits.MoveToNextByte();
+	bits.Move(Length);
+	//bits.IncByBytes(Length);
+	ADLER32 = bits.Get4(); // maybe check this ?
 }
 
-BitStream	ZLIB::ToBitStream() const
+ByteBlock	ZLIB::ToBlock() const
 {
-	return BitStream(ByteBlock(Length, Data));
-	//return (BitStream(Data, Length));
-	//return BitStream(BitS, Length);
+	return ByteBlock(Length, Data);
 }
 
 
 
-void	ZLIB::decompress(BitStream & bits, ByteStreamQueue & data)
+void	ZLIB::decompress(ByteStreamGetter & bits, ByteStreamQueue & data)
 {
 	//*DebugManager::Console << "\e[34mzlib ...\e[m\n";
 
@@ -47,9 +44,7 @@ void	ZLIB::decompress(BitStream & bits, ByteStreamQueue & data)
 	//zlib.ToConsole();
 	//*DebugManager::Console << "\n";
 
-	BitStream deflate = zlib.ToBitStream();
-	//ByteBlock block(data.Len, data.Data);
-	//ByteStreamQueue stream(block);
+	BitStreamGetter deflate(zlib.ToBlock());
 	DEFLATE::Blocks(deflate, data);
 
 	//*DebugManager::Console << "\e[34mzlib done\e[m\n";

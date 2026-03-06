@@ -29,12 +29,14 @@ FILES_CPP := \
 	FileExceptions.cpp \
 \
 	FileParsing/ByteBlock.cpp \
+\
 	FileParsing/ByteStreamBase.cpp \
 	FileParsing/ByteStreamGetter.cpp \
 	FileParsing/ByteStreamSetter.cpp \
 	FileParsing/ByteStreamQueue.cpp \
 \
-	FileParsing/BitStream.cpp \
+	FileParsing/BitStreamBase.cpp \
+	FileParsing/BitStreamGetter.cpp \
 \
 	FileParsing/LineCommand.cpp \
 	FileParsing/DebugManager.cpp \

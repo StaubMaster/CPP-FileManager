@@ -1,7 +1,6 @@
 #ifndef  PNG_IHDR_HPP
 # define PNG_IHDR_HPP
 
-# include "FileParsing/BitStream.hpp"
 # include "FileParsing/ByteStreamGetter.hpp"
 # include "ValueType/uint.hpp"
 
@@ -20,7 +19,6 @@ struct IHDR
 	uint8	interlace_method;
 
 	IHDR();
-	IHDR(BitStream & bits);
 	IHDR(ByteStreamGetter & stream);
 
 	void	ToConsole() const;

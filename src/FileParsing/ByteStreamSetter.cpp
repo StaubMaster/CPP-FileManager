@@ -11,8 +11,7 @@ ByteStreamSetter::ByteStreamSetter(ByteBlock block)
 
 
 
-void ByteStreamSetter::Move() { Index++; }
-void ByteStreamSetter::Move(uint64 move) { Index += move; }
+void ByteStreamSetter::Move(uint64 step) { Index += step; }
 
 
 

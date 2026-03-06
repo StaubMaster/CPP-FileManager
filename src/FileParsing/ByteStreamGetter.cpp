@@ -11,8 +11,7 @@ ByteStreamGetter::ByteStreamGetter(ByteBlock block)
 
 
 
-void ByteStreamGetter::Move() { Index++; }
-void ByteStreamGetter::Move(uint64 move) { Index += move; }
+void ByteStreamGetter::Move(uint64 step) { Index += step; }
 
 
 

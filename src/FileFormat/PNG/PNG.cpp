@@ -140,7 +140,7 @@ Image PNG::Load(const FileInfo & file, bool debug)
 		//std::cout << "\ntime: " << (time.count() / 1000000000.0f) << '\n';
 		*DebugManager::Console << "PNG: Decompressing Data Init ...\n";
 
-		BitStream bits(CompressedImageData);
+		ByteStreamGetter bits(CompressedImageData);
 
 		// calculate how much is needed
 		ByteBlock UncompressedImageData(0xFFFFFFFF);

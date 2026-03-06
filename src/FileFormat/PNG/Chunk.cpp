@@ -6,31 +6,16 @@
 
 
 
-
-
-Chunk::Chunk(BitStream & bits) :
-	Length(ReverseBytes(bits.GetIncBits32())),
-	CRC_Calc(CRC32(bits.DataAtIndex(), Length + 4)),
-	Type(bits.GetIncBits32()),
-	Data(bits.DataAtIndex()),
-	CRC_Read((bits.IncByBytes(Length), ReverseBytes(bits.GetIncBits32()))),
-	BitS(bits)
-{ }
 Chunk::Chunk(ByteStreamGetter & stream)
 	: Length(ReverseBytes(stream.Get4()))
 	, CRC_Calc(CRC32(&(stream.Block.Data()[stream.Index]), Length + 4))
 	, Type(stream.Get4())
 	, Data(&(stream.Block.Data()[stream.Index]))
 	, CRC_Read((stream.Move(Length), ReverseBytes(stream.Get4())))
-	, BitS(*((BitStream*)nullptr))
 { }
 
 
 
-BitStream	Chunk::ToBitStream() const
-{
-	return BitStream(ByteBlock(Length, Data));
-}
 ByteBlock	Chunk::ToBlock() const
 {
 	return ByteBlock(Length, Data);

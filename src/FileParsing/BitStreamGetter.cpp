@@ -1,20 +1,22 @@
-#include "FileParsing/BitStream.hpp"
+#include "FileParsing/BitStreamGetter.hpp"
 
 
 
-BitStream::BitStream(ByteBlock block)
-	: Block(block)
+BitStreamGetter::~BitStreamGetter() { }
+
+BitStreamGetter::BitStreamGetter(ByteBlock block)
+	: BitStreamBase(block)
 	, BitIndex(0)
 	, ByteIndex(0)
 { }
 
 
 
-const uint8 * BitStream::DataAtIndex() const { return Block.DataAt(ByteIndex); }
+const uint8 * BitStreamGetter::DataAtIndex() const { return Block.DataAt(ByteIndex); }
 
 
 
-void	BitStream::MoveToNextByte()
+void	BitStreamGetter::MoveToNextByte()
 {
 	if (BitIndex != 0)
 	{
@@ -22,12 +24,11 @@ void	BitStream::MoveToNextByte()
 		ByteIndex++;
 	}
 }
-
-void	BitStream::IncByBytes(uint32 count)
+void	BitStreamGetter::IncByBytes(uint32 count)
 {
 	ByteIndex += count;
 }
-void	BitStream::IncByBits(uint32 count)
+void	BitStreamGetter::IncByBits(uint32 count)
 {
 	BitIndex += count;
 	ByteIndex += BitIndex >> 3;
@@ -36,7 +37,11 @@ void	BitStream::IncByBits(uint32 count)
 
 
 
-uint8	BitStream::GetBits8(uint8 bit_count) const
+// use ptr instead of shifting
+
+
+
+uint8	BitStreamGetter::GetBits8(uint8 bit_count) const
 {
 	if (bit_count == 0) { return 0; }
 	bit_count = ((bit_count - 1) & UINT8_BIT_LIMIT) + 1;
@@ -55,7 +60,7 @@ uint8	BitStream::GetBits8(uint8 bit_count) const
 
 	return val;
 }
-uint16	BitStream::GetBits16(uint8 bit_count) const
+uint16	BitStreamGetter::GetBits16(uint8 bit_count) const
 {
 	if (bit_count == 0) { return 0; }
 	bit_count = ((bit_count - 1) & UINT16_BIT_LIMIT) + 1;
@@ -75,7 +80,7 @@ uint16	BitStream::GetBits16(uint8 bit_count) const
 
 	return val;
 }
-uint32	BitStream::GetBits32(uint8 bit_count) const
+uint32	BitStreamGetter::GetBits32(uint8 bit_count) const
 {
 	if (bit_count == 0) { return 0; }
 	bit_count = ((bit_count - 1) & UINT32_BIT_LIMIT) + 1;
@@ -104,7 +109,7 @@ uint32	BitStream::GetBits32(uint8 bit_count) const
 
 	return val;
 }
-uint64	BitStream::GetBits64(uint8 bit_count) const
+uint64	BitStreamGetter::GetBits64(uint8 bit_count) const
 {
 	if (bit_count == 0) { return 0; }
 	bit_count = ((bit_count - 1) & UINT64_BIT_LIMIT) + 1;
@@ -144,25 +149,25 @@ uint64	BitStream::GetBits64(uint8 bit_count) const
 
 
 
-uint8	BitStream::GetIncBits8(uint8 bit_count)
+uint8	BitStreamGetter::GetIncBits8(uint8 bit_count)
 {
 	uint8 val = GetBits8(bit_count);
 	IncByBits(bit_count);
 	return val;
 }
-uint16	BitStream::GetIncBits16(uint8 bit_count)
+uint16	BitStreamGetter::GetIncBits16(uint8 bit_count)
 {
 	uint16 val = GetBits16(bit_count);
 	IncByBits(bit_count);
 	return val;
 }
-uint32	BitStream::GetIncBits32(uint8 bit_count)
+uint32	BitStreamGetter::GetIncBits32(uint8 bit_count)
 {
 	uint32 val = GetBits32(bit_count);
 	IncByBits(bit_count);
 	return val;
 }
-uint64	BitStream::GetIncBits64(uint8 bit_count)
+uint64	BitStreamGetter::GetIncBits64(uint8 bit_count)
 {
 	uint64 val = GetBits64(bit_count);
 	IncByBits(bit_count);
@@ -173,4 +178,4 @@ uint64	BitStream::GetIncBits64(uint8 bit_count)
 
 
 
-const char * BitStream::LenReachedException::what() const throw() { return "BitStream Length reached"; }
+const char * BitStreamGetter::LenReachedException::what() const throw() { return "BitStreamGetter Length reached"; }

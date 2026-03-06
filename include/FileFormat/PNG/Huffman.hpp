@@ -3,7 +3,7 @@
 
 # include "ValueType/uint.hpp"
 
-class BitStream;
+class BitStreamGetter;
 
 class HuffmanTree
 {
@@ -23,7 +23,7 @@ class HuffmanTree
 	HuffmanTree(uint8 * codeBitLen, uint32 len);
 	~HuffmanTree();
 
-	uint32	decode(BitStream & bits);
+	uint32	decode(BitStreamGetter & bits);
 
 	void	ToConsole() const;
 };

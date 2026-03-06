@@ -1,6 +1,6 @@
 #include "FileFormat/PNG/Huffman.hpp"
 
-#include "FileParsing/BitStream.hpp"
+#include "FileParsing/BitStreamGetter.hpp"
 #include "FileParsing/DebugManager.hpp"
 
 #include <iostream>
@@ -123,7 +123,7 @@ HuffmanTree::~HuffmanTree()
 
 
 
-uint32	HuffmanTree::decode(BitStream & bits)
+uint32	HuffmanTree::decode(BitStreamGetter & bits)
 {
 	uint32 code32 = bits.GetBits32();
 	for (uint32 i = 0; i < Len; i++)

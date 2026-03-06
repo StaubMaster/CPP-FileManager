@@ -2,9 +2,8 @@
 # define ZLIB_HPP
 
 # include "ValueType/uint.hpp"
-
-class BitStream;
-class ByteStreamQueue;
+# include "FileParsing/ByteStreamGetter.hpp"
+# include "FileParsing/ByteStreamQueue.hpp"
 
 class ZLIB
 {
@@ -14,18 +13,18 @@ class ZLIB
 
 	private:
 	const uint8	*Data;
-	//BitStream	& BitS;
+
 	public:
 	uint32		Length;
 
 	uint32	DICTID;
 	uint32	ADLER32;
 
-	ZLIB(BitStream & bits);
+	ZLIB(ByteStreamGetter & bits);
 
-	BitStream	ToBitStream() const;
+	ByteBlock	ToBlock() const;
 
-	static void	decompress(BitStream & bits, ByteStreamQueue & stream);
+	static void	decompress(ByteStreamGetter & bits, ByteStreamQueue & stream);
 
 	void	ToConsole() const;
 };
