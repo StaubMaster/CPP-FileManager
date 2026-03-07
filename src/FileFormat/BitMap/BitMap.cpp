@@ -39,38 +39,44 @@ void SaveRGB(ByteStreamSetter & stream, const Image & img, uint32 data_size)
 
 Image BitMap::Load(const FileInfo & file)
 {
-	ByteBlock block(file.LoadBytes());
-	ByteStreamGetter stream(block);
-
 	Image img;
+	try
 	{
-		uint16 signature = stream.Get2();
-		if (signature != 0x4D42)
+		ByteBlock block(file.LoadBytes());
+		ByteStreamGetter stream(block);
 		{
-			throw Exceptions::UnknownSignature();
+			uint16 signature = stream.Get2();
+			if (signature != 0x4D42)
+			{
+				throw Exceptions::UnknownSignature();
+			}
+			uint32 file_size = stream.Get4();
+			(void)file_size; // == stream.Block.Size(). maybe used for stream reading ?
+			stream.Move(2); // Reserved
+			stream.Move(2); // Reserved
 		}
-		uint32 file_size = stream.Get4();
-		(void)file_size; // == stream.Block.Size(). maybe used for stream reading ?
-		stream.Move(2); // Reserved
-		stream.Move(2); // Reserved
-	}
 
-	uint32 data_offset = stream.Get4();
-	uint32 data_size;
-	uint32 header_size = stream.Get4();
-	switch (header_size)
-	{
-		case 40:
-			BITMAPINFOHEADER::Parse(stream, img, data_size);
-			break;
-		default:
+		uint32 data_offset = stream.Get4();
+		uint32 data_size;
+		uint32 header_size = stream.Get4();
+		switch (header_size)
+		{
+			case 40:
+				BITMAPINFOHEADER::Parse(stream, img, data_size);
+				break;
+			default:
 			throw BitMap::Exceptions::UnknownHeader();
+		}
+
+		stream.Index = data_offset;
+		// data_size / 3 depends on BitsPerPixel being 24
+		LoadRGB(stream, img, data_size / 3);
 	}
-
-	stream.Index = data_offset;
-	// data_size / 3 depends on BitsPerPixel being 24
-	LoadRGB(stream, img, data_size / 3);
-
+	catch(const std::exception& e)
+	{
+		std::cerr << "BitMap: Exception while loading Image: " << e.what() << "\n";
+		img.Dispose();
+	}
 	return img;
 }
 
