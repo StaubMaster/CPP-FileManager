@@ -63,14 +63,16 @@ FILES_CPP := \
 	FileFormat/BitMap/Headers/BITMAPINFOHEADER.cpp \
 	FileFormat/BitMap/BitMap.cpp \
 \
-	ValueType/Bool2D.cpp \
-	ValueType/Undex2D.cpp \
-	ValueType/UndexBox2D.cpp \
-	ValueType/UndexLoop2D.cpp \
 	ValueType/ColorU4.cpp \
 	ValueType/uint.cpp \
 \
 	Image.cpp
+
+# ValueType stuff
+#	ValueType/Bool2D.cpp
+#	ValueType/Undex2D.cpp
+#	ValueType/UndexBox2D.cpp
+#	ValueType/UndexLoop2D.cpp
 
 FILES_OBJ := $(FILES_CPP:.cpp=.o)
 
@@ -126,6 +128,7 @@ $(DIR_OBJ)%.o: $(DIR_SRC)%.cpp
 
 LIBRARYS := $(NAME)
 INCLUDES := include
+INCLUDES += ../Engine/include
 ARGUMENTS := 
 
 ARGS_LIBRARYS = $(foreach library,$(LIBRARYS),$(library))
