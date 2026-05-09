@@ -1,7 +1,7 @@
 #ifndef HUFFMAN_HPP
 # define HUFFMAN_HPP
 
-# include "ValueType/uint.hpp"
+# include "uint.hpp"
 
 class BitStreamGetter;
 

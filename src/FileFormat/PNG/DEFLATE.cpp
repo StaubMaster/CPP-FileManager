@@ -4,7 +4,7 @@
 #include "FileParsing/DebugManager.hpp"
 #include "FileParsing/BitStreamGetter.hpp"
 #include "FileParsing/ByteStreamQueue.hpp"
-#include "ValueType/uint.hpp"
+#include "uint.hpp"
 
 
 

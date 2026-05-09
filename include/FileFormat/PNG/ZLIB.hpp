@@ -1,7 +1,7 @@
 #ifndef  ZLIB_HPP
 # define ZLIB_HPP
 
-# include "ValueType/uint.hpp"
+# include "uint.hpp"
 # include "FileParsing/ByteStreamGetter.hpp"
 # include "FileParsing/ByteStreamQueue.hpp"
 

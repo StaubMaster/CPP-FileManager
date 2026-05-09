@@ -1,7 +1,7 @@
 #ifndef  BYTE_STREAM_BASE_HPP
 # define BYTE_STREAM_BASE_HPP
 
-# include "ValueType/uint.hpp"
+# include "uint.hpp"
 # include "FileParsing/ByteBlock.hpp"
 # include "FileParsing/ExceptionBase.hpp"
 

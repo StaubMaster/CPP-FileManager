@@ -5,18 +5,18 @@
 bool	Image::Empty() const { return (_Data == 0); }
 uint32	Image::W() const { return _Size.X; }
 uint32	Image::H() const { return _Size.Y; }
-Undex2D			Image::Size() const { return _Size; }
+VectorU2			Image::Size() const { return _Size; }
 const void *	Image::Data() const { return _Data; }
-UndexLoop2D		Image::Loop() const { return UndexLoop2D(Undex2D(), _Size); }
+LoopU2		Image::Loop() const { return LoopU2(VectorU2(), _Size); }
 void *			Image::Data() { return _Data; }
 
 
 
-ColorU4 & Image::Pixel(Undex2D udx)
+ColorU4 & Image::Pixel(VectorU2 udx)
 {
 	return _Data[udx.X + udx.Y * _Size.X];
 }
-const ColorU4 & Image::Pixel(Undex2D udx) const
+const ColorU4 & Image::Pixel(VectorU2 udx) const
 {
 	return _Data[udx.X + udx.Y * _Size.X];
 }
@@ -53,7 +53,7 @@ Image::Image() :
 	_Size(),
 	_Data(NULL)
 { }
-Image::Image(Undex2D size) :
+Image::Image(VectorU2 size) :
 	_Size(size),
 	_Data(new ColorU4[_Size.X * _Size.Y])
 { }
@@ -76,7 +76,7 @@ Image & Image::operator=(const Image & other)
 
 
 
-void Image::Init(Undex2D size)
+void Image::Init(VectorU2 size)
 {
 	Dispose();
 	_Size = size;
@@ -85,12 +85,12 @@ void Image::Init(Undex2D size)
 void Image::Init(uint32 w, uint32 h)
 {
 	Dispose();
-	_Size = Undex2D(w, h);
+	_Size = VectorU2(w, h);
 	_Data = new ColorU4[_Size.X * _Size.Y];
 }
 void Image::Dispose()
 {
-	_Size = Undex2D();
+	_Size = VectorU2();
 	delete[] _Data;
 	_Data = NULL;
 }
@@ -127,17 +127,17 @@ Image Image::Copy()
 
 
 
-void Image::Scale(Undex2D size)
+void Image::Scale(VectorU2 size)
 {
 	Image img = Scaled(size);
 	Dispose();
 	Bind(img);
 }
-Image Image::Scaled(Undex2D size) const
+Image Image::Scaled(VectorU2 size) const
 {
 	Image img(size);
 
-	Undex2D	scaled;
+	VectorU2	scaled;
 	uint32	idx_old;
 	uint32	idx_new;
 	for (uint32 y = 0; y < size.Y; y++)
@@ -164,7 +164,7 @@ Image Image::Scaled(Undex2D size) const
 
 
 
-Image Image::Missing(Undex2D size)
+Image Image::Missing(VectorU2 size)
 {
 	Image img(size);
 

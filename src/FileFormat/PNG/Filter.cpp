@@ -11,7 +11,7 @@
 	return (((pxl.img.W() * pxl.y + pxl.x) * 4) + pxl.col);
 }*/
 
-uint8	PNG::Filter::getPixel(Image & img, Undex2D pxl, uint8 col, uint8 rel)
+uint8	PNG::Filter::getPixel(Image & img, VectorU2 pxl, uint8 col, uint8 rel)
 {
 	if ((rel & rel_X) != 0)
 	{
@@ -30,27 +30,27 @@ uint8	PNG::Filter::getPixel(Image & img, Undex2D pxl, uint8 col, uint8 rel)
 	return (img.Pixel(pxl.X, pxl.Y, col));
 }
 
-void	PNG::Filter::filter_None(Image & img, Undex2D pxl, uint8 col, uint8 byte)
+void	PNG::Filter::filter_None(Image & img, VectorU2 pxl, uint8 col, uint8 byte)
 {
 	img.Pixel(pxl.X, pxl.Y, col) = byte;
 }
-void	PNG::Filter::filter_Sub(Image & img, Undex2D pxl, uint8 col, uint8 byte)
+void	PNG::Filter::filter_Sub(Image & img, VectorU2 pxl, uint8 col, uint8 byte)
 {
 	uint8	a = getPixel(img, pxl, col, rel_X);
 	img.Pixel(pxl.X, pxl.Y, col) = byte + a;
 }
-void	PNG::Filter::filter_Up(Image & img, Undex2D pxl, uint8 col, uint8 byte)
+void	PNG::Filter::filter_Up(Image & img, VectorU2 pxl, uint8 col, uint8 byte)
 {
 	uint8	b = getPixel(img, pxl, col, rel_Y);
 	img.Pixel(pxl.X, pxl.Y, col) = byte + b;
 }
-void	PNG::Filter::filter_Avg(Image & img, Undex2D pxl, uint8 col, uint8 byte)
+void	PNG::Filter::filter_Avg(Image & img, VectorU2 pxl, uint8 col, uint8 byte)
 {
 	uint8	a = getPixel(img, pxl, col, rel_X);
 	uint8	b = getPixel(img, pxl, col, rel_Y);
 	img.Pixel(pxl.X, pxl.Y, col) = byte + ((a + b) >> 1);
 }
-void	PNG::Filter::filter_Paeth(Image & img, Undex2D pxl, uint8 col, uint8 byte)
+void	PNG::Filter::filter_Paeth(Image & img, VectorU2 pxl, uint8 col, uint8 byte)
 {
 	uint8	a = getPixel(img, pxl, col, rel_X);
 	uint8	b = getPixel(img, pxl, col, rel_Y);
@@ -68,10 +68,10 @@ void	PNG::Filter::filter_Paeth(Image & img, Undex2D pxl, uint8 col, uint8 byte)
 
 void	PNG::Filter::filter(IHDR head, ByteStreamQueue & data, Image & img)
 {
-	void (*filterFunc)(Image &, Undex2D, uint8, uint8);
+	void (*filterFunc)(Image &, VectorU2, uint8, uint8);
 
 	uint8	data_byte;
-	Undex2D	pxl;
+	VectorU2	pxl;
 	for (pxl.Y = 0; pxl.Y < img.H(); pxl.Y++)
 	{
 		data_byte = data.Get1();

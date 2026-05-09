@@ -5,7 +5,7 @@
 #include "FileParsing/ByteBlock.hpp"
 #include "FileParsing/ByteStreamGetter.hpp"
 #include "FileParsing/ByteStreamSetter.hpp"
-#include "ValueType/uint.hpp"
+#include "uint.hpp"
 
 #include <iostream>
 

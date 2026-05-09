@@ -2,7 +2,7 @@
 # define PNG_IHDR_HPP
 
 # include "FileParsing/ByteStreamGetter.hpp"
-# include "ValueType/uint.hpp"
+# include "uint.hpp"
 
 namespace PNG
 {

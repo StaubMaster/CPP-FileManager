@@ -3,7 +3,7 @@
 
 # include "FileParsing/ByteStreamGetter.hpp"
 # include "FileParsing/ByteStreamSetter.hpp"
-# include "ValueType/uint.hpp"
+# include "uint.hpp"
 # include "Image.hpp"
 
 namespace BitMap

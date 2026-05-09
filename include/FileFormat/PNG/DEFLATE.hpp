@@ -2,7 +2,7 @@
 #ifndef DEFLATE_HPP
 # define DEFLATE_HPP
 
-# include "ValueType/uint.hpp"
+# include "uint.hpp"
 # include "FileParsing/ByteStreamQueue.hpp"
 # include "FileParsing/BitStreamGetter.hpp"
 

@@ -1,7 +1,7 @@
 #ifndef  BYTE_BLOCK_HPP
 # define BYTE_BLOCK_HPP
 
-# include "ValueType/uint.hpp"
+# include "uint.hpp"
 # include <string>
 
 class ByteBlock

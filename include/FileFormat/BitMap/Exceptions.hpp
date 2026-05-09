@@ -2,7 +2,7 @@
 # define BITMAP_EXCEPTIONS_HPP
 
 # include "FileParsing/ExceptionBase.hpp"
-# include "ValueType/uint.hpp"
+# include "uint.hpp"
 
 namespace BitMap
 {

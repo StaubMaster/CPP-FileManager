@@ -1,7 +1,7 @@
 #ifndef  PNG_CHUNKS_HPP
 # define PNG_CHUNKS_HPP
 
-# include "ValueType/uint.hpp"
+# include "uint.hpp"
 # include "FileParsing/ByteBlock.hpp"
 # include "FileParsing/ByteStreamGetter.hpp"
 # include "FileParsing/BitStreamGetter.hpp"

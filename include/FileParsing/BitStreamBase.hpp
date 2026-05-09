@@ -1,7 +1,7 @@
 #ifndef  BIT_STREAM_BASE_HPP
 # define BIT_STREAM_BASE_HPP
 
-# include "ValueType/uint.hpp"
+# include "uint.hpp"
 # include "FileParsing/ByteBlock.hpp"
 
 class BitStreamBase
