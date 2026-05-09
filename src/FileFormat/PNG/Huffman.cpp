@@ -142,10 +142,12 @@ uint32	HuffmanTree::decode(BitStreamGetter & bits)
 
 
 
+#include <iostream>
 void HuffmanTree::ToConsole() const
 {
 	for (uint32 i = 0; i < Len; i++)
 	{
-		*DebugManager::Console << "[" << std::setw(3) << i << "] " << ToBase2(Codes[i], BitLens[i]) << "\n";
+		//*DebugManager::Console << "[" << std::setw(3) << i << "] " << ToBase2(Codes[i], BitLens[i]) << "\n";
+		std::cout << "[" << std::setw(3) << i << "] " << ToBase2(Codes[i], BitLens[i]) << "\n";
 	}
 }

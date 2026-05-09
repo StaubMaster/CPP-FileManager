@@ -73,6 +73,11 @@ uint16 BitStreamGetter::Get16(uint8 bit_count) const
 		if (bit_count > (1 * 8) - 1)	{ val |= ((uint16)Block[IndexGetByte + 1]) << (1 * 8); }
 	}
 
+	if (bit_count != UINT16_BIT_COUNT)
+	{
+		val = val & (UINT16_BIT_MASK >> (UINT16_BIT_COUNT - bit_count));
+	}
+
 	return val;
 }
 uint32 BitStreamGetter::Get32(uint8 bit_count) const
@@ -99,7 +104,7 @@ uint32 BitStreamGetter::Get32(uint8 bit_count) const
 
 	if (bit_count != UINT32_BIT_COUNT)
 	{
-		val = val & (0xFFFFFFFF >> (UINT32_BIT_COUNT - bit_count));
+		val = val & (UINT32_BIT_MASK >> (UINT32_BIT_COUNT - bit_count));
 	}
 
 	return val;
@@ -136,7 +141,7 @@ uint64 BitStreamGetter::Get64(uint8 bit_count) const
 
 	if (bit_count != UINT64_BIT_COUNT)
 	{
-		val = val & (0xFFFFFFFFFFFFFFFF >> (UINT64_BIT_COUNT - bit_count));
+		val = val & (UINT64_BIT_MASK >> (UINT64_BIT_COUNT - bit_count));
 	}
 
 	return val;

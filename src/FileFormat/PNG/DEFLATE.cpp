@@ -8,15 +8,6 @@
 
 
 
-static uint32 len_base[] = {
-    3, 4, 5, 6, 7, 8, 9, 10, //257 - 264
-    11, 13, 15, 17,          //265 - 268
-    19, 23, 27, 31,          //269 - 273
-    35, 43, 51, 59,          //274 - 276
-    67, 83, 99, 115,         //278 - 280
-    131, 163, 195, 227,      //281 - 284
-    258                      //285
-};
 
 static uint32 len_base_extra_bits[] = {
     0, 0, 0, 0, 0, 0, 0, 0, //257 - 264
@@ -28,22 +19,14 @@ static uint32 len_base_extra_bits[] = {
     0           //285
 };
 
-static uint32 dist_base[] = {
-    /*0*/ 1, 2, 3, 4,    //0-3
-    /*1*/ 5, 7,          //4-5
-    /*2*/ 9, 13,         //6-7
-    /*3*/ 17, 25,        //8-9
-    /*4*/ 33, 49,        //10-11
-    /*5*/ 65, 97,        //12-13
-    /*6*/ 129, 193,      //14-15
-    /*7*/ 257, 385,      //16-17
-    /*8*/ 513, 769,      //18-19
-    /*9*/ 1025, 1537,    //20-21
-    /*10*/ 2049, 3073,   //22-23
-    /*11*/ 4097, 6145,   //24-25
-    /*12*/ 8193, 12289,  //26-27
-    /*13*/ 16385, 24577, //28-29
-           0    , 0      //30-31, error, shouldn't occur
+static uint32 len_base[] = {
+    3, 4, 5, 6, 7, 8, 9, 10, //257 - 264
+    11, 13, 15, 17,          //265 - 268
+    19, 23, 27, 31,          //269 - 273
+    35, 43, 51, 59,          //274 - 276
+    67, 83, 99, 115,         //278 - 280
+    131, 163, 195, 227,      //281 - 284
+    258                      //285
 };
 
 static uint32 dist_base_extra_bits[] = {
@@ -64,12 +47,28 @@ static uint32 dist_base_extra_bits[] = {
             0 , 0     //30-31 error, they shouldn't occur
 };
 
+static uint32 dist_base[] = {
+    /*0*/ 1, 2, 3, 4,    //0-3
+    /*1*/ 5, 7,          //4-5
+    /*2*/ 9, 13,         //6-7
+    /*3*/ 17, 25,        //8-9
+    /*4*/ 33, 49,        //10-11
+    /*5*/ 65, 97,        //12-13
+    /*6*/ 129, 193,      //14-15
+    /*7*/ 257, 385,      //16-17
+    /*8*/ 513, 769,      //18-19
+    /*9*/ 1025, 1537,    //20-21
+    /*10*/ 2049, 3073,   //22-23
+    /*11*/ 4097, 6145,   //24-25
+    /*12*/ 8193, 12289,  //26-27
+    /*13*/ 16385, 24577, //28-29
+           0    , 0      //30-31, error, shouldn't occur
+};
 
 
-void	DEFLATE::decode_Huffman(BitStreamGetter & bits, HuffmanTree & literal, HuffmanTree & distance, ByteStreamQueue & data)
+
+void DEFLATE::decode_Huffman(BitStreamGetter & bits, HuffmanTree & literal, HuffmanTree & distance, ByteStreamQueue & data)
 {
-	//*DebugManager::Console << "\e[34mHuffman decode ... \e[m\n";
-
 	uint32	decode_value;
 
 	uint32	len_idx;
@@ -106,22 +105,27 @@ void	DEFLATE::decode_Huffman(BitStreamGetter & bits, HuffmanTree & literal, Huff
 			throw Exception_InvalidData("Huffman Decode: ", decode_value);
 		}
 	}
-	//*DebugManager::Console << "\e[34mHuffman decode done \e[m\n";
 }
 
-uint8 *	DEFLATE::dynamic_Huffman(BitStreamGetter & bits, uint32 H_LIT, uint32 H_DIST, uint32 H_CLEN)
+uint8 * DEFLATE::dynamic_Huffman(BitStreamGetter & bits, uint32 H_LIT, uint32 H_DIST, uint32 H_CLEN)
 {
 	uint8 codeLenCodeLenOrder[19] = { 16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15 };
 	uint8 codeLenCodeLen[19];
 	for (uint32 i = 0; i < 19; i++)
+	{
 		codeLenCodeLen[i] = 0;
+	}
 	for (uint32 i = 0; i < H_CLEN; i++)
+	{
 		codeLenCodeLen[codeLenCodeLenOrder[i]] = bits.Get32Move(3);
+	}
 
 	HuffmanTree	Trees(codeLenCodeLen, 19);
 	uint8 * Huffman_BitLen_Trees = new uint8[H_LIT + H_DIST];
 	for (uint32 i = 0; i < H_LIT + H_DIST; i++)
+	{
 		Huffman_BitLen_Trees[i] = 0;
+	}
 
 	for (uint32 i = 0; i < H_LIT + H_DIST; i++)
 	{
@@ -150,7 +154,6 @@ uint8 *	DEFLATE::dynamic_Huffman(BitStreamGetter & bits, uint32 H_LIT, uint32 H_
 			}
 			else
 			{
-				*DebugManager::Console << "\e[31mError: Invalid Huffman Decode\e[m\n";
 				throw Exception_InvalidData("Huffman Decode: ", decode_value);
 			}
 
@@ -168,52 +171,57 @@ uint8 *	DEFLATE::dynamic_Huffman(BitStreamGetter & bits, uint32 H_LIT, uint32 H_
 
 
 
-void	DEFLATE::Block_direct(BitStreamGetter & bits, ByteStreamQueue & data)
+#include <iostream>
+void DEFLATE::Block_direct(BitStreamGetter & bits, ByteStreamQueue & data)
 {
+	(void)bits;
+	(void)data;
 	//*DebugManager::Console << "\e[34mdirect Data ...\e[m\n";
+	//std::cout << "\e[34m" << "direct Block .... " << "\e[m\n";
 
-	throw Exception_NotImplemented("direct Data Block", "");
+	throw Exception_NotImplemented("direct Block", "");
 
 	//*DebugManager::Console << "\e[34mdirect Data done\e[m\n";
-	(void)bits;
-	(void)data;
+	//std::cout << "\e[34m" << "direct Block .... " << "\e[m\n";
 }
-void	DEFLATE::Block_static(BitStreamGetter & bits, ByteStreamQueue & data)
+void DEFLATE::Block_static(BitStreamGetter & bits, ByteStreamQueue & data)
 {
-	//*DebugManager::Console << "\e[34mstatic Huffman ...\e[m\n";
+	std::cout << "\e[34m" << "static Block .... " << "\e[m\n";
 
-	throw Exception_NotImplemented("static Huffman Block", "");
+	uint8 literal_bit_lens[288];
+	for (unsigned int i = 0; i < 144; i++) { literal_bit_lens[i] = 8; }
+	for (unsigned int i = 144; i < 256; i++) { literal_bit_lens[i] = 9; }
+	for (unsigned int i = 256; i < 280; i++) { literal_bit_lens[i] = 7; }
+	for (unsigned int i = 280; i < 288; i++) { literal_bit_lens[i] = 8; }
 
-	//*DebugManager::Console << "\e[34mstatic Huffman done\e[m\n";
-	(void)bits;
-	(void)data;
+	uint8 distance_bit_lens[32];
+	for (unsigned int i = 0; i < 32; i++) { distance_bit_lens[i] = 5; }
+
+	HuffmanTree literal(literal_bit_lens, 288);
+	HuffmanTree distance(distance_bit_lens, 32);
+
+	DEFLATE::decode_Huffman(bits, literal, distance, data);
+
+	std::cout << "\e[34m" << "static Block done " << "\e[m\n";
 }
-void	DEFLATE::Block_dynamic(BitStreamGetter & bits, ByteStreamQueue & data)
+void DEFLATE::Block_dynamic(BitStreamGetter & bits, ByteStreamQueue & data)
 {
-	//*DebugManager::Console << "\e[34mdynamic Huffman ...\e[m\n";
+	std::cout << "\e[34m" << "dynamic Block .... " << "\e[m\n";
 
-	uint32	H_LIT = bits.Get32Move(5) + 257;
-	uint32	H_DIST = bits.Get32Move(5) + 1;
-	uint32	H_CLEN = bits.Get32Move(4) + 4;
-	//*DebugManager::Console << "Huffman:";
-	//*DebugManager::Console << ' ' << H_LIT;
-	//*DebugManager::Console << ' ' << H_DIST;
-	//*DebugManager::Console << ' ' << H_CLEN;
-	//*DebugManager::Console << '\n';
-	//*DebugManager::Console << "H_LIT  : " << H_LIT  << "\n";
-	//*DebugManager::Console << "H_DIST : " << H_DIST << "\n";
-	//*DebugManager::Console << "H_CLEN : " << H_CLEN << "\n";
+	uint32 H_LIT = bits.Get32Move(5) + 257;
+	uint32 H_DIST = bits.Get32Move(5) + 1;
+	uint32 H_CLEN = bits.Get32Move(4) + 4;
 
 	uint8 * bitLens = DEFLATE::dynamic_Huffman(bits, H_LIT, H_DIST, H_CLEN);
 
-	HuffmanTree	literal(&bitLens[0], H_LIT);
-	HuffmanTree	distance(&bitLens[H_LIT], H_DIST);
+	HuffmanTree literal(&bitLens[0], H_LIT);
+	HuffmanTree distance(&bitLens[H_LIT], H_DIST);
 
 	DEFLATE::decode_Huffman(bits, literal, distance, data);
 
 	delete [] bitLens;
 
-	//*DebugManager::Console << "\e[34mdynamic Huffman done\e[m\n";
+	std::cout << "\e[34m" << "dynamic Block done " << "\e[m\n";
 }
 
 void	DEFLATE::Blocks(BitStreamGetter & bits, ByteStreamQueue & data)
@@ -221,23 +229,10 @@ void	DEFLATE::Blocks(BitStreamGetter & bits, ByteStreamQueue & data)
 	uint8	BFINAL;
 	uint8	BTYPE;
 
-	uint32	BlockCount = 0;
 	do
 	{
-		//*DebugManager::Console << "decoding ...  " << bits.get_ByteIndex() << "/" << bits.Len << "\n";
-		//*DebugManager::Console << "decoding ...\n";
-
 		BFINAL = bits.Get32Move(1);
 		BTYPE = bits.Get32Move(2);
-		//*DebugManager::Console << "[" << ToBase16(BlockCount) << "] ";
-		//*DebugManager::Console << "Deflate Block: ";
-		//if (BFINAL == 0) { *DebugManager::Console << "not final, "; }
-		//else { *DebugManager::Console << "final, "; }
-		//if (BTYPE == 0b00) { *DebugManager::Console << "direct."; }
-		//else if (BTYPE == 0b01) { *DebugManager::Console << "static."; }
-		//else if (BTYPE == 0b10) { *DebugManager::Console << "dynamic."; }
-		//else { *DebugManager::Console << "Invalid."; }
-		//*DebugManager::Console << '\n';
 
 		if (BTYPE == 0b00)
 		{
@@ -254,14 +249,9 @@ void	DEFLATE::Blocks(BitStreamGetter & bits, ByteStreamQueue & data)
 		else
 		{
 			throw Exception_InvalidBlockType(BTYPE);
-			*DebugManager::Console << "\e[31mError: Invalid Block Type\e[m\n";
 		}
-		//*DebugManager::Console << "\n";
-		BlockCount++;
 	}
 	while (BFINAL == 0);
-	//*DebugManager::Console << "decoding done " << bits.get_ByteIndex() << "/" << bits.Len << "\n";
-	//*DebugManager::Console << "decoding done\n";
 }
 
 

@@ -20,6 +20,11 @@
 #define UINT32_BIT_LIMIT (UINT32_BIT_COUNT - 1)
 #define UINT64_BIT_LIMIT (UINT64_BIT_COUNT - 1)
 
+#define  UINT8_BIT_MASK 0xFF
+#define UINT16_BIT_MASK 0xFFFF
+#define UINT32_BIT_MASK 0xFFFFFFFF
+#define UINT64_BIT_MASK 0xFFFFFFFFFFFFFFFF
+
 typedef uint8_t uint8;
 typedef uint16_t uint16;
 typedef uint32_t uint32;

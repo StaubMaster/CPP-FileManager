@@ -4,6 +4,21 @@
 # include <iosfwd>
 # include <fstream>
 
+// different Streams
+
+// Debug
+// Info
+// Warning
+// Error
+
+// Enable / Disable
+// put Color
+//  Ansi Color vs ColorU4
+
+// Tabs ?
+// TabsInc and TabsDec dosent change Log, just have a uint that you can ++ or --
+// mave a TabArea Object, ++ when constructed, -- destructed
+
 namespace DebugManager
 {
 	struct LogChange
