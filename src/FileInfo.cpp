@@ -137,6 +137,8 @@ void FileInfo::SaveBytes(const ByteBlock & block) const
 
 
 
+
+
 // this should be in LoadBytes
 // LoadText should not have ios::binary
 std::string FileInfo::LoadText() const
@@ -145,21 +147,20 @@ std::string FileInfo::LoadText() const
 	if (!Mode.IsFile()) { throw FileIsNotFile(Path); }
 
 	std::ifstream stream(Path.ToString(), std::ios::binary);
-	if (!stream.is_open())
-	{
-		throw FileProblem(Path);
-	}
+	if (!stream.is_open()) { throw FileProblem(Path); }
 
-	std::string text;
-	char	binary_block[1024];
+	const int	block_size = 1024;
+	char		block_data[block_size];
 
-	stream.read(binary_block, 1024);
+	std::string	text;
+
+	stream.read(block_data, block_size);
 	while (!stream.eof())
 	{
-		text += std::string(binary_block, 1024);
-		stream.read(binary_block, 1024);
+		text += std::string(block_data, block_size);
+		stream.read(block_data, block_size);
 	}
-	text += std::string(binary_block, stream.gcount());
+	text += std::string(block_data, stream.gcount());
 
 	return (text);
 }

@@ -71,7 +71,7 @@ Image PNG::Load(const FileInfo & file, bool debug)
 	{
 		//std::cerr << AnsiCode::Error << "PNG: Exception: " << e.what() << AnsiCode::Done;
 		//std::cerr << "Exception while loading Image: " << e.what() << "\n";
-		return (Image());
+		return Image();
 	}
 }
 

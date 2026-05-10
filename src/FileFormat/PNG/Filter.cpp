@@ -67,9 +67,11 @@ void	PNG::Filter::filter_Paeth(Image & img, VectorU2 pxl, uint8 col, uint8 byte)
 }
 
 #include "FileParsing/ByteStreamGetter.hpp"
+#include <iostream>
 Image	PNG::Filter::filter(IHDR head, ByteBlock data)
 {
 	ByteStreamGetter stream(data);
+
 	Image img(head.width, head.height);
 
 	void (*filterFunc)(Image &, VectorU2, uint8, uint8);
