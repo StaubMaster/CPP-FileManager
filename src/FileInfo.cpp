@@ -132,7 +132,7 @@ void FileInfo::SaveBytes(const ByteBlock & block) const
 		throw FileProblem(Path);
 	}
 
-	stream.write((const char *)block.Data(), block.Size());
+	stream.write((const char *)block.Data(), block.Length());
 }
 
 

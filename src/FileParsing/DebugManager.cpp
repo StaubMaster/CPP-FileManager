@@ -45,3 +45,32 @@ std::ostream & operator<<(std::ostream & log, DebugManager::LogChange & type)
 	if (type == DebugManager::Tabs) { log << TabsString; }
 	return log;
 }
+
+
+
+
+
+AnsiCode AnsiCode::Clear("\e[m");
+AnsiCode AnsiCode::Black("\e[30m");
+AnsiCode AnsiCode::Red("\e[31m");
+AnsiCode AnsiCode::Green("\e[32m");
+AnsiCode AnsiCode::Yellow("\e[33m");
+AnsiCode AnsiCode::Blue("\e[34m");
+AnsiCode AnsiCode::Magneta("\e[35m");
+AnsiCode AnsiCode::Cyan("\e[36m");
+AnsiCode AnsiCode::White("\e[37m");
+
+AnsiCode AnsiCode::Debug("\e[35mDebug: ");
+AnsiCode AnsiCode::Info("\e[34mInfo: ");
+AnsiCode AnsiCode::Warning("\e[33mWarning: ");
+AnsiCode AnsiCode::Error("\e[31mError: ");
+AnsiCode AnsiCode::Done("\e[m\n");
+
+AnsiCode::AnsiCode(const char * code)
+	: Code(code)
+{ }
+std::ostream & operator<<(std::ostream & log, AnsiCode & code)
+{
+	log << code.Code;
+	return log;
+}

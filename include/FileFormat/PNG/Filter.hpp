@@ -2,7 +2,7 @@
 # define PNG_FILTER_HPP
 
 # include "IHDR.hpp"
-# include "ValueType/VectorU2.hpp"
+# include "ValueType/Vector/U2.hpp"
 # include "FileParsing/ByteStreamQueue.hpp"
 # include "PNG.hpp"
 
@@ -24,7 +24,7 @@ namespace Filter
 	void	filter_Avg(Image & img, VectorU2 pxl, uint8 col, uint8 byte);
 	void	filter_Paeth(Image & img, VectorU2 pxl, uint8 col, uint8 byte);
 
-	void	filter(IHDR head, ByteStreamQueue & stream, Image & img);
+	Image	filter(IHDR head, ByteBlock data);
 };
 };
 

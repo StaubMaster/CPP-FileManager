@@ -3,73 +3,63 @@
 
 #include "FileParsing/DebugManager.hpp"
 
+#include <iostream>
 
 
-ZLIB::ZLIB(ByteStreamGetter & bits)
+
+ZLIB::ZLIB(ByteBlock zlib_block)
 {
-	CMF = bits.Get1();
-	FLG = bits.Get1();
+	ByteStreamGetter stream(zlib_block);
+
+	CMF = stream.Get1();
+	FLG = stream.Get1();
 
 	if ((FLG >> 5) & 0b1)
 	{
-		DICTID = bits.Get4();
-		Length = bits.Block.Size() - 10;
+		DICTID = stream.Get4();
+		Data = ByteBlock(stream.Block.Length() - 6, stream.Block.DataAt(stream.Index));
 	}
 	else
 	{
 		DICTID = 0;
-		Length = bits.Block.Size() - 6;
+		Data = ByteBlock(stream.Block.Length() - 2, stream.Block.DataAt(stream.Index));
 	}
 
-	//Data = bits.DataAtIndex();
-	Data = bits.Block.DataAt(bits.Index);
-	//bits.MoveToNextByte();
-	bits.Move(Length);
-	//bits.IncByBytes(Length);
-	ADLER32 = bits.Get4(); // maybe check this ?
+	stream.Move(Data.Length() - 4);
+	ADLER32 = stream.Get4(); // maybe check this ?
 }
-
-ByteBlock	ZLIB::ToBlock() const
-{
-	return ByteBlock(Length, Data);
-}
-
-
-
-void	ZLIB::decompress(ByteStreamGetter & bits, ByteStreamQueue & data)
-{
-	//*DebugManager::Console << "\e[34mzlib ...\e[m\n";
-
-	ZLIB zlib(bits);
-	//zlib.ToConsole();
-	//*DebugManager::Console << "\n";
-
-	BitStreamGetter deflate(zlib.ToBlock());
-	DEFLATE::Blocks(deflate, data);
-
-	//*DebugManager::Console << "\e[34mzlib done\e[m\n";
-}
-
-
 
 void ZLIB::ToConsole() const
 {
+	std::cout << AnsiCode::Info << "ZLIB:" << AnsiCode::Done;
+
 	uint8	CM = (CMF >> 0) & 0b1111;
 	uint8	CINFO = (CMF >> 4) & 0b1111;
-	*DebugManager::Console << "CMF   : " << ToBase2(CMF) << "\n";
-	*DebugManager::Console << "CM    : "    << ToBase2(CM, 3) << "\n";
-	*DebugManager::Console << "CINFO : " << ToBase2(CINFO, 3) << "\n";
+	std::cout << AnsiCode::Info << "CMF    : " << ToBase2(CMF) << AnsiCode::Done;
+	std::cout << AnsiCode::Info << "CM     : " << ToBase2(CM, 3) << AnsiCode::Done;
+	std::cout << AnsiCode::Info << "CINFO  : " << ToBase2(CINFO, 3) << AnsiCode::Done;
 
 	uint8	FCHECK = (FLG >> 0) & 0b11111;
 	uint8	FDICT = (FLG >> 5) & 0b1;
 	uint8	FLEVEL = (FLG >> 6) & 0b11;
-	*DebugManager::Console << "FLG    : " << ToBase2(FLG) << "\n";
-	*DebugManager::Console << "FCHECK : "    << ToBase2(FCHECK, 4) << "\n";
-	*DebugManager::Console << "FDICT  : " << ToBase2(FDICT, 0) << "\n";
-	*DebugManager::Console << "FLEVEL : " << ToBase2(FLEVEL, 1) << "\n";
+	std::cout << AnsiCode::Info << "FLG    : " << ToBase2(FLG) << AnsiCode::Done;
+	std::cout << AnsiCode::Info << "FCHECK : " << ToBase2(FCHECK, 4) << AnsiCode::Done;
+	std::cout << AnsiCode::Info << "FDICT  : " << ToBase2(FDICT, 0) << AnsiCode::Done;
+	std::cout << AnsiCode::Info << "FLEVEL : " << ToBase2(FLEVEL, 1) << AnsiCode::Done;
 
-	*DebugManager::Console << "DICTID  : " << ToBase16(DICTID) << "\n";
-	*DebugManager::Console << "ADLER32 : " << ToBase16(ADLER32) << "\n";
+	std::cout << AnsiCode::Info << "DICTID : " << ToBase16(DICTID) << AnsiCode::Done;
 
-	*DebugManager::Console << "Length : " << Length << "\n";
+	std::cout << AnsiCode::Info << "Length : " << Data.Length() << AnsiCode::Done;
+
+	std::cout << AnsiCode::Info << "ADLER32: " << ToBase16(ADLER32) << AnsiCode::Done;
+}
+
+
+
+ByteBlock ZLIB::decompress(ByteBlock data, uint64 size)
+{
+	ZLIB zlib(data);
+	//zlib.ToConsole();
+	data = DEFLATE::decode(zlib.Data, size);
+	return data;
 }

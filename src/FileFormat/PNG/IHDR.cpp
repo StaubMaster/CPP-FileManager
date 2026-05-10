@@ -25,6 +25,17 @@ void PNG::IHDR::Parse(ByteStreamGetter & stream)
 
 
 
+uint64 PNG::IHDR::UncompressedSize() const
+{
+	uint8 byte_per_pixel = 0;
+	if (color_type == 2) { byte_per_pixel = 3; }
+	else if (color_type == 6) { byte_per_pixel = 4; }
+	else { return 0; }
+	return (width * byte_per_pixel + 1) * height;
+}
+
+
+
 void PNG::IHDR::ToConsole() const
 {
 	*DebugManager::Console << " width: " << width << "\n";

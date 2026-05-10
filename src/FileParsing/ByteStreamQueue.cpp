@@ -88,11 +88,11 @@ void ByteStreamQueue::Set8(uint64 val)
 
 void ByteStreamQueue::SetBlock(const ByteBlock & block)
 {
-	for (uint64 i = 0; i < block.Size(); i++)
+	for (uint64 i = 0; i < block.Length(); i++)
 	{
 		Block[IndexSet + i] = block[i];
 	}
-	IndexSet += block.Size();
+	IndexSet += block.Length();
 }
 
 

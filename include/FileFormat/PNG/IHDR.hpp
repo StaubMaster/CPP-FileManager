@@ -4,6 +4,8 @@
 # include "FileParsing/ByteStreamGetter.hpp"
 # include "uint.hpp"
 
+struct VectorU2;
+
 namespace PNG
 {
 struct IHDR
@@ -21,6 +23,9 @@ struct IHDR
 	IHDR();
 
 	void	Parse(ByteStreamGetter & stream);
+
+	VectorU2	ImageSize() const;
+	uint64		UncompressedSize() const;
 
 	void	ToConsole() const;
 };

@@ -66,15 +66,19 @@ void	PNG::Filter::filter_Paeth(Image & img, VectorU2 pxl, uint8 col, uint8 byte)
 	else										{ img.Pixel(pxl.X, pxl.Y, col) = byte + c; }
 }
 
-void	PNG::Filter::filter(IHDR head, ByteStreamQueue & data, Image & img)
+#include "FileParsing/ByteStreamGetter.hpp"
+Image	PNG::Filter::filter(IHDR head, ByteBlock data)
 {
+	ByteStreamGetter stream(data);
+	Image img(head.width, head.height);
+
 	void (*filterFunc)(Image &, VectorU2, uint8, uint8);
 
 	uint8	data_byte;
 	VectorU2	pxl;
 	for (pxl.Y = 0; pxl.Y < img.H(); pxl.Y++)
 	{
-		data_byte = data.Get1();
+		data_byte = stream.Get1();
 
 		if (data_byte == 0)      { filterFunc = &filter_None; }
 		else if (data_byte == 1) { filterFunc = &filter_Sub; }
@@ -86,18 +90,21 @@ void	PNG::Filter::filter(IHDR head, ByteStreamQueue & data, Image & img)
 		{
 			if (head.color_type == 2)
 			{
-				filterFunc(img, pxl, 0, data.Get1());
-				filterFunc(img, pxl, 1, data.Get1());
-				filterFunc(img, pxl, 2, data.Get1());
+				filterFunc(img, pxl, 0, stream.Get1());
+				filterFunc(img, pxl, 1, stream.Get1());
+				filterFunc(img, pxl, 2, stream.Get1());
 				img.Pixel(pxl.X, pxl.Y, 3) = 0xFF;
 			}
 			if (head.color_type == 6)
 			{
-				filterFunc(img, pxl, 0, data.Get1());
-				filterFunc(img, pxl, 1, data.Get1());
-				filterFunc(img, pxl, 2, data.Get1());
-				filterFunc(img, pxl, 3, data.Get1());
+				filterFunc(img, pxl, 0, stream.Get1());
+				filterFunc(img, pxl, 1, stream.Get1());
+				filterFunc(img, pxl, 2, stream.Get1());
+				filterFunc(img, pxl, 3, stream.Get1());
 			}
 		}
 	}
+
+	return img;
 }
+

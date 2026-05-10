@@ -3,6 +3,7 @@
 
 # include <iosfwd>
 # include <fstream>
+# include <string>
 
 // different Streams
 
@@ -34,10 +35,44 @@ namespace DebugManager
 
 	extern std::ostream * Console;
 
+	std::ostream &	DebugConsole();
+	std::ostream &	InfoConsole();
+	std::ostream &	WarningConsole();
+	std::ostream &	ErrorConsole();
+
 	void ChangeConsoleToDump();
 	void ChangeConsoleToCOut();
 };
 
 std::ostream & operator<<(std::ostream & log, DebugManager::LogChange & type);
+
+struct AnsiCode
+{
+	const char *	Code;
+	AnsiCode(const char * code);
+
+	static AnsiCode		Clear;
+	static AnsiCode		Black;
+	static AnsiCode		Red;
+	static AnsiCode		Green;
+	static AnsiCode		Yellow;
+	static AnsiCode		Blue;
+	static AnsiCode		Magneta;
+	static AnsiCode		Cyan;
+	static AnsiCode		White;
+
+	static AnsiCode		Debug;
+	static AnsiCode		Info;
+	static AnsiCode		Warning;
+	static AnsiCode		Error;
+	static AnsiCode		Done;
+};
+std::ostream & operator<<(std::ostream & log, AnsiCode & code);
+
+// Progress()
+// ProgressDone()
+// ProgressSuccess() Succ
+// ProgressFailure() Fail
+// ProgressStatus(bool) Succ/Fail
 
 #endif

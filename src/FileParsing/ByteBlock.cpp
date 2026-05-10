@@ -1,174 +1,81 @@
 #include "FileParsing/ByteBlock.hpp"
+#include <iostream>
 
 
 
-uint64 ByteBlock::Size() const { return _Size; }
+uint32 ByteBlock::Length() const { return Bytes.Length(); }
 
-uint8 * ByteBlock::Data() { return _Data; }
-const uint8 * ByteBlock::Data() const { return _Data; }
+uint8 * ByteBlock::Data() { return Bytes.Data(); }
+const uint8 * ByteBlock::Data() const { return Bytes.Data(); }
 
-uint8 * ByteBlock::DataAt(uint64 idx) { return _Data + idx; }
-const uint8 * ByteBlock::DataAt(uint64 idx) const { return _Data + idx; }
+uint8 * ByteBlock::DataAt(uint64 idx) { return &Bytes[idx]; }
+const uint8 * ByteBlock::DataAt(uint64 idx) const { return &Bytes[idx]; }
 
-uint8 & ByteBlock::operator[](uint64 idx) { return _Data[idx]; }
-const uint8 & ByteBlock::operator[](uint64 idx) const { return _Data[idx]; }
+uint8 & ByteBlock::operator[](uint64 idx) { return Bytes[idx]; }
+const uint8 & ByteBlock::operator[](uint64 idx) const { return Bytes[idx]; }
 
 ByteBlock ByteBlock::BlockAt(uint64 idx, uint64 size) const
 {
-	//return ByteBlock::Bind(size, _Data + idx);
-	return ByteBlock(size, _Data + idx);
+	return ByteBlock(size, &Bytes[idx]);
 }
 
 
 
-void ByteBlock::mForget()
-{
-	if (_Know != nullptr)
-	{
-		(*_Know)--;
-	}
-	_Data = nullptr;
-	_Know = nullptr;
-	_Size = 0;
-}
-void ByteBlock::mDelete()
-{
-	if (_Know != nullptr)
-	{
-		if ((*_Know) == 0)
-		{
-			delete _Know;
-			delete[] _Data;
-		}
-	}
-	mForget();
-}
-void ByteBlock::mNew(uint64 size)
-{
-	mDelete();
-	_Data = new uint8[size];
-	_Know = new uint8; (*_Know) = 0;
-	_Size = size;
-}
-void ByteBlock::mRemember(uint64 size, uint8 * data)
-{
-	mDelete();
-	_Data = data;
-	_Know = nullptr;
-	_Size = size;
-}
-void ByteBlock::mBind(const ByteBlock & other)
-{
-	mDelete();
-	_Size = other._Size;
-	_Know = other._Know;
-	_Data = other._Data;
-	if (_Know != nullptr) { (*_Know)++; }
-}
-
-
-
-ByteBlock::~ByteBlock()
-{ mDelete(); }
-void ByteBlock::Dispose()
-{ mDelete(); }
+ByteBlock::~ByteBlock() { }
+void ByteBlock::Dispose() { Bytes.Clear(); }
 
 
 
 ByteBlock::ByteBlock()
+	: Bytes()
 { }
 ByteBlock::ByteBlock(uint64 size)
-{ mNew(size); }
+	: Bytes(size)
+{ }
 ByteBlock::ByteBlock(uint64 size, uint8 * data)
-{ mRemember(size, data); }
+	: Bytes(size, data)
+{ }
 ByteBlock::ByteBlock(uint64 size, const uint8 * data)
-{ mRemember(size, (uint8*)data); }
+	: Bytes(size, data)
+{ }
 
 
 
 ByteBlock::ByteBlock(const ByteBlock & other)
-{ mBind(other); }
+	: Bytes(other.Bytes)
+{ }
 ByteBlock ByteBlock::operator=(const ByteBlock & other)
 {
-	mBind(other);
+	Bytes = other.Bytes;
 	return *this;
 }
 
 
 
-/*ByteBlock ByteBlock::Bind() const
-{
-	return ByteBlock(*this);
-}
-ByteBlock ByteBlock::Copy() const
-{
-	ByteBlock block(_Size);
-	for (uint64 i = 0; i < _Size; i++)
-	{
-		block._Data[i] = _Data[i];
-	}
-	return block;
-}
-
-ByteBlock ByteBlock::Bind(const ByteBlock & other)
-{
-	return ByteBlock(other.Bind());
-}
-ByteBlock ByteBlock::Copy(const ByteBlock & other)
-{
-	return ByteBlock(other.Copy());
-}
-
-ByteBlock ByteBlock::Bind(uint64 size, uint8 * data)
-{
-	ByteBlock block(size);
-	block._Data = data;
-	return block;
-}
-ByteBlock ByteBlock::Copy(uint64 size, uint8 * data)
-{
-	ByteBlock block(size);
-	for (uint64 i = 0; i < size; i++)
-	{
-		block._Data[i] = data[i];
-	}
-	return block;
-}*/
-
-
-
 ByteBlock & ByteBlock::Concatenation(uint64 size)
 {
-	ByteBlock block;
-	block._Size = _Size;
-	block._Data = _Data;
+	ByteBlock block = *this;
+	Bytes.ChangeSize(block.Length() + size);
 
-	_Data = nullptr;
-	mNew(block._Size + size);
-
-	for (uint64 i = 0; i < block._Size; i++)
+	for (uint64 i = 0; i < block.Length(); i++)
 	{
-		_Data[i] = block._Data[i];
+		Bytes[i] = block.Bytes[i];
 	}
 
 	return *this;
 }
 ByteBlock & ByteBlock::Concatenation(const ByteBlock & other)
 {
-	ByteBlock block;
-	block._Size = _Size;
-	block._Data = _Data;
+	ByteBlock block = *this;
+	Bytes.ChangeSize(block.Length() + other.Length());
 
-	_Data = nullptr;
-	mNew(block._Size + other._Size);
-
-	for (uint64 i = 0; i < block._Size; i++)
+	for (uint64 i = 0; i < block.Length(); i++)
 	{
-		_Data[i] = block._Data[i];
+		Bytes[i] = block.Bytes[i];
 	}
-	for (uint64 i = 0; i < other._Size; i++)
+	for (uint64 i = 0; i < other.Length(); i++)
 	{
-		_Data[i + block._Size] = other._Data[i];
+		Bytes[i + block.Length()] = other.Bytes[i];
 	}
 
 	return *this;
@@ -177,10 +84,10 @@ ByteBlock & ByteBlock::Concatenation(const ByteBlock & other)
 
 
 ByteBlock::ByteBlock(const std::string & str)
+	: Bytes(str.length())
 {
-	mNew(str.length());
-	for (uint64 i = 0; i < _Size; i++)
+	for (uint64 i = 0; i < Bytes.Size(); i++)
 	{
-		_Data[i] = str[i];
+		Bytes[i] = str[i];
 	}
 }

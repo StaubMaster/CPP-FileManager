@@ -8,25 +8,19 @@
 class ZLIB
 {
 	public:
-	uint8	CMF;
-	uint8	FLG;
+	uint8		CMF;
+	uint8		FLG;
 
-	private:
-	const uint8	*Data;
+	uint32		DICTID;
 
-	public:
-	uint32		Length;
+	ByteBlock	Data;
 
-	uint32	DICTID;
-	uint32	ADLER32;
+	uint32		ADLER32;
 
-	ZLIB(ByteStreamGetter & bits);
-
-	ByteBlock	ToBlock() const;
-
-	static void	decompress(ByteStreamGetter & bits, ByteStreamQueue & stream);
-
+	ZLIB(ByteBlock zlib_block);
 	void	ToConsole() const;
+
+	static ByteBlock	decompress(ByteBlock data, uint64 size);
 };
 
 #endif

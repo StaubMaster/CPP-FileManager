@@ -4,24 +4,34 @@
 # include "uint.hpp"
 
 # include "ValueType/ColorU4.hpp"
-# include "ValueType/VectorU2.hpp"
+# include "ValueType/Vector/U2.hpp"
 # include "ValueType/LoopU2.hpp"
 
+# include "Miscellaneous/Container/Array2D.hpp"
+
+// make this a Array2D from Engine
 class Image
 {
 	private:
-	VectorU2	_Size;
-	ColorU4 *	_Data;
-	// also Count like ByteBlock
+	Array2D<ColorU4>	Pixels;
+//	ColorU4 *	_Data = nullptr;
+//	uint64 *	_Know = nullptr;
+//	VectorU2	_Size;
+
+//	private:
+//	void	mForget();
+//	void	mDelete();
+//	void	mNew(VectorU2 size);
+//	void	mBind(const Image & other);
 
 	public:
-	bool	Empty() const;
-	uint32	W() const;
-	uint32	H() const;
+	bool			Empty() const;
+	uint32			W() const;
+	uint32			H() const;
 	VectorU2		Size() const;
 	const void *	Data() const;
-	LoopU2			Loop() const;
 	void *			Data();
+	LoopU2			Loop() const;
 
 	public:
 	ColorU4 &			Pixel(VectorU2 udx);		// operator[]
@@ -34,10 +44,10 @@ class Image
 	const ColorU4 &		Pixel(uint32 udx) const;	// operator[]
 
 	public:
+	~Image();
 	Image();
 	Image(VectorU2 size);
 	Image(uint32 w, uint32 h);
-	~Image();
 
 	Image(const Image & other);
 	Image & operator=(const Image & other);
@@ -48,10 +58,10 @@ class Image
 	void Dispose();
 
 	public:
-	void Bind(const Image & other);
-	void Copy(const Image & other);
-	Image Bind();
-	Image Copy();
+//	void Bind(const Image & other);
+//	void Copy(const Image & other);
+//	Image Bind();
+//	Image Copy();
 
 	void Scale(VectorU2 size);
 	Image Scaled(VectorU2 size) const;

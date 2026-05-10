@@ -6,6 +6,7 @@
 #include "FileParsing/ByteStreamQueue.hpp"
 #include "uint.hpp"
 
+#include <iostream>
 
 
 
@@ -69,6 +70,8 @@ static uint32 dist_base[] = {
 
 void DEFLATE::decode_Huffman(BitStreamGetter & bits, HuffmanTree & literal, HuffmanTree & distance, ByteStreamQueue & data)
 {
+	//std::cout << AnsiCode::Debug << "Deflate: Block: literal/distance ...." << AnsiCode::Done;
+
 	uint32	decode_value;
 
 	uint32	len_idx;
@@ -105,6 +108,8 @@ void DEFLATE::decode_Huffman(BitStreamGetter & bits, HuffmanTree & literal, Huff
 			throw Exception_InvalidData("Huffman Decode: ", decode_value);
 		}
 	}
+
+	//std::cout << AnsiCode::Debug << "Deflate: Block: literal/distance done" << AnsiCode::Done;
 }
 
 uint8 * DEFLATE::dynamic_Huffman(BitStreamGetter & bits, uint32 H_LIT, uint32 H_DIST, uint32 H_CLEN)
@@ -171,8 +176,7 @@ uint8 * DEFLATE::dynamic_Huffman(BitStreamGetter & bits, uint32 H_LIT, uint32 H_
 
 
 
-#include <iostream>
-void DEFLATE::Block_direct(BitStreamGetter & bits, ByteStreamQueue & data)
+void DEFLATE::decode_direct(BitStreamGetter & bits, ByteStreamQueue & data)
 {
 	(void)bits;
 	(void)data;
@@ -184,10 +188,8 @@ void DEFLATE::Block_direct(BitStreamGetter & bits, ByteStreamQueue & data)
 	//*DebugManager::Console << "\e[34mdirect Data done\e[m\n";
 	//std::cout << "\e[34m" << "direct Block .... " << "\e[m\n";
 }
-void DEFLATE::Block_static(BitStreamGetter & bits, ByteStreamQueue & data)
+void DEFLATE::decode_static(BitStreamGetter & bits, ByteStreamQueue & data)
 {
-	std::cout << "\e[34m" << "static Block .... " << "\e[m\n";
-
 	uint8 literal_bit_lens[288];
 	for (unsigned int i = 0; i < 144; i++) { literal_bit_lens[i] = 8; }
 	for (unsigned int i = 144; i < 256; i++) { literal_bit_lens[i] = 9; }
@@ -201,13 +203,9 @@ void DEFLATE::Block_static(BitStreamGetter & bits, ByteStreamQueue & data)
 	HuffmanTree distance(distance_bit_lens, 32);
 
 	DEFLATE::decode_Huffman(bits, literal, distance, data);
-
-	std::cout << "\e[34m" << "static Block done " << "\e[m\n";
 }
-void DEFLATE::Block_dynamic(BitStreamGetter & bits, ByteStreamQueue & data)
+void DEFLATE::decode_dynamic(BitStreamGetter & bits, ByteStreamQueue & data)
 {
-	std::cout << "\e[34m" << "dynamic Block .... " << "\e[m\n";
-
 	uint32 H_LIT = bits.Get32Move(5) + 257;
 	uint32 H_DIST = bits.Get32Move(5) + 1;
 	uint32 H_CLEN = bits.Get32Move(4) + 4;
@@ -220,31 +218,40 @@ void DEFLATE::Block_dynamic(BitStreamGetter & bits, ByteStreamQueue & data)
 	DEFLATE::decode_Huffman(bits, literal, distance, data);
 
 	delete [] bitLens;
-
-	std::cout << "\e[34m" << "dynamic Block done " << "\e[m\n";
 }
 
-void	DEFLATE::Blocks(BitStreamGetter & bits, ByteStreamQueue & data)
+ByteBlock DEFLATE::decode(ByteBlock data, uint32 size)
 {
+	BitStreamGetter streamI(data);
+
+	data = ByteBlock(size);
+	ByteStreamQueue streamO(data);
+
+	//std::cout << AnsiCode::Debug << "Deflate ...." << AnsiCode::Done;
+
 	uint8	BFINAL;
 	uint8	BTYPE;
 
 	do
 	{
-		BFINAL = bits.Get32Move(1);
-		BTYPE = bits.Get32Move(2);
+		BFINAL = streamI.Get32Move(1);
+		BTYPE = streamI.Get32Move(2);
 
 		if (BTYPE == 0b00)
 		{
-			Block_direct(bits, data);
+			decode_direct(streamI, streamO);
 		}
 		else if (BTYPE == 0b01)
 		{
-			Block_static(bits, data);
+			//std::cout << AnsiCode::Debug << "Deflate: Block: static ...." << AnsiCode::Done;
+			decode_static(streamI, streamO);
+			//std::cout << AnsiCode::Debug << "Deflate: Block: static done" << AnsiCode::Done;
 		}
 		else if (BTYPE == 0b10)
 		{
-			Block_dynamic(bits, data);
+			//std::cout << AnsiCode::Debug << "Deflate: Block: dynamic ...." << AnsiCode::Done;
+			decode_dynamic(streamI, streamO);
+			//std::cout << AnsiCode::Debug << "Deflate: Block: dynamic done" << AnsiCode::Done;
 		}
 		else
 		{
@@ -252,6 +259,9 @@ void	DEFLATE::Blocks(BitStreamGetter & bits, ByteStreamQueue & data)
 		}
 	}
 	while (BFINAL == 0);
+
+	//std::cout << AnsiCode::Debug << "Deflate done" << AnsiCode::Done;
+	return data;
 }
 
 
