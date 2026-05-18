@@ -77,11 +77,11 @@ Image & Image::operator=(const Image & other)
 
 void Image::Init(VectorU2 size)
 {
-	Pixels.ChangeSize(size);
+	Pixels.Size(size);
 }
 void Image::Init(uint32 w, uint32 h)
 {
-	Pixels.ChangeSize(VectorU2(w, h));
+	Pixels.Size(VectorU2(w, h));
 }
 void Image::Dispose()
 {

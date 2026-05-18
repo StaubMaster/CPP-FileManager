@@ -55,7 +55,7 @@ ByteBlock ByteBlock::operator=(const ByteBlock & other)
 ByteBlock & ByteBlock::Concatenation(uint64 size)
 {
 	ByteBlock block = *this;
-	Bytes.ChangeSize(block.Length() + size);
+	Bytes.Size(block.Length() + size);
 
 	for (uint64 i = 0; i < block.Length(); i++)
 	{
@@ -67,7 +67,7 @@ ByteBlock & ByteBlock::Concatenation(uint64 size)
 ByteBlock & ByteBlock::Concatenation(const ByteBlock & other)
 {
 	ByteBlock block = *this;
-	Bytes.ChangeSize(block.Length() + other.Length());
+	Bytes.Size(block.Length() + other.Length());
 
 	for (uint64 i = 0; i < block.Length(); i++)
 	{
