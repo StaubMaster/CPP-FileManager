@@ -50,6 +50,8 @@ FILES_CPP := \
 	FileParsing/Text/TextCommand.cpp \
 	FileParsing/Text/TextCommandStream.cpp \
 \
+	FileParsing/Variables/Float.cpp \
+\
 	FileFormat/PNG/ErrorDetection.cpp \
 	FileFormat/PNG/Chunk.cpp \
 	FileFormat/PNG/ZLIB.cpp \
