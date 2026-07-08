@@ -3,7 +3,7 @@
 
 # include <string>
 
-# include "Miscellaneous/Container/Binary.hpp"
+# include "Generics/Container/Binary.hpp"
 
 class TextCommand;
 
