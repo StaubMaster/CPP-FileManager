@@ -1,28 +1,45 @@
-#include "FileParsing/Text/TextCommand.hpp"
-
-#include <iostream>
+#include "FileParsing/Text/TextCommandArgs.hpp"
 
 
-
-std::string TextCommand::Name() const
+bool TextCommandArgs::Empty() const
 {
-	if (_Count == 0) { return ""; }
+	return (_Count != 0);
+}
+std::string TextCommandArgs::Name() const
+{
+	if (_Count == 0)
+	{
+		return "";
+	}
 	return _Segments[0];
 }
-unsigned int TextCommand::Count() const
+unsigned int TextCommandArgs::Count() const
 {
-	if (_Count == 0) { return 0; }
+	if (_Count == 0)
+	{
+		return 0;
+	}
 	return _Count - 1;
 }
 
 
 
-std::string		TextCommand::ToString(unsigned int idx) const
+std::string		TextCommandArgs::ToString(unsigned int idx) const
 {
 	if (idx >= _Count - 1) { return ""; }
 	return _Segments[idx + 1];
 }
-float			TextCommand::ToFloat(unsigned int idx) const
+unsigned int	TextCommandArgs::ToUInt32(unsigned int idx) const
+{
+	if (idx >= _Count - 1) { return 0; }
+	return std::stoul(_Segments[idx + 1]);
+}
+int				TextCommandArgs::ToInt32(unsigned int idx) const
+{
+	if (idx >= _Count - 1) { return 0; }
+	return std::stoi(_Segments[idx + 1]);
+}
+float			TextCommandArgs::ToFloat(unsigned int idx) const
 {
 	if (idx >= _Count - 1) { return 0.0f; }
 	std::string str = _Segments[idx + 1];
@@ -32,37 +49,27 @@ float			TextCommand::ToFloat(unsigned int idx) const
 	}
 	return std::stof(str);
 }
-unsigned int	TextCommand::ToUInt32(unsigned int idx) const
-{
-	if (idx >= _Count - 1) { return 0; }
-	return std::stoul(_Segments[idx + 1]);
-}
-int				TextCommand::ToInt32(unsigned int idx) const
-{
-	if (idx >= _Count - 1) { return 0; }
-	return std::stoi(_Segments[idx + 1]);
-}
 
 
 
-TextCommand::TextCommand() :
-	_Count(0),
-	_Segments(0)
-{ }
-TextCommand::~TextCommand()
+TextCommandArgs::~TextCommandArgs()
 {
 	delete[] _Segments;
 }
-TextCommand::TextCommand(const TextCommand & other) :
-	_Count(other._Count),
-	_Segments(new std::string[_Count])
+TextCommandArgs::TextCommandArgs()
+	: _Count(0)
+	, _Segments(nullptr)
+{ }
+TextCommandArgs::TextCommandArgs(const TextCommandArgs & other)
+	: _Count(other._Count)
+	, _Segments(new std::string[_Count])
 {
 	for (unsigned int i = 0; i < _Count; i++)
 	{
 		_Segments[i] = other._Segments[i];
 	}
 }
-TextCommand & TextCommand::operator=(const TextCommand & other)
+TextCommandArgs & TextCommandArgs::operator=(const TextCommandArgs & other)
 {
 	delete[] _Segments;
 	_Count = other._Count;
@@ -81,7 +88,7 @@ static bool IsWhiteSpace(char c)
 	return (c == ' ' || c == '\t' || c == '\r' || c == '\n');
 }
 
-void TextCommand::Split(const std::string & str)
+void TextCommandArgs::Split(const std::string & str)
 {
 	delete[] _Segments;
 	_Count = 0;
@@ -146,7 +153,9 @@ void TextCommand::Split(const std::string & str)
 
 
 
-std::ostream & operator<<(std::ostream & o, const TextCommand & obj)
+#include <iostream>
+
+std::ostream & operator<<(std::ostream & o, const TextCommandArgs & obj)
 {
 	o << '(';
 	o << obj.Name() << ':';

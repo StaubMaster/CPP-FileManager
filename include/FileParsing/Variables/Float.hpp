@@ -5,7 +5,7 @@
 
 # include "Generics/Container/Binary.hpp"
 
-class TextCommand;
+class TextCommandArgs;
 
 namespace ParsingVariable
 {
@@ -34,8 +34,8 @@ namespace ParsingVariable
 		void	Put(std::string name, float value);
 		float	To(std::string str);
 
-		void	Put(const TextCommand & cmd);
-		float	To(const TextCommand & cmd, unsigned int idx);
+		void	Put(const TextCommandArgs & cmd_args);
+		float	To(const TextCommandArgs & cmd_args, unsigned int idx);
 	};
 };
 

@@ -47,7 +47,7 @@ FILES_CPP := \
 \
 	FileParsing/Text/Exceptions.cpp \
 	FileParsing/Text/LineStream.cpp \
-	FileParsing/Text/TextCommand.cpp \
+	FileParsing/Text/TextCommandArgs.cpp \
 	FileParsing/Text/TextCommandStream.cpp \
 \
 	FileParsing/Variables/Float.cpp \

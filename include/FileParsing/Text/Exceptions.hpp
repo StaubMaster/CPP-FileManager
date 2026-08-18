@@ -3,29 +3,36 @@
 
 # include "TextExceptionBase.hpp"
 
-class TextCommand;
+class TextCommandArgs;
 
-
-
-class UnknownCommandName : public TextExceptionBase // CommandUnknownName
+namespace TextCommand
 {
-	public: UnknownCommandName(const TextCommand & cmd);
+class Fatal : public TextExceptionBase
+{
+	public: Fatal(const TextCommandArgs & cmd_args);
+	public: Fatal(const TextCommandArgs & cmd_args, const char * description);
 };
-class InvalidCommandArgumentCount : public TextExceptionBase // CommandInvalidArgumentCount
+class Unknown : public TextExceptionBase
 {
-	public: InvalidCommandArgumentCount(const TextCommand & cmd, const char * comparison);
+	public: Unknown(const TextCommandArgs & cmd_args);
 };
-class InvalidCommandArgument : public TextExceptionBase // CommandInvalidArgument
+class NotImplemented : public TextExceptionBase
 {
-	public: InvalidCommandArgument(const TextCommand & cmd, unsigned int idx);
+	public: NotImplemented(const TextCommandArgs & cmd_args);
 };
-class CommandNotImplemented : public TextExceptionBase
+class InvalidArgumentCount : public TextExceptionBase
 {
-	public: CommandNotImplemented(const TextCommand & cmd);
+	public: InvalidArgumentCount(const TextCommandArgs & cmd_args, const char * comparison);
 };
-class CommandInvalidState : public TextExceptionBase
+class InvalidArgument : public TextExceptionBase
 {
-	public: CommandInvalidState(const TextCommand & cmd, const char * description);
+	public: InvalidArgument(const TextCommandArgs & cmd_args, unsigned int idx);
+	public: InvalidArgument(const TextCommandArgs & cmd_args, unsigned int idx, const char * description);
+};
+class InvalidState : public TextExceptionBase
+{
+	public: InvalidState(const TextCommandArgs & cmd_args, const char * description);
+};
 };
 
 #endif

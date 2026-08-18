@@ -12,7 +12,7 @@ TextCommandStream::TextCommandStream(const std::string & text) :
 
 
 
-bool TextCommandStream::Continue(TextCommand & cmd)
+bool TextCommandStream::Continue(TextCommandArgs & cmd)
 {
 	std::string line;
 	if (_Stream.Continue(line))

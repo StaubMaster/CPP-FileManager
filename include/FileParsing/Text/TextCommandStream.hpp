@@ -1,7 +1,7 @@
 #ifndef  TEXT_COMMAND_STREAM_HPP
 # define TEXT_COMMAND_STREAM_HPP
 
-# include "TextCommand.hpp"
+# include "TextCommandArgs.hpp"
 # include "LineStream.hpp"
 
 class TextCommandStream
@@ -13,7 +13,7 @@ class TextCommandStream
 	TextCommandStream(const std::string & text);
 
 	public:
-	bool Continue(TextCommand & cmd);
+	bool	Continue(TextCommandArgs & cmd);
 };
 
 #endif

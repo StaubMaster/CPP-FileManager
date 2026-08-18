@@ -102,15 +102,15 @@ float ParsingVariable::FloatMemory::To(std::string str)
 
 
 
-#include "FileParsing/Text/TextCommand.hpp"
+#include "FileParsing/Text/TextCommandArgs.hpp"
 #include "FileParsing/Text/Exceptions.hpp"
 
-void ParsingVariable::FloatMemory::Put(const TextCommand & cmd)
+void ParsingVariable::FloatMemory::Put(const TextCommandArgs & cmd_args)
 {
-	if (!(cmd.Count() == 2)) { throw InvalidCommandArgumentCount(cmd, "n == 2"); }
-	Put(cmd.ToString(0), cmd.ToFloat(1));
+	if (!(cmd_args.Count() == 2)) { throw TextCommand::InvalidArgumentCount(cmd_args, "n == 2"); }
+	Put(cmd_args.ToString(0), cmd_args.ToFloat(1));
 }
-float ParsingVariable::FloatMemory::To(const TextCommand & cmd, unsigned int idx)
+float ParsingVariable::FloatMemory::To(const TextCommandArgs & cmd_args, unsigned int idx)
 {
-	return To(cmd.ToString(idx));
+	return To(cmd_args.ToString(idx));
 }
