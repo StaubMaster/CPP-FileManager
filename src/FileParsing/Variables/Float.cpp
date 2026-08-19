@@ -54,6 +54,20 @@ ParsingVariable::Float * ParsingVariable::FloatMemory::Find(std::string name)
 	}
 	return nullptr;
 }
+const ParsingVariable::Float * ParsingVariable::FloatMemory::Find(std::string name) const
+{
+	for (unsigned int i = 0; i < Variables.Count(); i++)
+	{
+		if (Variables[i].Name == name)
+		{
+			return &Variables[i];
+		}
+	}
+	return nullptr;
+}
+
+
+
 void ParsingVariable::FloatMemory::Put(std::string name, float value)
 {
 	Float * var = Find(name);
@@ -66,7 +80,7 @@ void ParsingVariable::FloatMemory::Put(std::string name, float value)
 		Variables.Insert(Float(name, value));
 	}
 }
-float ParsingVariable::FloatMemory::To(std::string str)
+float ParsingVariable::FloatMemory::To(std::string str) const
 {
 	char c = str[0];
 
@@ -86,7 +100,7 @@ float ParsingVariable::FloatMemory::To(std::string str)
 
 	if (s) { c = str[0]; str.erase(0, 1); }
 
-	Float * var = Find(str);
+	const Float * var = Find(str);
 	if (var != nullptr)
 	{
 		float v = var -> Value;
@@ -105,12 +119,16 @@ float ParsingVariable::FloatMemory::To(std::string str)
 #include "FileParsing/Text/TextCommandArgs.hpp"
 #include "FileParsing/Text/Exceptions.hpp"
 
+// remove TextCommandArgs functions
+// implement them in the parsers
 void ParsingVariable::FloatMemory::Put(const TextCommandArgs & cmd_args)
 {
 	if (!(cmd_args.Count() == 2)) { throw TextCommand::InvalidArgumentCount(cmd_args, "n == 2"); }
 	Put(cmd_args.ToString(0), cmd_args.ToFloat(1));
+
+	// no Value (n == 1) should remove the Variable
 }
-float ParsingVariable::FloatMemory::To(const TextCommandArgs & cmd_args, unsigned int idx)
+float ParsingVariable::FloatMemory::To(const TextCommandArgs & cmd_args, unsigned int idx) const
 {
 	return To(cmd_args.ToString(idx));
 }

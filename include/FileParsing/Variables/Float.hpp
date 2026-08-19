@@ -23,19 +23,21 @@ namespace ParsingVariable
 
 	struct FloatMemory
 	{
-		Container::Binary<Float>		Variables;
+		Container::Binary<Float>	Variables;
 
 		~FloatMemory();
 		FloatMemory();
 		FloatMemory(const FloatMemory & other);
 		FloatMemory & operator=(const FloatMemory & other);
 
-		Float *	Find(std::string name);
+				Float *		Find(std::string name);
+		const	Float *		Find(std::string name) const;
+
 		void	Put(std::string name, float value);
-		float	To(std::string str);
+		float	To(std::string str) const;
 
 		void	Put(const TextCommandArgs & cmd_args);
-		float	To(const TextCommandArgs & cmd_args, unsigned int idx);
+		float	To(const TextCommandArgs & cmd_args, unsigned int idx) const;
 	};
 };
 
