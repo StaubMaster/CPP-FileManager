@@ -2,43 +2,62 @@
 
 
 
-ParsingVariable::Float::~Float()
-{ }
-ParsingVariable::Float::Float()
-	: Name()
-	, Value()
-{ }
 ParsingVariable::Float::Float(std::string name, float value)
 	: Name(name)
 	, Value(value)
 { }
-ParsingVariable::Float::Float(const Float & other)
-	: Name(other.Name)
-	, Value(other.Value)
-{ }
-ParsingVariable::Float & ParsingVariable::Float::operator=(const Float & other)
+
+bool ParsingVariable::Float::IsLiteral(std::string str)
 {
-	Name = other.Name;
-	Value = other.Value;
-	return *this;
+	// only a partial check for now
+
+	if (str.size() == 0) { return false; }
+
+	char c = str[0];
+
+	if (c == '+' || c == '-')
+	{
+		if (str.size() == 1) { return false; }
+		c = str[1];
+	}
+
+	if (c >= '0' && c <= '9')
+	{
+		return true;
+	}
+
+	return false;
+}
+float ParsingVariable::Float::ParseLiteral(std::string str)
+{
+	for (unsigned int i = 0; i < str.length(); i++)
+	{
+		if (str[i] == ',') { str[i] = '.'; }
+	}
+	return std::stof(str);
 }
 
-
-
-
-
-ParsingVariable::FloatMemory::~FloatMemory()
-{ }
-ParsingVariable::FloatMemory::FloatMemory()
-	: Variables()
-{ }
-ParsingVariable::FloatMemory::FloatMemory(const FloatMemory & other)
-	: Variables(other.Variables)
-{ }
-ParsingVariable::FloatMemory & ParsingVariable::FloatMemory::operator=(const FloatMemory & other)
+char ParsingVariable::Float::SignTake(std::string & str)
 {
-	Variables = other.Variables;
-	return *this;
+	if (str.size() == 0) { return '\0'; }
+
+	char sign = str[0];
+	if (sign != '+' && sign != '-')
+	{
+		return '\0';
+	}
+	else
+	{
+		str.erase(0, 1);
+	}
+	return sign;
+
+}
+float ParsingVariable::Float::SignPut(float value, char sign)
+{
+	if (sign == '+') { return +value; }
+	if (sign == '-') { return -value; }
+	return value;
 }
 
 
@@ -66,8 +85,6 @@ const ParsingVariable::Float * ParsingVariable::FloatMemory::Find(std::string na
 	return nullptr;
 }
 
-
-
 void ParsingVariable::FloatMemory::Put(std::string name, float value)
 {
 	Float * var = Find(name);
@@ -82,53 +99,7 @@ void ParsingVariable::FloatMemory::Put(std::string name, float value)
 }
 float ParsingVariable::FloatMemory::To(std::string str) const
 {
-	char c = str[0];
-
-	bool s = false;
-	s = (c == '+' || c == '-');
-
-	if (s) { c = str[1]; }
-
-	if ((c >= '0' && c <= '9'))
-	{
-		for (unsigned int i = 0; i < str.length(); i++)
-		{
-			if (str[i] == ',') { str[i] = '.'; }
-		}
-		return std::stof(str);
-	}
-
-	if (s) { c = str[0]; str.erase(0, 1); }
-
 	const Float * var = Find(str);
-	if (var != nullptr)
-	{
-		float v = var -> Value;
-		if (s)
-		{
-			if (c == '+') { v = +v; }
-			if (c == '-') { v = -v; }
-		}
-		return v;
-	}
-	return 0.0f; // return NaN ?
-}
-
-
-
-#include "FileParsing/Text/TextCommandArgs.hpp"
-#include "FileParsing/Text/Exceptions.hpp"
-
-// remove TextCommandArgs functions
-// implement them in the parsers
-void ParsingVariable::FloatMemory::Put(const TextCommandArgs & cmd_args)
-{
-	if (!(cmd_args.Count() == 2)) { throw TextCommand::InvalidArgumentCount(cmd_args, "n == 2"); }
-	Put(cmd_args.ToString(0), cmd_args.ToFloat(1));
-
-	// no Value (n == 1) should remove the Variable
-}
-float ParsingVariable::FloatMemory::To(const TextCommandArgs & cmd_args, unsigned int idx) const
-{
-	return To(cmd_args.ToString(idx));
+	if (var == nullptr) { return 0.0f; } // return NaN ?
+	return var -> Value;
 }

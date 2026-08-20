@@ -1,4 +1,4 @@
-#include "FileParsing/Text/LineStream.hpp"
+#include "FileParsing/TextCommand/LineStream.hpp"
 #include "FileParsing/StringHelp.hpp"
 #include <string>
 

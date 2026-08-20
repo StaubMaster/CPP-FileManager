@@ -45,10 +45,13 @@ FILES_CPP := \
 	FileParsing/CountCheck.cpp \
 	FileParsing/ParsingCommand.cpp \
 \
-	FileParsing/Text/Exceptions.cpp \
-	FileParsing/Text/LineStream.cpp \
-	FileParsing/Text/TextCommandArgs.cpp \
-	FileParsing/Text/TextCommandStream.cpp \
+	FileParsing/TextCommand/LineStream.cpp \
+	FileParsing/TextCommand/Exceptions.cpp \
+	FileParsing/TextCommand/Args.cpp \
+	FileParsing/TextCommand/ArgsStream.cpp \
+	FileParsing/TextCommand/Func.cpp \
+	FileParsing/TextCommand/FuncNormal.cpp \
+	FileParsing/TextCommand/Loop.cpp \
 \
 	FileParsing/Variables/Float.cpp \
 \

@@ -7,13 +7,13 @@
 class LineStream
 {
 	private:
-	std::stringstream _Stream;
+	std::stringstream	_Stream;
 
 	public:
 	LineStream(const std::string & text);
 
 	public:
-	bool Continue(std::string & line);
+	bool	Continue(std::string & line);
 };
 
 #endif

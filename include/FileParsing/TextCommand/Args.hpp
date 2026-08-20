@@ -5,7 +5,9 @@
 # include <vector>
 # include <iosfwd>
 
-class TextCommandArgs
+namespace TextCommand
+{
+class Args
 {
 	private:
 	unsigned int	_Count;
@@ -23,15 +25,16 @@ class TextCommandArgs
 	float			ToFloat(unsigned int idx) const;
 
 	public:
-	~TextCommandArgs();
-	TextCommandArgs();
-	TextCommandArgs(const TextCommandArgs & other);
-	TextCommandArgs & operator=(const TextCommandArgs & other);
+	~Args();
+	Args();
+	Args(const Args & other);
+	Args & operator=(const Args & other);
 
 	public:
 	void	Split(const std::string & str);
 };
+};
 
-std::ostream &	operator<<(std::ostream & o, const TextCommandArgs & obj);
+std::ostream &	operator<<(std::ostream & o, const TextCommand::Args & obj);
 
 #endif

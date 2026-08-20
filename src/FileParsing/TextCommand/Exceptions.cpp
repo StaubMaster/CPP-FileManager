@@ -1,33 +1,33 @@
-#include "FileParsing/Text/Exceptions.hpp"
-#include "FileParsing/Text/TextCommandArgs.hpp"
+#include "FileParsing/TextCommand/Exceptions.hpp"
+#include "FileParsing/TextCommand/Args.hpp"
 
 #include <sstream>
 
 
 
-TextCommand::Unknown::Unknown(const TextCommandArgs & cmd_args)
+TextCommand::Exception::Unknown::Unknown(const Args & cmd_args)
 {
 	std::stringstream ss;
-	ss << cmd_args.Name() << ": ";
-	ss << "unknown Name";
+	ss << '"' << cmd_args.Name() << '"';
+	ss << " is unknown";
 	ss << '.';
 	Text = ss.str();
 }
 
 
 
-TextCommand::NotImplemented::NotImplemented(const TextCommandArgs & cmd_args)
+TextCommand::Exception::NotImplemented::NotImplemented(const Args & cmd_args)
 {
 	std::stringstream ss;
-	ss << cmd_args.Name() << ": ";
-	ss << "not implemented";
+	ss << '"' << cmd_args.Name() << '"';
+	ss << " is not implemented";
 	ss << '.';
 	Text = ss.str();
 }
 
 
 
-TextCommand::InvalidArgumentCount::InvalidArgumentCount(const TextCommandArgs & cmd_args, const char * comparison)
+TextCommand::Exception::InvalidArgumentCount::InvalidArgumentCount(const Args & cmd_args, const char * comparison)
 {
 	std::stringstream ss;
 	ss << cmd_args.Name() << ": ";
@@ -41,7 +41,7 @@ TextCommand::InvalidArgumentCount::InvalidArgumentCount(const TextCommandArgs & 
 
 
 
-TextCommand::InvalidArgument::InvalidArgument(const TextCommandArgs & cmd_args, unsigned int idx)
+TextCommand::Exception::InvalidArgument::InvalidArgument(const Args & cmd_args, unsigned int idx)
 {
 	std::stringstream ss;
 	ss << cmd_args.Name() << ": ";
@@ -50,7 +50,7 @@ TextCommand::InvalidArgument::InvalidArgument(const TextCommandArgs & cmd_args, 
 	ss << '.';
 	Text = ss.str();
 }
-TextCommand::InvalidArgument::InvalidArgument(const TextCommandArgs & cmd_args, unsigned int idx,  const char * description)
+TextCommand::Exception::InvalidArgument::InvalidArgument(const Args & cmd_args, unsigned int idx,  const char * description)
 {
 	std::stringstream ss;
 	ss << cmd_args.Name() << ": ";
@@ -64,7 +64,7 @@ TextCommand::InvalidArgument::InvalidArgument(const TextCommandArgs & cmd_args, 
 
 
 
-TextCommand::InvalidState::InvalidState(const TextCommandArgs & cmd_args, const char * description)
+TextCommand::Exception::InvalidState::InvalidState(const Args & cmd_args, const char * description)
 {
 	std::stringstream ss;
 	ss << cmd_args.Name() << ": ";
