@@ -124,8 +124,7 @@ $(DIR_OBJ)%.o: $(DIR_SRC)%.cpp
 ################################################################
 
 LIBRARYS := $(NAME)
-INCLUDES := include
-INCLUDES += ../Engine/include
+INCLUDES := include ../Engine/ValueType/include ../Engine/Generics/include
 ARGUMENTS := 
 
 ARGS_LIBRARYS = $(foreach library,$(LIBRARYS),$(library))
