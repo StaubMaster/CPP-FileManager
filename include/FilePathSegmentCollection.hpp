@@ -8,6 +8,7 @@ class FilePathSegmentCollection
 	private:
 	unsigned int _Count;
 	FilePathSegment * _Segments;
+	// Container::Array<>
 
 	public:
 	unsigned int Count() const;
@@ -28,8 +29,10 @@ class FilePathSegmentCollection
 	FilePathSegmentCollection Append(const FilePathSegmentCollection & other) const;
 
 	static FilePathSegmentCollection Split(const char * path);
+	// also take std::string
 
 	char * ToString() const;
+	// also return std::string
 };
 
 # include <iosfwd>

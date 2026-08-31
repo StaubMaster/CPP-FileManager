@@ -9,6 +9,8 @@
 
 class FileInfo;
 
+// tabs before function names
+
 class DirectoryInfo : public FileSystemInfo
 {
 	public:
@@ -23,28 +25,35 @@ class DirectoryInfo : public FileSystemInfo
 	DirectoryInfo(const FilePath & path);
 	FileInfo ToFile() const;
 
+	public:
 	static DirectoryInfo Here();
 
 	public:
 	bool IsEmpty() const;
 	void Delete();
 	void Create();
+	// CreateRecursive()
+	// DeleteRecursive()
 
 	public:
 	bool HasParent() const;
 	bool HasChild(const char * name) const;
 	DirectoryInfo Parent() const;
 	DirectoryInfo Child(const char * name) const;
-
-	std::vector<FilePath> Children() const;
-	std::vector<FileInfo> Files() const;
-	std::vector<DirectoryInfo> Directorys() const;
+	// make these also use std::string
 
 	public:
 	bool HasFile(const char * name) const;
 	bool HasDirectory(const char * name) const;
 	FileInfo File(const char * name) const;
 	DirectoryInfo Directory(const char * name) const;
+	// make these also use std::string
+
+	public:
+	std::vector<FilePath> Children() const;
+	std::vector<FileInfo> Files() const;
+	std::vector<DirectoryInfo> Directorys() const;
+	// return Container::Array<>
 };
 
 #endif
