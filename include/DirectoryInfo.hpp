@@ -5,55 +5,55 @@
 
 # include <string>
 # include <exception>
-# include <vector>
+
+// forward define this ?
+# include "Generics/Container/Array.hpp"
 
 class FileInfo;
-
-// tabs before function names
 
 class DirectoryInfo : public FileSystemInfo
 {
 	public:
-	DirectoryInfo();
-	~DirectoryInfo();
-	DirectoryInfo(const DirectoryInfo & other);
-	DirectoryInfo & operator=(const DirectoryInfo & other);
+	~DirectoryInfo() = default;
+	DirectoryInfo() = default;
+	DirectoryInfo(const DirectoryInfo & other) = default;
+	DirectoryInfo & operator=(const DirectoryInfo & other) = default;
 
 	public:
 	DirectoryInfo(const char * path);
 	DirectoryInfo(const std::string & path);
 	DirectoryInfo(const FilePath & path);
-	FileInfo ToFile() const;
 
 	public:
 	static DirectoryInfo Here();
 
 	public:
-	bool IsEmpty() const;
-	void Delete();
-	void Create();
-	// CreateRecursive()
-	// DeleteRecursive()
+	bool	IsEmpty() const;
+	void	Delete();
+	void	Create();
 
 	public:
-	bool HasParent() const;
-	bool HasChild(const char * name) const;
-	DirectoryInfo Parent() const;
-	DirectoryInfo Child(const char * name) const;
-	// make these also use std::string
+	bool	HasParent() const;
+	bool	HasChild(const char * name) const;
+	bool	HasChild(const std::string & name) const;
+	bool	HasFile(const char * name) const;
+	bool	HasFile(const std::string & name) const;
+	bool	HasDirectory(const char * name) const;
+	bool	HasDirectory(const std::string & name) const;
 
 	public:
-	bool HasFile(const char * name) const;
-	bool HasDirectory(const char * name) const;
-	FileInfo File(const char * name) const;
-	DirectoryInfo Directory(const char * name) const;
-	// make these also use std::string
+	DirectoryInfo	Parent() const;
+	FileSystemInfo	Child(const char * name) const;
+	FileSystemInfo	Child(const std::string & name) const;
+	FileInfo		File(const char * name) const;
+	FileInfo		File(const std::string & name) const;
+	DirectoryInfo	Directory(const char * name) const;
+	DirectoryInfo	Directory(const std::string & name) const;
 
 	public:
-	std::vector<FilePath> Children() const;
-	std::vector<FileInfo> Files() const;
-	std::vector<DirectoryInfo> Directorys() const;
-	// return Container::Array<>
+	Container::Array<FileSystemInfo>	Children() const;
+	Container::Array<FileInfo>			Files() const;
+	Container::Array<DirectoryInfo>		Directorys() const;
 };
 
 #endif

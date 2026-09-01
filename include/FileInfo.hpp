@@ -12,10 +12,10 @@ class ByteBlock;
 class FileInfo : public FileSystemInfo
 {
 	public:
-	FileInfo();
-	~FileInfo();
-	FileInfo(const FileInfo & other);
-	FileInfo & operator=(const FileInfo & other);
+	~FileInfo() = default;
+	FileInfo() = default;
+	FileInfo(const FileInfo & other) = default;
+	FileInfo & operator=(const FileInfo & other) = default;
 
 	public:
 	FileInfo(const char * path);
@@ -24,22 +24,21 @@ class FileInfo : public FileSystemInfo
 	DirectoryInfo ToDirectory() const;
 
 	public:
-	void Delete();
-	void Create();
+	void	Delete();
+	void	Create();
 
 	public:
-	DirectoryInfo Directory() const;
-	std::string DirectoryString() const;
-	std::string Extension() const;
+	DirectoryInfo	Directory() const;
+	std::string		Extension() const;
 
 
 
 	public:
-	ByteBlock LoadBytes() const;
-	void SaveBytes(const ByteBlock & block) const;
+	ByteBlock	LoadBytes() const;
+	void		SaveBytes(const ByteBlock & block) const;
 
-	std::string LoadText() const;
-	void SaveText(const std::string & text) const;
+	std::string		LoadText() const;
+	void			SaveText(const std::string & text) const;
 
 	// should Save be non-constant ?
 	// maybe Update FileInfo ?

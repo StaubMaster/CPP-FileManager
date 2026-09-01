@@ -12,43 +12,26 @@
 
 
 
-DirectoryInfo::DirectoryInfo() :
-	FileSystemInfo()
+DirectoryInfo::DirectoryInfo(const char * path)
+	: FileSystemInfo(path)
 { }
-DirectoryInfo::~DirectoryInfo()
+DirectoryInfo::DirectoryInfo(const std::string & path)
+	: FileSystemInfo(path)
 { }
-DirectoryInfo::DirectoryInfo(const DirectoryInfo & other) :
-	FileSystemInfo(other)
+DirectoryInfo::DirectoryInfo(const FilePath & path)
+	: FileSystemInfo(path)
 { }
-DirectoryInfo & DirectoryInfo::operator=(const DirectoryInfo & other)
+
+DirectoryInfo DirectoryInfo::Here()
 {
-	FileSystemInfo::operator=(other);
-	return *this;
+	return DirectoryInfo(FilePath::Here());
 }
-
-DirectoryInfo::DirectoryInfo(const char * path) :
-	FileSystemInfo(path)
-{ }
-DirectoryInfo::DirectoryInfo(const std::string & path) :
-	FileSystemInfo(path)
-{ }
-DirectoryInfo::DirectoryInfo(const FilePath & path) :
-	FileSystemInfo(path)
-{ }
-
-FileInfo DirectoryInfo::ToFile() const { return FileInfo(OriginalPath()); }
-
-
-
-DirectoryInfo DirectoryInfo::Here() { return DirectoryInfo(FilePath::Here()); }
-
-
 
 
 
 bool DirectoryInfo::IsEmpty() const
 {
-	if (!Exists() || !Mode.IsDirectory())
+	if (!Exists() || !IsDirectory())
 	{
 		throw DirectoryNotFound(Path);
 	}
@@ -83,7 +66,7 @@ bool DirectoryInfo::IsEmpty() const
 void DirectoryInfo::Delete()
 {
 	if (!Exists()) { throw DirectoryNotFound(Path); }
-	if (!Mode.IsDirectory()) { throw DirectoryIsNotDirectory(Path); }
+	if (!IsDirectory()) { throw DirectoryIsNotDirectory(Path); }
 
 	DIR * dir = opendir(Path.ToString());
 	if (dir == NULL)
@@ -131,7 +114,7 @@ void DirectoryInfo::Delete()
 }
 void DirectoryInfo::Create()
 {
-	if (Exists() && !Mode.IsDirectory()) { throw DirectoryIsNotDirectory(Path); }
+	if (Exists() && !IsDirectory()) { throw DirectoryIsNotDirectory(Path); }
 
 	if (Path.ToString()[0] == '\0')
 	{
@@ -164,33 +147,78 @@ void DirectoryInfo::Create()
 
 
 
-
-
 bool DirectoryInfo::HasParent() const
 {
 	FileSystemInfo info(Path.Parent().ToString());
-	return (info.Exists() && info.Mode.IsDirectory());
+	return (info.Exists() && info.IsDirectory());
 }
 bool DirectoryInfo::HasChild(const char * name) const
 {
 	FileSystemInfo info(Path.Child(name).ToString());
-	return (info.Exists() && info.Mode.IsDirectory());
+	return (info.Exists());
 }
+bool DirectoryInfo::HasChild(const std::string & name) const
+{
+	FileSystemInfo info(Path.Child(name.c_str()).ToString());
+	return (info.Exists());
+}
+bool DirectoryInfo::HasFile(const char * name) const
+{
+	FileSystemInfo info(Path.Child(name).ToString());
+	return (info.Exists() && info.IsFile());
+}
+bool DirectoryInfo::HasFile(const std::string & name) const
+{
+	FileSystemInfo info(Path.Child(name.c_str()).ToString());
+	return (info.Exists() && info.IsFile());
+}
+bool DirectoryInfo::HasDirectory(const char * name) const
+{
+	FileSystemInfo info(Path.Child(name).ToString());
+	return (info.Exists() && info.IsDirectory());
+}
+bool DirectoryInfo::HasDirectory(const std::string & name) const
+{
+	FileSystemInfo info(Path.Child(name.c_str()).ToString());
+	return (info.Exists() && info.IsDirectory());
+}
+
 DirectoryInfo DirectoryInfo::Parent() const
 {
 	return DirectoryInfo(Path.Parent().ToString());
 }
-DirectoryInfo DirectoryInfo::Child(const char * name) const
+FileSystemInfo DirectoryInfo::Child(const char * name) const
+{
+	return FileSystemInfo(Path.Child(name).ToString());
+}
+FileSystemInfo DirectoryInfo::Child(const std::string & name) const
+{
+	return FileSystemInfo(Path.Child(name.c_str()).ToString());
+}
+FileInfo DirectoryInfo::File(const char * name) const
+{
+	return FileInfo(Path.Child(name).ToString());
+}
+FileInfo DirectoryInfo::File(const std::string & name) const
+{
+	return FileInfo(Path.Child(name.c_str()).ToString());
+}
+DirectoryInfo DirectoryInfo::Directory(const char * name) const
 {
 	return DirectoryInfo(Path.Child(name).ToString());
+}
+DirectoryInfo DirectoryInfo::Directory(const std::string & name) const
+{
+	return DirectoryInfo(Path.Child(name.c_str()).ToString());
 }
 
 
 
-std::vector<FilePath> DirectoryInfo::Children() const
+#include "Generics/Container/Binary.hpp"
+Container::Array<FileSystemInfo> DirectoryInfo::Children() const
 {
 	if (!Exists()) { throw DirectoryNotFound(Path); }
-	if (!Mode.IsDirectory()) { throw DirectoryIsNotDirectory(Path); }
+	if (!IsDirectory()) { throw DirectoryIsNotDirectory(Path); }
 
 	DIR * dir;
 	struct dirent * ent;
@@ -198,23 +226,23 @@ std::vector<FilePath> DirectoryInfo::Children() const
 	dir = opendir(Path.ToString());
 	if (dir == NULL) { throw DirectoryProblem(Path, "opendir"); }
 
-	std::vector<FilePath> children;
+	Container::Binary<FileSystemInfo> children;
 
 	ent = readdir(dir);
 	while (ent != NULL)
 	{
-		children.push_back(FilePath(ent -> d_name));
+		children.Insert(FileSystemInfo(ent -> d_name));
 		ent = readdir(dir);
 	}
 
 	if (closedir(dir) != 0) { throw DirectoryProblem(Path, "closedir"); }
 
-	return children;
+	return children.ToArray();
 }
-std::vector<FileInfo> DirectoryInfo::Files() const
+Container::Array<FileInfo> DirectoryInfo::Files() const
 {
 	if (!Exists()) { throw DirectoryNotFound(Path); }
-	if (!Mode.IsDirectory()) { throw DirectoryIsNotDirectory(Path); }
+	if (!IsDirectory()) { throw DirectoryIsNotDirectory(Path); }
 
 	DIR * dir;
 	struct dirent * ent;
@@ -222,29 +250,29 @@ std::vector<FileInfo> DirectoryInfo::Files() const
 	dir = opendir(Path.ToString());
 	if (dir == NULL) { throw DirectoryProblem(Path, "opendir"); }
 
-	std::vector<FileInfo> children;
+	Container::Binary<FileInfo> children;
 
 	ent = readdir(dir);
 	while (ent != NULL)
 	{
 		//if (ent -> d_type == DT_REG)
 		FileSystemInfo info(ent -> d_name);
-		if (info.Mode.IsFile())
+		if (info.IsFile())
 		{
-			children.push_back(info.Path);
-			//children.push_back(FilePath(ent -> d_name));
+			children.Insert(info.ToFile());
+			//children.Insert(FilePath(ent -> d_name));
 		}
 		ent = readdir(dir);
 	}
 
 	if (closedir(dir) != 0) { throw DirectoryProblem(Path, "closedir"); }
 
-	return children;
+	return children.ToArray();
 }
-std::vector<DirectoryInfo> DirectoryInfo::Directorys() const
+Container::Array<DirectoryInfo> DirectoryInfo::Directorys() const
 {
 	if (!Exists()) { throw DirectoryNotFound(Path); }
-	if (!Mode.IsDirectory()) { throw DirectoryIsNotDirectory(Path); }
+	if (!IsDirectory()) { throw DirectoryIsNotDirectory(Path); }
 
 	DIR * dir;
 	struct dirent * ent;
@@ -252,34 +280,22 @@ std::vector<DirectoryInfo> DirectoryInfo::Directorys() const
 	dir = opendir(Path.ToString());
 	if (dir == NULL) { throw DirectoryProblem(Path, "opendir"); }
 
-	std::vector<DirectoryInfo> children;
+	Container::Binary<DirectoryInfo> children;
 
 	ent = readdir(dir);
 	while (ent != NULL)
 	{
 		//if (ent -> d_type == DT_DIR)
 		FileSystemInfo info(ent -> d_name);
-		if (info.Mode.IsDirectory())
+		if (info.IsDirectory())
 		{
-			children.push_back(info.Path);
-			//children.push_back(FilePath(ent -> d_name));
+			children.Insert(info.ToDirectory());
+			//children.Insert(FilePath(ent -> d_name));
 		}
 		ent = readdir(dir);
 	}
 
 	if (closedir(dir) != 0) { throw DirectoryProblem(Path, "closedir"); }
 
-	return children;
-}
-
-
-
-bool DirectoryInfo::HasFile(const char * name) const
-{
-	FileSystemInfo info(Path.Child(name));
-	return (info.Exists() && info.Mode.IsFile());
-}
-FileInfo DirectoryInfo::File(const char * name) const
-{
-	return FileInfo(Path.Child(name));
+	return children.ToArray();
 }

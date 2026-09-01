@@ -80,8 +80,9 @@ class FileSystemStat
 
 	public:
 	FileSystemStat(const char * path);
+
 	protected:
-	void Refresh(const char * path);
+	void	Refresh(const char * path);
 };
 
 std::ostream & operator<<(std::ostream & o, const FileSystemStat & obj);

@@ -4,28 +4,6 @@
 
 
 
-FileSystemInfo::FileSystemInfo() :
-	FileSystemStat(),
-	Path(),
-	_OriginalPath()
-{ }
-FileSystemInfo::~FileSystemInfo()
-{ }
-FileSystemInfo::FileSystemInfo(const FileSystemInfo & other) :
-	FileSystemStat(other),
-	Path(other.Path),
-	_OriginalPath(other._OriginalPath)
-{ }
-FileSystemInfo & FileSystemInfo::operator=(const FileSystemInfo & other)
-{
-	FileSystemStat::operator=(other);
-	Path = other.Path;
-	_OriginalPath = other._OriginalPath;
-	return *this;
-}
-
-
-
 FileSystemInfo::FileSystemInfo(const char * path) :
 	FileSystemStat(),
 	Path(path),
@@ -50,20 +28,55 @@ FileSystemInfo::FileSystemInfo(const FilePath & path) :
 
 
 
-void FileSystemInfo::Refresh() { FileSystemStat::Refresh(Path.ToString()); }
-bool FileSystemInfo::Exists() const { return Valid; }
-std::string FileSystemInfo::OriginalPath() const { return _OriginalPath; }
-std::string FileSystemInfo::Name() const { return std::string(Path.Name()); }
+void FileSystemInfo::Refresh()
+{
+	FileSystemStat::Refresh(Path.ToString());
+}
+bool FileSystemInfo::Exists() const
+{
+	return Valid; 
+}
+std::string FileSystemInfo::OriginalPath() const
+{
+	return _OriginalPath;
+}
+std::string FileSystemInfo::Name() const
+{
+	return std::string(Path.Name());
+}
 
 
+
+#include "FileInfo.hpp"
+#include "DirectoryInfo.hpp"
+
+bool FileSystemInfo::IsFile() const
+{
+	return Mode.IsFile();
+}
+FileInfo FileSystemInfo::ToFile() const
+{
+	return FileInfo(OriginalPath());
+}
+bool FileSystemInfo::IsDirectory() const
+{
+	return Mode.IsDirectory();
+}
+DirectoryInfo FileSystemInfo::ToDirectory() const
+{
+	return DirectoryInfo(OriginalPath());
+}
 
 
 
 #include <iostream>
 std::ostream & operator<<(std::ostream & o, const FileSystemInfo & obj)
 {
-	o << "Path: " << obj.Path << '\n';
-	o << "OriginalPath: " << obj.OriginalPath() << '\n';
-	o << *((FileSystemStat*)&obj);
+	o << obj.Path;
+	if (obj.IsDirectory())
+	{
+		o << "/"; // use Slash from FilePath ?
+	}
+	o << '\n';
 	return o;
 }

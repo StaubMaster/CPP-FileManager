@@ -6,16 +6,19 @@
 
 # include <string>
 
+class FileInfo;
+class DirectoryInfo;
+
 class FileSystemInfo : public FileSystemStat
 {
 	public:		FilePath	Path;
 	private:	std::string	_OriginalPath;
 
 	public:
-	FileSystemInfo();
-	~FileSystemInfo();
-	FileSystemInfo(const FileSystemInfo & other);
-	FileSystemInfo & operator=(const FileSystemInfo & other);
+	~FileSystemInfo() = default;
+	FileSystemInfo() = default;
+	FileSystemInfo(const FileSystemInfo & other) = default;
+	FileSystemInfo & operator=(const FileSystemInfo & other) = default;
 
 	public:
 	FileSystemInfo(const char * path);
@@ -23,10 +26,16 @@ class FileSystemInfo : public FileSystemStat
 	FileSystemInfo(const FilePath & path);
 
 	public:
-	void Refresh();
-	bool Exists() const;
-	std::string OriginalPath() const;
-	std::string Name() const;
+	void	Refresh();
+	bool	Exists() const;
+	std::string		OriginalPath() const;
+	std::string		Name() const;
+
+	public:
+	bool				IsFile() const;
+	FileInfo			ToFile() const;
+	bool				IsDirectory() const;
+	DirectoryInfo		ToDirectory() const;
 };
 
 # include <iosfwd>

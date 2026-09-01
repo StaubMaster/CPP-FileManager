@@ -16,31 +16,15 @@
 
 
 
-FileInfo::FileInfo() :
-	FileSystemInfo()
+FileInfo::FileInfo(const char * path)
+	: FileSystemInfo(path)
 { }
-FileInfo::~FileInfo()
+FileInfo::FileInfo(const std::string & path)
+	: FileSystemInfo(path)
 { }
-FileInfo::FileInfo(const FileInfo & other) :
-	FileSystemInfo(other)
+FileInfo::FileInfo(const FilePath & path)
+	: FileSystemInfo(path)
 { }
-FileInfo & FileInfo::operator=(const FileInfo & other)
-{
-	FileSystemInfo::operator=(other);
-	return *this;
-}
-
-FileInfo::FileInfo(const char * path) :
-	FileSystemInfo(path)
-{ }
-FileInfo::FileInfo(const std::string & path) :
-	FileSystemInfo(path)
-{ }
-FileInfo::FileInfo(const FilePath & path) :
-	FileSystemInfo(path)
-{ }
-
-DirectoryInfo FileInfo::ToDirectory() const { return DirectoryInfo(OriginalPath()); }
 
 
 
@@ -101,13 +85,18 @@ void FileInfo::Create()
 
 
 
-DirectoryInfo FileInfo::Directory() const { return DirectoryInfo(Path.Parent()); }
-std::string FileInfo::DirectoryString() const { return std::string(Path.Parent().ToString()); }
+DirectoryInfo FileInfo::Directory() const
+{
+	return DirectoryInfo(Path.Parent());
+}
 std::string FileInfo::Extension() const
 {
 	std::string str(Path.Name());
 	size_t idx = str.find_last_of('.');
-	if (idx != std::string::npos) { return str.substr(idx); }
+	if (idx != std::string::npos)
+	{
+		return str.substr(idx);
+	}
 	return std::string();
 }
 

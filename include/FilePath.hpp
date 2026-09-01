@@ -10,34 +10,35 @@ class FilePath
 	//private:
 	public:
 	FilePathSegmentCollection	Segments;
-	char * PathString;
+	char *						PathString;
 
 	public:
-	FilePath();
-	FilePath(const char * path);
 	~FilePath();
-
+	FilePath();
 	FilePath(const FilePath & other);
 	FilePath & operator=(const FilePath & other);
 
 	public:
-	const char * ToString() const;
-	const char * Name() const;
+	FilePath(const char * path);
 
 	public:
-	static FilePath Here();
-
-	bool IsNone() const;
-	bool IsAbsolute() const;
-	bool IsRelative() const;
-
-	FilePath ToAbsolute() const;
-	FilePath ToRelative(const FilePath & root) const;
+	const char *	ToString() const;
+	const char *	Name() const;
 
 	public:
-	FilePath Parent() const;
-	FilePath Child(const char * path) const;
-	FilePath Child(const FilePath & path) const;
+	static FilePath		Here();
+
+	bool	IsNone() const;
+	bool	IsAbsolute() const;
+	bool	IsRelative() const;
+
+	FilePath	ToAbsolute() const;
+	FilePath	ToRelative(const FilePath & root) const;
+
+	public:
+	FilePath	Parent() const;
+	FilePath	Child(const char * path) const;
+	FilePath	Child(const FilePath & path) const;
 };
 
 std::ostream & operator<<(std::ostream & o, const FilePath & val);
